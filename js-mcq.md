@@ -24,10 +24,11 @@ Focus: Syntax, basic logic, and standard data handling.
 * [Variables](#-1-variables): var, let, const.
 * [Data Types](#-2-data-types): Primitives vs. Objects.
 * [Operators](#-3-operators): Arithmetic, comparison (== vs ===), and logical.
-* [Numbers](#-4-numbers) & [String](#-6-string): Basic methods like .toFixed() or .slice().
-* [Arrays](#-5-array): Basic manipulation using push(), pop(), and length.
-* [Control Flow](#-6-control-flow): Simple if/else and for loops.
-* [Functions](#-7-functions): Standard declarations and parameters.  
+* [Numbers](#-4-numbers): parseInt, filter, Math, Infinity, NaN
+* [String](#-5-string): .toFixed(), .slice(), .Splice()
+* [Arrays](#-6-array): push(), pop(), and length.
+* [Control Flow](#-7-control-flow): Simple if/else and for loops.
+* [Functions](#-8-functions): Standard declarations and parameters.  
 
 ## L2: Intermediate (Junior-Mid / Developer)
 Focus: ES6+ features, DOM, and common "trick" concepts.
@@ -35,52 +36,53 @@ Focus: ES6+ features, DOM, and common "trick" concepts.
 * [Scope & Closures](#-8-scope--closures): Understanding block scope and lexical scoping.
 * [Hoisting](#-9-hoisting): Variable and function declarations.
 * [ES6 Features](#-10-es6-features): Arrow functions, template literals, and destructuring.
-* [DOM & Events](#-11-events): Selecting elements, adding listeners, and event bubbling.
-* [Regular Expressions](#-12-regular-expression): Basic pattern matching.
+* [DOM & Events](#-11-dom--events): Selecting elements, adding listeners, and event bubbling.
+* [Regular Expressions](#-12-regular-expressions): Basic pattern matching.
 * [Error Handling](#-13-error-handling): Using try...catch.
 * [Web Storage](#-14-web-storage): localStorage and sessionStorage.  
 
 ## L3: Advanced (Mid-Senior / Lead)
-Focus: Asynchronous operations, performance, and internal engine mechanics. [4] 
+Focus: Asynchronous operations, performance, and internal engine mechanics. 
 
-* [Promises](#-15-promises) & [Async/Await](#-16-Async--Await): Handling complex asynchronous flows.
-* [Event Loop](#-16-Event-Loop): Understanding the microtask vs. macrotask queue.
-* [this Keyword](#-17-this-keyword): Binding with .call(), .apply(), and .bind().
-* [Objects & Prototypes](#-18-objects--prototypes): Prototypal inheritance and the prototype chain.
-* [Functional Programming](#-19-functional-programming): High-order functions like map, filter, and reduce.
-* [Classes](#-20-classes): Inheritance, constructors, and static methods.
-* [Modules](#-21-modules): ES Modules (import/export).
-* [Fetch API & AJAX](#fetch-api--ajax): Using `fetch()`, response handling, POST requests, and HTTP error status handling.
-* [Execution Context & Call Stack](#execution-context--call-stack): JavaScript engine execution contexts, call stack behavior, and TDZ.
+* [Promises](#-15-promises): Promise, Promise.all
+* [Async & Await](#-16-async--await): Handling complex asynchronous flows.
+* [Event Loop](#-17-event-loop): Understanding the microtask vs. macrotask queue.
+* [this Keyword](#-18-this-keyword): Binding with .call(), .apply(), and .bind().
+* [Objects & Prototypes](#-19-objects--prototypes): Prototypal inheritance and the prototype chain.
+* [Functional Programming](#-20-functional-programming): High-order functions like map, filter, and reduce.
+* [Classes](#-21-classes): Inheritance, constructors, and static methods.
+* [Modules](#-22-modules): ES Modules (import/export).
+* [Fetch API & AJAX](#-23-fetch-api--ajax): Using `fetch()`, response handling, POST requests, and HTTP error status handling.
+* [Execution Context & Call Stack](#-24-execution-context--call-stack): JavaScript engine execution contexts, call stack behavior, and TDZ.
 
 ## L4: Expert (Senior / Architect)
 Focus: Scalability, security, and low-level optimization.
 
-* [Performance Optimization](#-22-performance-optimization): Memoization, debouncing/throttling, and avoiding memory leaks.
-* [Design Patterns](#-23-design-patterns): Singleton, Factory, and Pub-Sub patterns.
-* [Security](#-24-security): Preventing XSS, CSRF, and secure data handling.
-* [Browser Internals](#-25-browser-performance): Rendering behavior, reflows, and repaints.
-* [Progressive Web Apps (PWA)](#-26-progressive-web-apps-pwa): Service workers and caching strategies.
-* [Complex Problem Solving](#-27-real-world-problem-solving): Coding simulators for real-world algorithmic tasks.
-* [Output-Based & Coding Patterns](#output-based--coding-patterns): Type coercion outputs, remove duplicates, and string/array manipulation patterns.
+* [Performance Optimization](#-25-performance-optimization): Memoization, debouncing/throttling, and avoiding memory leaks.
+* [Design Patterns](#-26-design-patterns): Singleton, Factory, and Pub-Sub patterns.
+* [Security](#-27-security): Preventing XSS, CSRF, and secure data handling.
+* [Browser Internals](#-28-browser-performance-browser-internals): Rendering behavior, reflows, and repaints.
+* [Progressive Web Apps (PWA)](#-29-progressive-web-apps-pwa): Service workers and caching strategies.
+* [Complex Problem Solving](#-30-real-world-problem-solving): Coding simulators for real-world algorithmic tasks.
+* [Output-Based & Coding Patterns](#-31-output-based--coding-patterns): Type coercion outputs, remove duplicates, and string/array manipulation patterns.
 
 ## L5: Technical Lead
 Focus: Code review, team standards, architectural decisions, and engineering best practices for leading a development team.
 
-* [Code Review & Standards](#-28-code-review--standards): Identifying anti-patterns, enforcing conventions, and reviewing PRs.
-* [Async Strategy & Team Patterns](#-29-async-strategy--team-patterns): Choosing and enforcing async patterns across a codebase.
-* [Module Architecture](#-30-module-architecture): Organizing modules, barrel files, and dependency management.
-* [Error Handling Strategy](#-31-error-handling-strategy): Centralized error handling and observability.
-* [Performance Review](#-32-performance-review): Reviewing code for layout thrashing, memory leaks, and bundle size.
+* [Code Review & Standards](#-32-code-review--standards): Identifying anti-patterns, enforcing conventions, and reviewing PRs.
+* [Async Strategy & Team Patterns](#-33-async-strategy--team-patterns): Choosing and enforcing async patterns across a codebase.
+* [Module Architecture](#-34-module-architecture): Organizing modules, barrel files, and dependency management.
+* [Error Handling Strategy](#-35-error-handling-strategy): Centralized error handling and observability.
+* [Performance Review](#-36-performance-review): Reviewing code for layout thrashing, memory leaks, and bundle size.
 
 ## L6: Technical Architect
 Focus: System-level design, scalability, security posture, micro-frontends, and cross-team JavaScript architecture.
 
-* [Micro-Frontend Architecture](#-33-micro-frontend-architecture): Module federation, iframe isolation, and shared dependencies.
-* [Bundle & Runtime Optimization](#-34-bundle--runtime-optimization): Tree-shaking, code-splitting, and Web Workers.
-* [Security Architecture](#-35-security-architecture): CSP headers, CORS configuration, and supply chain security.
-* [State Management at Scale](#-36-state-management-at-scale): Choosing state patterns for large distributed frontend teams.
-* [Migration & Evolution](#-37-migration--evolution): Framework migrations, progressive TypeScript adoption, and API versioning.
+* [Micro-Frontend Architecture](#-37-micro-frontend-architecture): Module federation, iframe isolation, and shared dependencies.
+* [Bundle & Runtime Optimization](#-38-bundle--runtime-optimization): Tree-shaking, code-splitting, and Web Workers.
+* [Security Architecture](#-39-security-architecture): CSP headers, CORS configuration, and supply chain security.
+* [State Management at Scale](#-40-state-management-at-scale): Choosing state patterns for large distributed frontend teams.
+* [Migration & Evolution](#-41-migration--evolution): Framework migrations, progressive TypeScript adoption, and API versioning.
 
 <br>
 
@@ -5092,7 +5094,7 @@ setTimeout(() => deferred.resolve('late value'), 100);
     <b><a href="#table-of-contents">↥ back to top</a></b>
 </div>
 
-## # 16. Async / Await
+## # 16. Async & Await
 
 <br>
 
@@ -5419,7 +5421,7 @@ console.log('sync');
     <b><a href="#table-of-contents">↥ back to top</a></b>
 </div>
 
-## # 16. Event Loop
+## # 17. Event Loop
 
 <br>
 
@@ -5804,7 +5806,7 @@ console.log(boundIntro('...'));
     <b><a href="#table-of-contents">↥ back to top</a></b>
 </div>
 
-## # 17. this Keyword 
+## # 18. this Keyword 
 
 <br>
 
@@ -6086,7 +6088,7 @@ console.log(d.describe());
     <b><a href="#table-of-contents">↥ back to top</a></b>
 </div>
 
-## # 18. Objects & Prototypes
+## # 19. Objects & Prototypes
 
 <br>
 
@@ -6404,7 +6406,7 @@ console.log(config);
     <b><a href="#table-of-contents">↥ back to top</a></b>
 </div>
 
-## # 19. Functional Programming
+## # 20. Functional Programming
 
 <br>
 
@@ -6755,7 +6757,7 @@ console.log(state === newState);
     <b><a href="#table-of-contents">↥ back to top</a></b>
 </div>
 
-## # 20. Classes
+## # 21. Classes
 
 <br>
 
@@ -7133,7 +7135,7 @@ new Child();
     <b><a href="#table-of-contents">↥ back to top</a></b>
 </div>
 
-## # 21. Modules
+## # 22. Modules
 
 <br>
 
@@ -7380,7 +7382,7 @@ import { Button, Modal, Input } from './components';
     <b><a href="#table-of-contents">↥ back to top</a></b>
 </div>
 
-## Fetch API & AJAX
+## # 23. Fetch API & AJAX
 
 <br>
 
@@ -7595,7 +7597,7 @@ xhr.send();
     <b><a href="#table-of-contents">↥ back to top</a></b>
 </div>
 
-## Execution Context & Call Stack
+## # 24. Execution Context & Call Stack
 
 <br>
 
@@ -7722,7 +7724,7 @@ outer();
 
 <br>
 
-## # 22. Performance Optimization
+## # 25. Performance Optimization
 
 <br>
 
@@ -8003,7 +8005,7 @@ console.log('UI still responsive'); // logs immediately
     <b><a href="#table-of-contents">↥ back to top</a></b>
 </div>
 
-## # 23. Design Patterns
+## # 26. Design Patterns
 
 <br>
 
@@ -8328,7 +8330,7 @@ console.log(new CSVProcessor().process(' a , b , c '));
     <b><a href="#table-of-contents">↥ back to top</a></b>
 </div>
 
-## # 24. Security
+## # 27. Security
 
 <br>
 
@@ -8569,7 +8571,7 @@ window.addEventListener('message', (event) => {
     <b><a href="#table-of-contents">↥ back to top</a></b>
 </div>
 
-## # 25. Browser Performance (Browser Internals)
+## # 28. Browser Performance (Browser Internals)
 
 <br>
 
@@ -8799,7 +8801,7 @@ console.log(measures[0].duration, 'ms');
     <b><a href="#table-of-contents">↥ back to top</a></b>
 </div>
 
-## # 26. Progressive Web Apps (PWA)
+## # 29. Progressive Web Apps (PWA)
 
 <br>
 
@@ -9035,7 +9037,7 @@ self.addEventListener('push', (event) => {
     <b><a href="#table-of-contents">↥ back to top</a></b>
 </div>
 
-## # 27. Real-World Problem Solving
+## # 30. Real-World Problem Solving
 
 <br>
 
@@ -10423,7 +10425,7 @@ async function loadDashboard(userId) {
     <b><a href="#table-of-contents">↥ back to top</a></b>
 </div>
 
-## Output-Based & Coding Patterns
+## # 31. Output-Based & Coding Patterns
 
 <br>
 
@@ -10680,7 +10682,7 @@ console.log('5');
 
 <br>
 
-## # 28. Code Review & Standards
+## # 32. Code Review & Standards
 
 <br>
 
@@ -10950,7 +10952,7 @@ function UserList({ users }) {
     <b><a href="#table-of-contents">↥ back to top</a></b>
 </div>
 
-## # 29. Async Strategy & Team Patterns
+## # 33. Async Strategy & Team Patterns
 
 <br>
 
@@ -11238,7 +11240,7 @@ class CircuitBreaker {
     <b><a href="#table-of-contents">↥ back to top</a></b>
 </div>
 
-## # 30. Module Architecture
+## # 34. Module Architecture
 
 <br>
 
@@ -11473,7 +11475,7 @@ const service = new OrderService(mockDb, mockEmailer);
     <b><a href="#table-of-contents">↥ back to top</a></b>
 </div>
 
-## # 31. Error Handling Strategy
+## # 35. Error Handling Strategy
 
 <br>
 
@@ -11727,7 +11729,7 @@ if (result.ok) {
     <b><a href="#table-of-contents">↥ back to top</a></b>
 </div>
 
-## # 32. Performance Review
+## # 36. Performance Review
 
 <br>
 
@@ -11966,7 +11968,7 @@ async function processLargeArray(items) {
 
 <br>
 
-## # 33. Micro-Frontend Architecture
+## # 37. Micro-Frontend Architecture
 
 <br>
 
@@ -12130,7 +12132,7 @@ new ModuleFederationPlugin({
     <b><a href="#table-of-contents">↥ back to top</a></b>
 </div>
 
-## # 34. Bundle & Runtime Optimization
+## # 38. Bundle & Runtime Optimization
 
 <br>
 
@@ -12307,7 +12309,7 @@ button.addEventListener("click", () => {
     <b><a href="#table-of-contents">↥ back to top</a></b>
 </div>
 
-## # 35. Security Architecture
+## # 39. Security Architecture
 
 <br>
 
@@ -12495,7 +12497,7 @@ Object.assign({}, userInput); // Pollutes Object.prototype
     <b><a href="#table-of-contents">↥ back to top</a></b>
 </div>
 
-## # 36. State Management at Scale
+## # 40. State Management at Scale
 
 <br>
 
@@ -12697,7 +12699,7 @@ const updateUserMutation = useMutation({
     <b><a href="#table-of-contents">↥ back to top</a></b>
 </div>
 
-## # 37. Migration & Evolution
+## # 41. Migration & Evolution
 
 <br>
 
