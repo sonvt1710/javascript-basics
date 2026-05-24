@@ -49,7 +49,9 @@ Focus: Asynchronous operations, performance, and internal engine mechanics. [4]
 * [Objects & Prototypes](#-18-objects--prototypes): Prototypal inheritance and the prototype chain.
 * [Functional Programming](#-19-functional-programming): High-order functions like map, filter, and reduce.
 * [Classes](#-20-classes): Inheritance, constructors, and static methods.
-* [Modules](#-21-modules): ES Modules (import/export).  
+* [Modules](#-21-modules): ES Modules (import/export).
+* [Fetch API & AJAX](#fetch-api--ajax): Using `fetch()`, response handling, POST requests, and HTTP error status handling.
+* [Execution Context & Call Stack](#execution-context--call-stack): JavaScript engine execution contexts, call stack behavior, and TDZ.
 
 ## L4: Expert (Senior / Architect)
 Focus: Scalability, security, and low-level optimization.
@@ -60,6 +62,7 @@ Focus: Scalability, security, and low-level optimization.
 * [Browser Internals](#-25-browser-performance): Rendering behavior, reflows, and repaints.
 * [Progressive Web Apps (PWA)](#-26-progressive-web-apps-pwa): Service workers and caching strategies.
 * [Complex Problem Solving](#-27-real-world-problem-solving): Coding simulators for real-world algorithmic tasks.
+* [Output-Based & Coding Patterns](#output-based--coding-patterns): Type coercion outputs, remove duplicates, and string/array manipulation patterns.
 
 ## L5: Technical Lead
 Focus: Code review, team standards, architectural decisions, and engineering best practices for leading a development team.
@@ -7377,6 +7380,344 @@ import { Button, Modal, Input } from './components';
     <b><a href="#table-of-contents">↥ back to top</a></b>
 </div>
 
+## Fetch API & AJAX
+
+<br>
+
+## Q. A developer makes a GET request using `fetch()`. The server returns a 404 status. What is the behavior of the returned Promise?
+
+```javascript
+fetch('/api/nonexistent')
+  .then(response => console.log('resolved:', response.ok, response.status))
+  .catch(err => console.log('rejected:', err.message));
+```
+
+- A) The Promise rejects because 404 is an error status
+- B) The Promise resolves with `response.ok === false` and `response.status === 404`
+- C) The Promise resolves with `response.ok === true` — 404 is a valid HTTP response
+- D) `fetch()` throws synchronously for 4xx status codes
+
+**Answer: B) The Promise resolves with `response.ok === false` and `response.status === 404`**
+
+**Explanation:** `fetch()` only rejects its Promise for **network failures** (DNS resolution failure, no connection, etc.) — not for HTTP error status codes. A 404 or 500 response is still a valid HTTP response, so the Promise resolves. Always check `response.ok` (true for status 200–299) or `response.status` to detect HTTP errors explicitly.
+
+<div align="right">
+    <b><a href="#table-of-contents">↥ back to top</a></b>
+</div>
+
+## Q. What is the correct pattern for making a `fetch` call and reading the JSON response?
+
+```javascript
+async function getUser(id) {
+  const response = await fetch(`/api/users/${id}`);
+  if (!response.ok) {
+    throw new Error(`HTTP error! status: ${response.status}`);
+  }
+  const data = await response.json();
+  return data;
+}
+```
+
+- A) This is incorrect — `response.json()` is synchronous and does not need `await`
+- B) This correctly handles both network errors and HTTP status errors, and properly reads the JSON body
+- C) `response.ok` should be checked after calling `response.json()`
+- D) Calling `throw` inside an `async` function causes an unhandled rejection
+
+**Answer: B) This correctly handles both network errors and HTTP status errors, and properly reads the JSON body**
+
+**Explanation:** `response.json()` returns a **Promise** that resolves to the parsed JSON body — it must be `await`ed. Checking `response.ok` before calling `.json()` is the correct pattern to distinguish HTTP errors (which `fetch` resolves) from successful responses. The `throw` inside an `async` function returns a rejected Promise, which callers can `catch`.
+
+<div align="right">
+    <b><a href="#table-of-contents">↥ back to top</a></b>
+</div>
+
+## Q. How do you send a POST request with a JSON body using `fetch()`?
+
+```javascript
+const response = await fetch('/api/users', {
+  method: 'POST',
+  headers: {
+    'Content-Type': 'application/json'
+  },
+  body: JSON.stringify({ name: 'Alice', age: 25 })
+});
+```
+
+- A) This is incorrect — `fetch` only supports GET requests natively
+- B) The `body` should be a plain object, not a JSON string
+- C) This correctly sends a POST request with a JSON-serialized body and proper Content-Type header
+- D) `Content-Type` header is automatically set by `fetch` and should not be specified manually
+
+**Answer: C) This correctly sends a POST request with a JSON-serialized body and proper Content-Type header**
+
+**Explanation:** To send JSON, you must: 1) set `method: 'POST'`, 2) set `Content-Type: application/json` header (tells the server how to parse the body), and 3) `JSON.stringify` the object (the `body` must be a string, `Blob`, or `FormData` — not a plain object). Omitting `JSON.stringify` sends `"[object Object]"` as the body.
+
+<div align="right">
+    <b><a href="#table-of-contents">↥ back to top</a></b>
+</div>
+
+## Q. What happens if you call `response.json()` twice on the same response?
+
+```javascript
+async function test() {
+  const response = await fetch('/api/data');
+  const first = await response.json();
+  const second = await response.json(); // called again
+  return [first, second];
+}
+```
+
+- A) Returns the same parsed object twice — the body is cached after the first call
+- B) Throws `TypeError: body stream is locked` (or `body used already`) — response bodies can only be consumed once
+- C) Returns `null` on the second call
+- D) Makes a new network request to re-fetch the data
+
+**Answer: B) Throws `TypeError: body stream is locked` (or `body used already`) — response bodies can only be consumed once**
+
+**Explanation:** The `Response` body is a readable stream that can only be consumed **once**. After `response.json()` (or `response.text()`, `response.blob()`) is called, the body stream is fully read and cannot be read again. If you need to use the body multiple times, call `response.clone()` before reading: `const clone = response.clone()`.
+
+<div align="right">
+    <b><a href="#table-of-contents">↥ back to top</a></b>
+</div>
+
+## Q. What is the difference between `response.json()`, `response.text()`, and `response.blob()`?
+
+```javascript
+const response = await fetch('/api/resource');
+// Option A: const data = await response.json();
+// Option B: const data = await response.text();
+// Option C: const data = await response.blob();
+```
+
+- A) `json()` is synchronous; `text()` and `blob()` are asynchronous
+- B) All three return Promises: `json()` parses the body as JSON, `text()` returns a raw string, `blob()` returns binary data as a `Blob`
+- C) `text()` automatically parses JSON if the response has `Content-Type: application/json`
+- D) `blob()` is only available in Node.js, not in browsers
+
+**Answer: B) All three return Promises: `json()` parses the body as JSON, `text()` returns a raw string, `blob()` returns binary data as a `Blob`**
+
+**Explanation:** All response body reading methods return Promises and consume the body stream. Use `json()` for API responses returning JSON. Use `text()` for HTML, CSV, or plain text. Use `blob()` for images, audio, or file downloads. Use `arrayBuffer()` for low-level binary manipulation. Choose based on the `Content-Type` of the response.
+
+<div align="right">
+    <b><a href="#table-of-contents">↥ back to top</a></b>
+</div>
+
+## Q. How do you send authentication headers and cancel a long-running `fetch` request?
+
+```javascript
+const controller = new AbortController();
+const timeoutId = setTimeout(() => controller.abort(), 5000);
+
+try {
+  const response = await fetch('/api/protected', {
+    headers: { 'Authorization': `Bearer ${token}` },
+    signal: controller.signal
+  });
+  clearTimeout(timeoutId);
+  return await response.json();
+} catch (e) {
+  if (e.name === 'AbortError') console.log('Request timed out');
+  else throw e;
+}
+```
+
+- A) `Authorization` headers cannot be set from JavaScript due to browser security restrictions
+- B) `AbortController` works only with `XMLHttpRequest`, not `fetch`
+- C) This correctly attaches a bearer token and implements a 5-second timeout using `AbortController`
+- D) `controller.abort()` cancels the Promise but the network request continues
+
+**Answer: C) This correctly attaches a bearer token and implements a 5-second timeout using `AbortController`**
+
+**Explanation:** `AbortController` and its `signal` allow cancelling a `fetch` request. When `abort()` is called, the Promise rejects with an `AbortError`. This pattern combines: auth header attachment, a 5-second timeout using `setTimeout`, and cleanup with `clearTimeout` on success. `AbortController` actually cancels the underlying network request, not just the Promise.
+
+<div align="right">
+    <b><a href="#table-of-contents">↥ back to top</a></b>
+</div>
+
+## Q. How do you run multiple `fetch` requests in parallel and handle all results?
+
+```javascript
+async function loadDashboard(userId) {
+  const [user, posts, comments] = await Promise.all([
+    fetch(`/api/users/${userId}`).then(r => r.json()),
+    fetch(`/api/posts?userId=${userId}`).then(r => r.json()),
+    fetch(`/api/comments?userId=${userId}`).then(r => r.json())
+  ]);
+  return { user, posts, comments };
+}
+```
+
+- A) The three `fetch` calls run sequentially — `Promise.all` waits for the first before starting the next
+- B) This runs all three requests in parallel and resolves when all complete; rejects if any fails
+- C) `Promise.all` with `fetch` always rejects because network requests are unreliable
+- D) This is equivalent to three sequential `await fetch(...)` calls
+
+**Answer: B) This runs all three requests in parallel and resolves when all complete; rejects if any fails**
+
+**Explanation:** `Promise.all` starts all Promises simultaneously — all three `fetch` calls are initiated at once. If the user, posts, and comments APIs each take 200ms, sequential awaits would take ~600ms total; `Promise.all` takes ~200ms. If any request fails, `Promise.all` rejects immediately. Use `Promise.allSettled` if partial failure is acceptable.
+
+<div align="right">
+    <b><a href="#table-of-contents">↥ back to top</a></b>
+</div>
+
+## Q. What is the key difference between `fetch` and `XMLHttpRequest` for error handling?
+
+```javascript
+// Using fetch
+fetch('/api/data')
+  .then(res => {
+    if (!res.ok) throw new Error(`${res.status}`);
+    return res.json();
+  })
+  .catch(err => console.error(err));
+
+// Using XMLHttpRequest
+const xhr = new XMLHttpRequest();
+xhr.open('GET', '/api/data');
+xhr.onload = () => {
+  if (xhr.status >= 400) console.error(xhr.status);
+  else console.log(JSON.parse(xhr.responseText));
+};
+xhr.onerror = () => console.error('Network error');
+xhr.send();
+```
+
+- A) `fetch` automatically handles HTTP error codes; `XMLHttpRequest` requires manual checking
+- B) Both APIs reject/error for HTTP error status codes (4xx, 5xx)
+- C) `fetch` requires explicit `response.ok` checking for HTTP errors; `XMLHttpRequest` uses separate `onload`/`onerror` events; both need HTTP status checks
+- D) `XMLHttpRequest` is deprecated and should never be used
+
+**Answer: C) `fetch` requires explicit `response.ok` checking for HTTP errors; `XMLHttpRequest` uses separate `onload`/`onerror` events; both need HTTP status checks**
+
+**Explanation:** Both APIs require manual HTTP status checking. `fetch` is Promise-based (cleaner with `async/await`), supports streaming, and has a modern API. `XMLHttpRequest` is callback-based, uses events (`onload`, `onerror`, `onprogress`), and is more verbose. Neither automatically throws for HTTP error codes — developers must check `response.ok` (fetch) or `xhr.status` (XHR). `fetch` is preferred in modern code.
+
+<div align="right">
+    <b><a href="#table-of-contents">↥ back to top</a></b>
+</div>
+
+## Execution Context & Call Stack
+
+<br>
+
+## Q. What is the correct order of events when JavaScript starts executing a program?
+
+```javascript
+var name = 'Global';
+function greet() {
+  var name = 'Local';
+  return name;
+}
+greet();
+```
+
+- A) Functions are executed immediately when declared; variables are set up last
+- B) 1) Global Execution Context is created (hoisting: `name = undefined`, `greet` = function); 2) Code runs line by line; 3) `greet()` creates a new Function Execution Context pushed onto the Call Stack
+- C) The Call Stack processes items from a queue (FIFO), not a stack
+- D) Each line creates its own separate execution context
+
+**Answer: B) 1) Global Execution Context is created (hoisting: `name = undefined`, `greet` = function); 2) Code runs line by line; 3) `greet()` creates a new Function Execution Context pushed onto the Call Stack**
+
+**Explanation:** JavaScript execution has two phases per context: **Creation Phase** (variables hoisted as `undefined`, function declarations fully hoisted, `this` bound) and **Execution Phase** (code runs line by line). When a function is called, a new Execution Context is pushed onto the Call Stack. When it returns, it is popped off. The Global Execution Context remains until the program ends.
+
+<div align="right">
+    <b><a href="#table-of-contents">↥ back to top</a></b>
+</div>
+
+## Q. What does the Call Stack look like at the moment `c()` runs?
+
+```javascript
+function a() { b(); }
+function b() { c(); }
+function c() { console.log('done'); }
+a();
+```
+
+- A) `[c]` — only the currently executing function is on the stack
+- B) `[Global, a, b, c]` — each nested call adds a frame; on return each is popped in reverse order
+- C) `[a, b, c, Global]` — the last-called function is at the bottom
+- D) `[Global]` — functions only appear on the stack after they return
+
+**Answer: B) `[Global, a, b, c]` — each nested call adds a frame; on return each is popped in reverse order**
+
+**Explanation:** The Call Stack is a LIFO (Last In, First Out) data structure. Global is always the base. `a()` is called → pushed. `a` calls `b` → pushed. `b` calls `c` → pushed. At the peak: `[Global, a, b, c]`. `c` returns → popped. `b` returns → popped. `a` returns → popped. This is why it's called a "stack" and why deeply nested calls can cause stack overflows.
+
+<div align="right">
+    <b><a href="#table-of-contents">↥ back to top</a></b>
+</div>
+
+## Q. What causes `RangeError: Maximum call stack size exceeded`?
+
+```javascript
+function countdown(n) {
+  console.log(n);
+  countdown(n - 1); // no base case
+}
+countdown(5);
+```
+
+- A) Using too much heap memory for variables inside the function
+- B) Each `countdown` call pushes a new frame onto the Call Stack without ever popping; the stack overflows when its size limit is reached
+- C) `console.log` inside a recursive function causes a stack overflow
+- D) The event loop queue fills up and blocks new tasks
+
+**Answer: B) Each `countdown` call pushes a new frame onto the Call Stack without ever popping; the stack overflows when its size limit is reached**
+
+**Explanation:** Every function call consumes a Call Stack frame. Without a base case, `countdown` calls itself infinitely. Each call adds a frame; none return to be popped. Eventually the engine's stack size limit (typically ~10,000–15,000 frames) is hit, throwing `RangeError: Maximum call stack size exceeded`. Fix: add a base case (`if (n <= 0) return`) or convert to iteration / use `setTimeout` for very deep recursion.
+
+<div align="right">
+    <b><a href="#table-of-contents">↥ back to top</a></b>
+</div>
+
+## Q. What does the JavaScript engine do during the **creation phase** of an execution context?
+
+```javascript
+console.log(a); // ?
+console.log(b); // ?
+var a = 1;
+let b = 2;
+function fn() {}
+```
+
+- A) Throws `ReferenceError` for both — nothing is set up before code runs
+- B) `undefined`, `ReferenceError` — `var` is hoisted and initialized to `undefined`; `let` is hoisted but stays in the TDZ (uninitialized)
+- C) `1`, `2` — all declarations are fully initialized in the creation phase
+- D) `undefined`, `undefined` — both `var` and `let` initialize to `undefined`
+
+**Answer: B) `undefined`, `ReferenceError` — `var` is hoisted and initialized to `undefined`; `let` is hoisted but stays in the TDZ (uninitialized)**
+
+**Explanation:** During the **creation phase**, the engine: 1) creates the Variable Environment (`var` → `undefined`, function declarations → full function), 2) creates the Lexical Environment (`let`/`const` → hoisted but **uninitialized** in TDZ), 3) binds `this`. Only during the **execution phase** are values assigned. Accessing a `let` variable before its declaration line (while still in the TDZ) throws `ReferenceError`.
+
+<div align="right">
+    <b><a href="#table-of-contents">↥ back to top</a></b>
+</div>
+
+## Q. What does the scope chain in an execution context determine?
+
+```javascript
+const x = 'global';
+function outer() {
+  const x = 'outer';
+  function inner() {
+    console.log(x); // which x?
+  }
+  inner();
+}
+outer();
+```
+
+- A) `"global"` — functions always look up to the global scope first
+- B) `"outer"` — the scope chain walks from inner's context → outer's context → global; `x = 'outer'` is found first
+- C) `ReferenceError` — `x` is not in `inner`'s own execution context
+- D) `undefined` — `x` in outer is not accessible to inner
+
+**Answer: B) `"outer"` — the scope chain walks from inner's context → outer's context → global; `x = 'outer'` is found first**
+
+**Explanation:** The **scope chain** is built when a function is defined (lexical scoping). When `inner()` runs, its execution context has a reference to the outer function's environment (where `x = 'outer'`), and that has a reference to the global environment (where `x = 'global'`). Variable lookup walks inward-to-outward and stops at the first match. This chain is created at definition time, not at call time.
+
+<div align="right">
+    <b><a href="#table-of-contents">↥ back to top</a></b>
+</div>
+
 ## L4: Expert (Senior / Architect)
 
 <br>
@@ -10077,6 +10418,259 @@ async function loadDashboard(userId) {
 **Answer: B) `Promise.allSettled` with partial results allows the dashboard to load even if some APIs fail**
 
 **Explanation:** `Promise.all` would fail the entire dashboard if any single API fails. `Promise.allSettled` waits for all and returns success/failure for each. The pattern extracts partial results (showing what loaded) while collecting errors for logging. Dashboards with multiple independent data sources should always use `allSettled` — users see partial data instead of a blank error page.
+
+<div align="right">
+    <b><a href="#table-of-contents">↥ back to top</a></b>
+</div>
+
+## Output-Based & Coding Patterns
+
+<br>
+
+## Q. What is the output of these type coercion expressions?
+
+```javascript
+console.log(1 + "2" + 3);
+console.log(1 + 2 + "3");
+console.log("5" - 3);
+console.log("5" * "2");
+console.log(true + true + "1");
+```
+
+- A) `"123"`, `"33"`, `2`, `10`, `"21"`
+- B) `"123"`, `"33"`, `2`, `10`, `"21"`
+- C) `6`, `"33"`, `2`, `10`, `"21"`
+- D) `"123"`, `3`, `"53"`, `10`, `"21"`
+
+**Answer: A) `"123"`, `"33"`, `2`, `10`, `"21"`**
+
+**Explanation:** `+` is left-to-right: `1 + "2"` → `"12"` (string concat), then `"12" + 3` → `"123"`. `1 + 2` → `3` (numeric), then `3 + "3"` → `"33"`. `-` coerces to number: `"5" - 3 = 2`. `*` coerces both: `5 * 2 = 10`. `true + true` → `1 + 1 = 2`, then `2 + "1"` → `"21"`. Rule: `+` with any string = concatenation; `-`, `*`, `/` always coerce to numbers.
+
+<div align="right">
+    <b><a href="#table-of-contents">↥ back to top</a></b>
+</div>
+
+## Q. What is the output of these array and object coercion expressions?
+
+```javascript
+console.log([] + []);
+console.log([] + {});
+console.log({} + []);
+console.log(+[]);
+console.log(+{});
+```
+
+- A) `""`, `"[object Object]"`, `0`, `0`, `NaN`
+- B) `""`, `"[object Object]"`, `"[object Object]"`, `0`, `NaN`
+- C) `[]`, `{}`, `0`, `0`, `NaN`
+- D) `0`, `"[object Object]"`, `0`, `0`, `NaN`
+
+**Answer: A) `""`, `"[object Object]"`, `0`, `0`, `NaN`**
+
+**Explanation:** `[] + []`: both arrays coerce to `""` (empty string via `.toString()`) → `""`. `[] + {}`: `[]` → `""`, `{}` → `"[object Object]"` → `"[object Object]"`. `{} + []` in expression context (not as a statement): `{}` is an empty object → `"[object Object]"`, `[]` → `""` → `"[object Object]"`. `+[]`: unary `+` converts `[]` → `""` → `0`. `+{}`: `{}` → `NaN`. These are notorious JavaScript gotchas.
+
+<div align="right">
+    <b><a href="#table-of-contents">↥ back to top</a></b>
+</div>
+
+## Q. What is the output of these loose equality edge cases?
+
+```javascript
+console.log(null == undefined);
+console.log(null === undefined);
+console.log(null == 0);
+console.log(null == false);
+console.log(NaN == NaN);
+console.log(NaN === NaN);
+```
+
+- A) `true`, `false`, `false`, `false`, `false`, `false`
+- B) `true`, `false`, `true`, `true`, `false`, `false`
+- C) `true`, `true`, `false`, `false`, `false`, `false`
+- D) `false`, `false`, `false`, `false`, `true`, `false`
+
+**Answer: A) `true`, `false`, `false`, `false`, `false`, `false`**
+
+**Explanation:** `null == undefined` → `true` (special spec rule: they are only equal to each other). `null == 0` → `false` (null only equals `undefined` with `==`). `null == false` → `false` (same rule). `NaN == NaN` → `false` (NaN is never equal to anything, even itself). Use `Number.isNaN(x)` to detect NaN, and `=== undefined` only for `undefined` checks.
+
+<div align="right">
+    <b><a href="#table-of-contents">↥ back to top</a></b>
+</div>
+
+## Q. Which approaches correctly remove duplicate values from an array?
+
+```javascript
+const arr = [1, 2, 2, 3, 3, 3, 4];
+
+// Approach A
+const a = [...new Set(arr)];
+
+// Approach B
+const b = arr.filter((val, idx) => arr.indexOf(val) === idx);
+
+// Approach C
+const c = arr.reduce((acc, val) => {
+  if (!acc.includes(val)) acc.push(val);
+  return acc;
+}, []);
+
+// Approach D
+const d = Array.from(new Set(arr));
+```
+
+- A) Only Approach A works
+- B) Approaches A and D are equivalent; B and C also work but are less efficient
+- C) Only Approaches A and B work
+- D) All four produce `[1, 2, 3, 4]` but with different time complexities
+
+**Answer: D) All four produce `[1, 2, 3, 4]` but with different time complexities**
+
+**Explanation:** All four correctly deduplicate. **A & D** (Set-based): O(n) — best for primitives. **B** (filter + indexOf): O(n²) — readable but slow for large arrays. **C** (reduce + includes): O(n²) — similarly readable but O(n²). For primitives, use `[...new Set(arr)]` or `Array.from(new Set(arr))`. For objects (deduplicating by property), use `reduce` with a `Map`. Note: Sets don\'t deduplicate object references unless they are literally the same reference.
+
+<div align="right">
+    <b><a href="#table-of-contents">↥ back to top</a></b>
+</div>
+
+## Q. A developer needs to reverse a string without using the built-in `.split().reverse().join()` pattern. Which implementations are correct?
+
+```javascript
+const str = 'hello';
+
+// Approach A — for loop
+function reverseA(s) {
+  let result = '';
+  for (let i = s.length - 1; i >= 0; i--) result += s[i];
+  return result;
+}
+
+// Approach B — reduce
+const reverseB = s => [...s].reduce((acc, ch) => ch + acc, '');
+
+// Approach C — recursion
+const reverseC = s => s.length <= 1 ? s : reverseC(s.slice(1)) + s[0];
+```
+
+- A) Only Approach A works correctly
+- B) A and B work; C has incorrect recursion logic
+- C) All three correctly reverse `"hello"` to `"olleh"`
+- D) None work — you must use `.split('').reverse().join('')`
+
+**Answer: C) All three correctly reverse `"hello"` to `"olleh"`**
+
+**Explanation:** **A**: iterates from end, builds reversed string. **B**: `[...s]` spreads string to Unicode-safe characters; `reduce` prepends each character — `ch + acc` reverses the order. **C**: recursively moves the first character to the end. All produce `"olleh"`. Note: `[...s]` (spread) is Unicode-safe for emoji/surrogate pairs; `s.split('')` may split emoji into two half-characters.
+
+<div align="right">
+    <b><a href="#table-of-contents">↥ back to top</a></b>
+</div>
+
+## Q. What does the following debounce implementation output when `search` is called rapidly?
+
+```javascript
+function debounce(fn, delay) {
+  let timer;
+  return function (...args) {
+    clearTimeout(timer);
+    timer = setTimeout(() => fn.apply(this, args), delay);
+  };
+}
+
+const search = debounce((query) => console.log('Searching:', query), 300);
+
+search('j');
+search('ja');
+search('jav');
+search('java');
+// All called within 100ms of each other
+```
+
+- A) Logs four times: `"Searching: j"`, `"Searching: ja"`, `"Searching: jav"`, `"Searching: java"`
+- B) Logs once after 300ms of silence: `"Searching: java"` — only the last call executes
+- C) Logs immediately: `"Searching: java"` — debounce removes all delays
+- D) Logs twice: first and last calls only
+
+**Answer: B) Logs once after 300ms of silence: `"Searching: java"` — only the last call executes**
+
+**Explanation:** Debounce resets the timer on every new call with `clearTimeout`. Each new `search()` call cancels the previous pending timer and sets a new one. Since all four calls happen within 100ms of each other (well under the 300ms delay), earlier timers are continuously cancelled. Only after 300ms of no new calls does the last timer fire, logging `"Searching: java"`. This is ideal for search-as-you-type to reduce API calls.
+
+<div align="right">
+    <b><a href="#table-of-contents">↥ back to top</a></b>
+</div>
+
+## Q. What is the output of the following tricky `typeof` and coercion expressions commonly asked in L4 assessments?
+
+```javascript
+console.log(typeof typeof 42);
+console.log(typeof null);
+console.log(!!null, !!undefined, !!0, !!NaN, !!'', !![], !!{});
+console.log(+'');
+console.log(+null);
+console.log(+undefined);
+```
+
+- A) `"string"`, `"null"`, then all `false` values, `0`, `0`, `NaN`
+- B) `"string"`, `"object"`, `false false false false false true true`, `0`, `0`, `NaN`
+- C) `"number"`, `"object"`, `false false false false false true true`, `0`, `0`, `NaN`
+- D) `"string"`, `"object"`, `false false false false false false false`, `NaN`, `0`, `NaN`
+
+**Answer: B) `"string"`, `"object"`, `false false false false false true true`, `0`, `0`, `NaN`**
+
+**Explanation:** `typeof 42` → `"number"` (a string), then `typeof "number"` → `"string"`. `typeof null` → `"object"` (historical bug). Falsy values: `null`, `undefined`, `0`, `NaN`, `""` all double-negate to `false`. Truthy: `[]` and `{}` are **objects** (truthy regardless of emptiness). `+''` → `0`. `+null` → `0`. `+undefined` → `NaN`.
+
+<div align="right">
+    <b><a href="#table-of-contents">↥ back to top</a></b>
+</div>
+
+## Q. What is the output of this closure and scope challenge — a common L4 interview question?
+
+```javascript
+for (var i = 0; i < 3; i++) {
+  setTimeout(function() { console.log(i); }, i * 100);
+}
+
+for (let j = 0; j < 3; j++) {
+  setTimeout(function() { console.log(j); }, j * 100 + 500);
+}
+```
+
+- A) `0, 1, 2`, then `0, 1, 2`
+- B) `3, 3, 3`, then `0, 1, 2`
+- C) `0, 1, 2`, then `3, 3, 3`
+- D) `3, 3, 3`, then `3, 3, 3`
+
+**Answer: B) `3, 3, 3`, then `0, 1, 2`**
+
+**Explanation:** `var i` is function-scoped — all three callbacks share the same `i`. By the time the callbacks run (0ms, 100ms, 200ms), the loop has completed and `i = 3`. `let j` creates a **new binding per iteration** — each callback captures its own `j` (0, 1, 2). This is the canonical JS interview question. To fix the `var` version: use `let`, use an IIFE, or use `.bind(null, i)`.
+
+<div align="right">
+    <b><a href="#table-of-contents">↥ back to top</a></b>
+</div>
+
+## Q. What does `Promise.resolve` and `async/await` output in this mixed synchronous/asynchronous scenario?
+
+```javascript
+console.log('1');
+
+async function asyncFunc() {
+  console.log('2');
+  await Promise.resolve();
+  console.log('3');
+}
+
+asyncFunc();
+
+Promise.resolve().then(() => console.log('4'));
+
+console.log('5');
+```
+
+- A) `1, 2, 3, 4, 5`
+- B) `1, 2, 5, 3, 4`
+- C) `1, 2, 5, 4, 3`
+- D) `1, 5, 2, 3, 4`
+
+**Answer: C) `1, 2, 5, 4, 3`**
+
+**Explanation:** Synchronous: `"1"` → `asyncFunc()` runs synchronously until the first `await`: logs `"2"` → suspends at `await Promise.resolve()` → `Promise.resolve().then(...)` queues `"4"` as a microtask → logs `"5"`. Microtask queue: `await Promise.resolve()` inside `asyncFunc` resolves first (it was queued before the standalone `.then()`), but `"4"` was actually queued at the same tick as `asyncFunc`\'s continuation. Microtasks run in order: `await` continuation (logs `"3"`) runs after `"4"` — actually `"4"` resolves first because `asyncFunc`\'s inner `await` schedules a microtask, but the `.then(() => '4')` was enqueued after the `await`. Result: `"5"` → microtask `"4"` → microtask `"3"`.
 
 <div align="right">
     <b><a href="#table-of-contents">↥ back to top</a></b>
