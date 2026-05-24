@@ -3029,9 +3029,6 @@ for (let i = 0; i < 10; i++) {
 }
 ```
 
-**Real-World Use Case:**  
-In a Node.js REST API, `if/else` chains validate incoming request payloads (checking required fields, type constraints, and business rules) before passing control to the service layer — keeping the controller logic clean and the happy path unindented.
-
 <div align="right">
     <b><a href="#table-of-contents">↥ back to top</a></b>
 </div>
@@ -3078,9 +3075,6 @@ if (value) {
   console.log("Falsy"); // ← executed because 0 is falsy
 }
 ```
-
-**Real-World Use Case:**  
-In a React component rendering a dashboard widget, an `if...else if` ladder checks the API response status (`"loading"`, `"error"`, `"empty"`, `"success"`) and returns the appropriate JSX. Placing the `"loading"` state first ensures the spinner is shown instantly while data fetches, improving perceived performance.
 
 <div align="right">
     <b><a href="#table-of-contents">↥ back to top</a></b>
@@ -3155,9 +3149,6 @@ switch (x) {
 }
 ```
 
-**Real-World Use Case:**  
-In a Redux reducer, a `switch` on `action.type` is the canonical pattern. Each `case` maps to a specific action string (e.g., `"INCREMENT"`, `"DECREMENT"`, `"RESET"`), returning a new state object. This pattern is readable, scalable, and directly documented in the Redux style guide.
-
 <div align="right">
     <b><a href="#table-of-contents">↥ back to top</a></b>
 </div>
@@ -3225,7 +3216,8 @@ for (const val of arr) {
 }
 ```
 
-**Real-World Use Case:**  
+**Real-World Use Case:** 
+
 In a Node.js data-processing pipeline, `for...of` with `await` (inside an `async` function) iterates over a paginated API result set sequentially — something `forEach` cannot do since it ignores returned Promises. `for...in` is used to dynamically enumerate config object keys when serializing environment-specific settings.
 
 <div align="right">
@@ -3277,9 +3269,6 @@ while (true) {
 }
 console.log(counter); // 5
 ```
-
-**Real-World Use Case:**  
-A `do...while` loop is ideal for a CLI tool (e.g., a Node.js interactive script using `readline`) where you always need to display a menu at least once and re-display it until the user selects "Exit". A `while` loop suits polling a queue (`while (queue.length > 0)`) in a job processor, since the queue might be empty on startup.
 
 <div align="right">
     <b><a href="#table-of-contents">↥ back to top</a></b>
@@ -3336,6 +3325,7 @@ outerLoop: for (let i = 0; i < 3; i++) {
 ```
 
 **Real-World Use Case:**  
+
 In a search autocomplete engine, `break` short-circuits a loop over a large dataset once the desired number of suggestions is collected, preventing unnecessary iterations. `continue` is used in data-cleaning pipelines to skip `null` or malformed records without nesting the entire logic in an extra `if` block — keeping cyclomatic complexity low and the code easier to review.
 
 <div align="right">
@@ -3392,6 +3382,7 @@ if (isLoggedIn) {
 ```
 
 **Real-World Use Case:**  
+
 In React, the ternary operator is the standard pattern for conditional rendering within JSX since JSX is an expression context — `if` statements cannot appear inside `{}` interpolation. For example, rendering a loading spinner vs. a data table based on `isLoading` state is universally handled with a ternary.
 
 <div align="right">
@@ -3443,6 +3434,7 @@ console.log(city); // "Unknown City"
 ```
 
 **Real-World Use Case:**  
+
 When consuming third-party REST APIs or GraphQL responses, deeply nested fields may be absent depending on the query. Optional chaining eliminates dozens of guard clauses like `if (response && response.data && response.data.user)`. Nullish coalescing is critical when a user-configurable setting has `0` or `""` as a valid value — falling back with `||` would incorrectly override those legitimate settings.
 
 <div align="right">
@@ -3511,6 +3503,7 @@ searchGrid: for (let i = 0; i < rows; i++) {
 ```
 
 **Real-World Use Case:**  
+
 In a pathfinding algorithm (e.g., BFS/DFS on a 2D game map) or a seat-selection engine scanning rows and seats in a stadium booking system, a labeled `break` exits all nested loops the moment a valid seat is located — avoiding a boolean flag variable that would otherwise pollute the outer scope and add an extra condition to every loop header.
 
 <div align="right">
@@ -3570,7 +3563,8 @@ if (isAuthenticated) {
 }
 ```
 
-**Real-World Use Case:**  
+**Real-World Use Case:** 
+
 In React, `&&` short-circuit is the idiomatic pattern for **conditional rendering**: `{isLoggedIn && <UserMenu />}` renders the component only when `isLoggedIn` is truthy, with no JSX `if` block needed. The `||` operator is universally used for **default parameter fallbacks** before optional chaining became standard. In Node.js middleware chains, `&&` guards ensure a dependency (e.g., a database connection) is available before proceeding to query logic.
 
 <div align="right">
@@ -17285,8 +17279,6 @@ onTTFB(sendToAnalytics); // Time to First Byte         — target < 800ms
 | Replace `top`/`left` animations with `transform` | Low | High (jank elimination) |  Yes |
 | Migrate to streaming SSR | High | Medium | Later |
 | WebAssembly for a single CPU-bound algorithm | Very High | Low | Probably never |
-
-**Real-World Use Case:**
 
 <div align="right">
     <b><a href="#table-of-contents">↥ back to top</a></b>
