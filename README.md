@@ -84,7 +84,7 @@ Focus: System-level design, scalability, security posture, micro-frontend, and c
 * [Security Architecture](#-39-security-architecture): CSP headers, CORS configuration, and supply chain security.
 * [State Management at Scale](#-40-state-management-at-scale): Choosing state patterns for large distributed frontend teams.
 * [Migration & Evolution](#-41-migration--evolution): Framework migrations, progressive TypeScript adoption, and API versioning.
-* [Miscellaneous](#-42-miscellaneous):
+* [Miscellaneous](#-42-miscellaneous): Strict Mode, Polyfill, Virtual DOM, Rendering Pipeline, Browser Engine.
 
 <br>
 
@@ -14387,6 +14387,450 @@ class User {
     <b><a href="#table-of-contents">↥ back to top</a></b>
 </div>
 
+## Q. Describe the Revealing Module Pattern in javascript?
+
+Revealing module pattern is a design pattern, which let you organise your javascript code in modules, and gives better code structure. It gives you power to create public/private variables/methods (using closure), and avoids polluting global scope
+
+It uses IIFE (Immediately invoked function expression: (function(){})();) to wrap your module function, thus creating a local scope for all your variables and methods.
+
+**Syntax:**
+
+```js
+const returnedValue = (function() { ... })();
+```
+
+**Example:**
+
+```js
+const myModule = (function () {
+  "use strict";
+
+  var _privateProperty = "I am a private property";
+  var publicProperty = "I am a public property";
+
+  function _privateMethod() {
+    console.log(_privateProperty);
+  }
+
+  function publicMethod() {
+    _privateMethod();
+  }
+
+  return {
+    publicMethod: publicMethod,
+    publicProperty: publicProperty
+  };
+})();
+
+myModule.publicMethod(); // outputs 'I am a private property'
+console.log(myModule.publicProperty); // outputs 'I am a public property'
+console.log(myModule._privateProperty); // is undefined protected by the module closure
+myModule._privateMethod(); // TypeError: protected by the module closure
+```
+
+**&#9885; [Try this example on CodeSandbox](https://codesandbox.io/s/js-iterator-sh0tvo?file=/src/index.js)**
+
+<div align="right">
+    <b><a href="#table-of-contents">↥ back to top</a></b>
+</div>
+
+## Q. What is dependency injection in JavaScript?
+
+**Dependency Injection (DI)** is a design pattern where an object\'s dependencies are provided externally rather than created inside the object. This promotes loose coupling, testability, and adherence to the Single Responsibility Principle.
+
+**Without dependency injection (tightly coupled):**
+
+```js
+// Bad — UserService creates its own logger
+class UserService {
+  constructor() {
+    this.logger = new ConsoleLogger(); // hard dependency
+  }
+  createUser(name) {
+    this.logger.log(`Creating user: ${name}`);
+  }
+}
+```
+
+**With dependency injection:**
+
+```js
+// Good — logger is injected, making it easy to swap in tests
+class UserService {
+  constructor(logger, userRepository) {
+    this.logger = logger;
+    this.userRepository = userRepository;
+  }
+
+  async createUser(name) {
+    this.logger.log(`Creating user: ${name}`);
+    return this.userRepository.save({ name });
+  }
+}
+
+// Production
+const service = new UserService(new ConsoleLogger(), new DatabaseRepository());
+
+// Tests — inject mocks
+const mockLogger = { log: jest.fn() };
+const mockRepo   = { save: jest.fn().mockResolvedValue({ id: 1 }) };
+const testService = new UserService(mockLogger, mockRepo);
+```
+
+**DI via function arguments (functional style):**
+
+```js
+function createOrderProcessor(paymentGateway, inventoryService, notifier) {
+  return async function processOrder(order) {
+    await inventoryService.reserve(order.items);
+    await paymentGateway.charge(order.total);
+    await notifier.send(order.userId, 'Order confirmed!');
+  };
+}
+
+const processOrder = createOrderProcessor(
+  new StripeGateway(),
+  new InventoryService(),
+  new EmailNotifier()
+);
+```
+
+**Benefits:**
+
+* Easier unit testing — inject mocks/stubs
+* Loose coupling — swap implementations without changing consuming code
+* Explicit dependencies — easier to understand what a class needs
+* Single Responsibility — classes focus on logic, not construction
+
+<div align="right">
+    <b><a href="#table-of-contents">↥ back to top</a></b>
+</div>
+
+## Q. What are MVC and MVVM patterns in JavaScript?
+
+**MVC (Model-View-Controller):**
+
+MVC separates an application into three components:
+
+* **Model** — manages data and business logic
+* **View** — renders the UI based on model data
+* **Controller** — handles user input, updates model and view
+
+```js
+// Model
+class UserModel {
+  constructor(name, email) {
+    this.name = name;
+    this.email = email;
+  }
+  validate() {
+    return this.email.includes('@');
+  }
+}
+
+// View
+class UserView {
+  render(user) {
+    document.getElementById('name').textContent = user.name;
+    document.getElementById('email').textContent = user.email;
+  }
+  getFormData() {
+    return {
+      name: document.getElementById('nameInput').value,
+      email: document.getElementById('emailInput').value
+    };
+  }
+}
+
+// Controller
+class UserController {
+  constructor(model, view) {
+    this.model = model;
+    this.view = view;
+    document.getElementById('submit').addEventListener('click', () => this.handleSubmit());
+  }
+  handleSubmit() {
+    const data = this.view.getFormData();
+    const model = new UserModel(data.name, data.email);
+    if (model.validate()) {
+      this.view.render(model);
+    }
+  }
+}
+
+const controller = new UserController(null, new UserView());
+```
+
+**MVVM (Model-View-ViewModel):**
+
+MVVM replaces the controller with a **ViewModel** that exposes data bindings, enabling **two-way data binding** between View and ViewModel. Used in frameworks like Angular (two-way binding), Vue.js, and Knockout.
+
+```js
+// Vue.js demonstrates MVVM — ViewModel is the Vue instance
+const vm = new Vue({
+  el: '#app',
+  data: {           // Model
+    message: 'Hello'
+  }
+  // The template (View) binds to `message` automatically
+  // Any change to vm.message immediately updates the DOM
+});
+```
+
+**Comparison:**
+
+| | MVC | MVVM |
+|--|-----|------|
+| Data flow | Controller mediates | Two-way data binding |
+| View knowledge | View knows controller | View knows ViewModel (via binding) |
+| Testability | Controller is testable | ViewModel is testable without UI |
+| Used by | Express, Angular 1 | Vue.js, Angular, React (+hooks) |
+
+<div align="right">
+    <b><a href="#table-of-contents">↥ back to top</a></b>
+</div>
+
+## Q. Describe Singleton Pattern In JavaScript?
+
+The **singleton pattern** is a type of creational pattern that restricts the instantiation of a class to a **single** object. This allows the class to create an instance of the class the first time it is instantiated; however, on the next try, the existing instance of the class is returned. No new instance is created.
+
+<p align="center">
+  <img src="assets/singleton-pattern.png" alt="Singleton Pattern" width="400px" />
+</p>
+
+**Example:**
+
+```js
+/**
+ * Singleton Pattern
+ **/
+
+let instance = null;
+
+class Printer {
+
+  constructor(pages) {
+    this.display = function () {
+      console.log(
+        `You are connected to the printer. You want to print ${pages} pages.`
+      );
+    };
+  }
+
+  static getInstance(numOfpages) {
+    if (!instance) {
+      instance = new Printer(numOfpages);
+    }
+    return instance;
+  }
+}
+
+var obj1 = Printer.getInstance(2);
+console.log(obj1);
+obj1.display();
+
+var obj2 = Printer.getInstance(3);
+console.log(obj2);
+obj2.display();
+
+console.log(obj2 === obj1); // true
+```
+
+**&#9885; [Try this example on CodeSandbox](https://codesandbox.io/s/js-singleton-pattern-3cvgkr?file=/src/index.js)**
+
+<div align="right">
+    <b><a href="#table-of-contents">↥ back to top</a></b>
+</div>
+
+## Q. What are the SOLID principles in JavaScript?
+
+**SOLID** is an acronym for five object-oriented design principles that make software more maintainable and extensible.
+
+**S — Single Responsibility Principle (SRP)**
+
+A class/function should have only one reason to change.
+
+```js
+//  Violates SRP — handles both business logic and persistence
+class UserService {
+  createUser(data) { /* validate + save to DB */ }
+  sendWelcomeEmail(user) { /* send email */ }
+}
+
+//  Each class has one responsibility
+class UserRepository { save(user) { /* DB logic */ } }
+class EmailService    { sendWelcome(user) { /* email logic */ } }
+class UserService {
+  constructor(repo, email) { this.repo = repo; this.email = email; }
+  createUser(data) {
+    const user = this.repo.save(data);
+    this.email.sendWelcome(user);
+    return user;
+  }
+}
+```
+
+**O — Open/Closed Principle (OCP)**
+
+Open for extension, closed for modification.
+
+```js
+//  Add new discount types without modifying existing code
+class DiscountStrategy { apply(price) { return price; } }
+class StudentDiscount  extends DiscountStrategy { apply(p) { return p * 0.8; } }
+class SeniorDiscount   extends DiscountStrategy { apply(p) { return p * 0.7; } }
+
+function checkout(price, strategy) { return strategy.apply(price); }
+```
+
+**L — Liskov Substitution Principle (LSP)**
+
+Subtypes must be substitutable for their base type.
+
+**I — Interface Segregation Principle (ISP)**
+
+No code should be forced to depend on methods it does not use. In JavaScript this means keeping interfaces (objects/mixins) small and focused.
+
+**D — Dependency Inversion Principle (DIP)**
+
+High-level modules should not depend on low-level modules. Both should depend on abstractions.
+
+```js
+//  OrderService depends on an abstraction (any object with .save())
+class OrderService {
+  constructor(repository) { this.repository = repository; }
+  placeOrder(order) { return this.repository.save(order); }
+}
+
+const sqlRepo   = { save: order => console.log('SQL save', order) };
+const noSqlRepo = { save: order => console.log('NoSQL save', order) };
+
+new OrderService(sqlRepo).placeOrder({ id: 1 });
+new OrderService(noSqlRepo).placeOrder({ id: 2 });
+```
+
+<div align="right">
+    <b><a href="#table-of-contents">↥ back to top</a></b>
+</div>
+
+## Q. What is the DRY principle in JavaScript?
+
+**DRY** stands for **Don\'t Repeat Yourself**. It states that every piece of knowledge must have a single, unambiguous, authoritative representation within a system. Duplicated logic makes code harder to maintain because changes must be applied in multiple places.
+
+**Violation:**
+
+```js
+function getFullNameAdmin(user) {
+  return user.firstName + ' ' + user.lastName + ' (admin)';
+}
+
+function getFullNameGuest(user) {
+  return user.firstName + ' ' + user.lastName + ' (guest)';
+}
+```
+
+**Applying DRY:**
+
+```js
+function getFullName(user) {
+  return `${user.firstName} ${user.lastName}`;
+}
+
+function getDisplayName(user) {
+  return `${getFullName(user)} (${user.role})`;
+}
+```
+
+**DRY vs. WET (Write Everything Twice):**
+
+DRY does not mean *never write similar-looking code*. Premature abstractions can introduce unnecessary coupling. A practical rule: abstract duplication only when the same logic appears **three or more times** and the abstraction does not make the code harder to understand.
+
+<div align="right">
+    <b><a href="#table-of-contents">↥ back to top</a></b>
+</div>
+
+## Q. What is the 12-Factor App methodology?
+
+The **12-Factor App** is a methodology for building modern, scalable, maintainable software-as-a-service applications. It was created by Heroku engineers and applies equally to Node.js/JavaScript back-end services.
+
+| Factor | Description |
+|--------|-------------|
+| **1. Codebase** | One codebase tracked in VCS, many deploys |
+| **2. Dependencies** | Explicitly declare and isolate dependencies (`package.json`, `npm install`) |
+| **3. Config** | Store config (API keys, ports, DB URLs) in environment variables, never in code |
+| **4. Backing services** | Treat databases, queues, caches as attached resources |
+| **5. Build, release, run** | Strictly separate build (`npm run build`), release, and run stages |
+| **6. Processes** | Execute the app as one or more stateless processes |
+| **7. Port binding** | Export services via port binding (e.g. `app.listen(process.env.PORT)`) |
+| **8. Concurrency** | Scale out via the process model |
+| **9. Disposability** | Fast startup and graceful shutdown |
+| **10. Dev/prod parity** | Keep development, staging, and production as similar as possible |
+| **11. Logs** | Treat logs as event streams; write to stdout |
+| **12. Admin processes** | Run admin/management tasks as one-off processes |
+
+**JavaScript example — Factor 3 (Config):**
+
+```js
+//  Config from environment variables
+const config = {
+  port:       process.env.PORT       || 3000,
+  dbUrl:      process.env.DATABASE_URL,
+  jwtSecret:  process.env.JWT_SECRET
+};
+```
+
+<div align="right">
+    <b><a href="#table-of-contents">↥ back to top</a></b>
+</div>
+
+## Q. What is Component-based Architecture in JavaScript?
+
+**Component-based architecture** is a design approach where the UI (and sometimes back-end logic) is broken into independent, reusable, self-contained **components**. Each component manages its own structure (HTML), style (CSS), and behaviour (JavaScript).
+
+**Key characteristics:**
+
+| Principle | Description |
+|-----------|-------------|
+| **Encapsulation** | A component owns its template, styles, and logic |
+| **Reusability** | Components can be used in multiple places without modification |
+| **Composability** | Complex UIs are built by composing simpler components |
+| **Single responsibility** | Each component has one clear purpose |
+| **Unidirectional data flow** | Data flows down via props; events bubble up |
+
+**Example — React-style component:**
+
+```jsx
+// Atomic component
+function Button({ label, onClick, variant = 'primary' }) {
+  return (
+    <button className={`btn btn-${variant}`} onClick={onClick}>
+      {label}
+    </button>
+  );
+}
+
+// Composed component
+function LoginForm({ onSubmit }) {
+  return (
+    <form onSubmit={onSubmit}>
+      <input type="email" placeholder="Email" />
+      <input type="password" placeholder="Password" />
+      <Button label="Sign In" onClick={onSubmit} />
+    </form>
+  );
+}
+```
+
+**Benefits over monolithic architecture:**
+
+* Easier testing — components can be tested in isolation
+* Parallel development — teams can work on different components simultaneously
+* Incremental updates — a single component can be changed without affecting the whole app
+
+<div align="right">
+    <b><a href="#table-of-contents">↥ back to top</a></b>
+</div>
+
 ## # 28. Security
 
 <br>
@@ -14554,6 +14998,98 @@ async function apiCall(endpoint, data) {
     <b><a href="#table-of-contents">↥ back to top</a></b>
 </div>
 
+## Q. What are XSS and CSRF attacks, and how do you prevent them in JavaScript?
+
+**XSS (Cross-Site Scripting):**
+
+XSS is an injection attack where an attacker injects malicious scripts into content that is served to other users. The injected script executes in the victim\'s browser with the same privileges as the trusted site.
+
+**Types of XSS:**
+
+| Type | Description |
+|------|-------------|
+| Stored XSS | Malicious script is persisted in the database and served to every user |
+| Reflected XSS | Script is included in the request and immediately reflected back in the response |
+| DOM-based XSS | Vulnerability exists entirely in the client-side code |
+
+**Prevention:**
+
+```js
+//  Dangerous — directly inserting user input into DOM
+element.innerHTML = userInput;
+document.write(userInput);
+
+//  Safe — use textContent which does NOT parse HTML
+element.textContent = userInput;
+
+//  Sanitize with a trusted library (DOMPurify)
+import DOMPurify from 'dompurify';
+element.innerHTML = DOMPurify.sanitize(userInput);
+
+//  Set Content-Security-Policy header (server-side)
+// Content-Security-Policy: default-src 'self'; script-src 'self'
+
+//  Use HttpOnly cookies — prevents JS from reading sensitive cookies
+// Set-Cookie: session=abc123; HttpOnly; Secure; SameSite=Strict
+
+//  Encode user data before rendering in HTML contexts
+function escapeHtml(str) {
+  return str
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#039;');
+}
+```
+
+**CSRF (Cross-Site Request Forgery):**
+
+CSRF tricks an authenticated user\'s browser into making an unwanted request to a server (e.g., transferring money, changing email) using the user\'s existing session cookies.
+
+**Example attack:**
+
+```html
+<!-- Attacker\'s page -->
+<img src="https://bank.com/transfer?to=attacker&amount=1000" />
+<!-- Browser automatically sends the victim\'s cookies with this request -->
+```
+
+**Prevention:**
+
+```js
+//  1. CSRF Token — include a secret token in every state-changing request
+// Server generates a unique token per session and validates it on each request
+
+fetch('/api/transfer', {
+  method: 'POST',
+  headers: {
+    'Content-Type': 'application/json',
+    'X-CSRF-Token': document.querySelector('meta[name="csrf-token"]').content
+  },
+  body: JSON.stringify({ to: 'friend', amount: 100 })
+});
+
+//  2. SameSite Cookie attribute — prevents cookies from being sent cross-origin
+// Set-Cookie: session=abc; SameSite=Strict; Secure
+
+//  3. Check the Origin/Referer header on the server
+
+//  4. Use custom request headers — simple AJAX requests don\'t send custom headers
+//    so requiring a custom header (X-Requested-With) blocks simple cross-site forms
+```
+
+**Summary:**
+
+| Attack | Exploits | Key Defense |
+|--------|---------|-------------|
+| XSS | Trusting user input in DOM | Sanitize output, CSP, `textContent` |
+| CSRF | Trusting browser cookies automatically | CSRF tokens, `SameSite=Strict` cookies |
+
+<div align="right">
+    <b><a href="#table-of-contents">↥ back to top</a></b>
+</div>
+
 ## Q. What is prototype pollution, how is it exploited, and how do you defend against it?
 
 **Prototype Pollution** is a JavaScript-specific vulnerability that occurs when an attacker manipulates the built-in `Object.prototype`, allowing them to inject properties into almost all objects in the runtime environment. Because JavaScript objects inherit properties from their prototype chain, modifying the global root prototype immediately pollutes every object created afterward.
@@ -14670,6 +15206,74 @@ const schema = {
 const validate = ajv.compile(schema);
 if (!validate(userInput)) throw new Error('Invalid input');
 ```
+
+<div align="right">
+    <b><a href="#table-of-contents">↥ back to top</a></b>
+</div>
+
+## Q. What is same-origin policy?
+
+The same-origin policy is a policy that prevents JavaScript from making requests across domain boundaries. An origin is defined as a combination of URI scheme, hostname, and port number. If you enable this policy then it prevents a malicious script on one page from obtaining access to sensitive data on another web page using Document Object Model(DOM).
+
+<div align="right">
+    <b><a href="#table-of-contents">↥ back to top</a></b>
+</div>
+
+## Q. What is Content Security Policy (CSP) in JavaScript?
+
+**Content Security Policy (CSP)** is an HTTP response header that lets servers declare which dynamic resources (scripts, styles, fonts, images, etc.) are allowed to load. It is the primary defense against **XSS** and **data injection attacks**.
+
+**How to enable CSP:**
+
+```http
+# Server response header
+Content-Security-Policy: default-src 'self'; script-src 'self' https://cdn.example.com; style-src 'self' 'unsafe-inline'; img-src *; report-uri /csp-violation-report
+```
+
+**Key directives:**
+
+| Directive | Purpose |
+|-----------|---------|
+| `default-src` | Fallback for all resource types |
+| `script-src` | Allowed JavaScript sources |
+| `style-src` | Allowed CSS sources |
+| `img-src` | Allowed image sources |
+| `connect-src` | Allowed `fetch`, `XHR`, `WebSocket` endpoints |
+| `frame-ancestors` | Controls iframe embedding (replaces `X-Frame-Options`) |
+| `report-uri` / `report-to` | URL for violation reports |
+
+**Common values:**
+
+| Value | Meaning |
+|-------|---------|
+| `'self'` | Same origin only |
+| `'none'` | Block all |
+| `'unsafe-inline'` | Allow inline scripts/styles (weakens protection) |
+| `'nonce-abc123'` | Allow specific inline script with matching nonce |
+| `https://cdn.com` | Allow specific external domain |
+
+**Nonce-based CSP (recommended for inline scripts):**
+
+```html
+<!-- Server generates a unique nonce per request -->
+<meta http-equiv="Content-Security-Policy" content="script-src 'nonce-2726c7f26c'">
+
+<!-- Only this inline script will execute -->
+<script nonce="2726c7f26c">
+  console.log('This is allowed');
+</script>
+
+<!-- This will be blocked -->
+<script>console.log('This will be blocked');</script>
+```
+
+**Report-only mode (for testing):**
+
+```http
+Content-Security-Policy-Report-Only: default-src 'self'; report-uri /csp-report
+```
+
+This reports violations without blocking resources — useful for testing CSP before enforcement.
 
 <div align="right">
     <b><a href="#table-of-contents">↥ back to top</a></b>
@@ -15030,13 +15634,17 @@ self.addEventListener('notificationclick', event => {
 });
 ```
 
+The service worker acts as a background daemon — it can receive push events and display notifications even when the app tab is closed.
+
 <div align="right">
     <b><a href="#table-of-contents">↥ back to top</a></b>
 </div>
 
 ## Q. What is Workbox?
 
-**Workbox** is a set of libraries from Google that simplifies service worker development. It provides production-ready caching strategies, routing, background sync, and precaching with minimal boilerplate.
+**Workbox** is a set of open-source JavaScript libraries created by Google that simplifies the process of adding offline support, routing, and caching to Progressive Web Apps (PWAs).
+
+Instead of writing complex, error-prone boilerplate code to manage a Service Worker from scratch, Workbox provides ready-made tools to automate these tasks.
 
 **Installation:**
 
@@ -15089,6 +15697,17 @@ registerRoute(
 );
 ```
 
+**Core Features**
+
+* **Pre-caching**: Automatically downloads and stores your app's core assets (HTML, CSS, JS, images) during installation so the app loads instantly on repeat visits.
+
+* **Runtime Caching**: Saves assets (like API responses or user-generated content) dynamically into the browser cache as the user navigates your site.
+
+* **Routing**: Intercepts network requests made by your web page and decides exactly how to handle them (e.g., serve from cache or fetch from the internet).
+
+* **Offline Fallbacks**: Displays a custom offline page or placeholder image when a user loses internet connectivity.
+
+
 **Workbox modules:**
 
 | Module | Purpose |
@@ -15104,127 +15723,379 @@ registerRoute(
     <b><a href="#table-of-contents">↥ back to top</a></b>
 </div>
 
+## Q. What is a service worker?
+
+A Service worker is basically a JavaScript file that runs in background, separate from a web page and provide features that don\'t need a web page or user interaction. 
+
+Some of the major features of service workers are 
+* Offline first web application development
+* Periodic background syncs, push notifications
+* Intercept and handle network requests
+* Programmatically managing a cache of responses
+
+**Lifecycle of a Service Worker**
+
+It consists of the following phases:
+* Download
+* Installation
+* Activation
+
+**Registering a Service Worker**
+
+To register a service worker we first check if the browser supports it and then register it.
+
+```js
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('/ServiceWorker.js')
+  .then(function(response) {
+
+    // Service worker registration done
+    console.log('Registration Successful', response);
+  }, function(error) {
+    // Service worker registration failed
+    console.log('Registration Failed', error);
+  }
+```
+
+**Installation of service worker:**
+
+After the controlled page that takes care of the registration process, we come to the service worker script that handles the installation part.
+
+Basically, you will need to define a callback for the install event and then decide on the files that you wish to cache. Inside a callback, one needs to take of the following three points –
+
+* Open a cache
+* Cache the files
+* Seek confirmation for the required caches and whether they have been successful.
+
+```js
+var CACHENAME = 'My site cache'; 
+var urlstocache = [ 
+	'/', 
+  '/styles/main1.css', 
+	'/script/main1.js' 
+]; 
+self.addEventListener('install', function(event) { 
+	// Performing installation steps 
+	event.waitUntil( 
+		caches.open(CACHENAME) 
+		.then(function(cache) { 
+			console.log('Opening of cache'); 
+			return cache.addAll(urlstocache);
+		}) 
+);
+```
+
+**Cache and return requests:**
+
+After a service worker is installed and the user navigates to a different page or refreshes, the service worker will begin to receive fetch events, an example of which is below.
+
+```js
+self.addEventListener('fetch', function(event) {
+  event.respondWith(
+    caches.match(event.request)
+      .then(function(response) {
+        // Cache hit - return response
+        if (response) {
+          return response;
+        }
+        return fetch(event.request);
+      }
+    )
+  );
+});
+```
+
+<div align="right">
+    <b><a href="#table-of-contents">↥ back to top</a></b>
+</div>
+
+## Q. How do you manipulate DOM using service worker?
+
+Service worker can\'t access the DOM directly. But it can communicate with the pages it controls by responding to messages sent via the `postMessage` interface, and those pages can manipulate the DOM.
+
+**Example:** service-worker.html
+
+```html
+<!doctype html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Service Worker</title>
+</head>
+<body>
+(Look in the console.)
+<script>
+(function() {
+    "use strict";
+
+    if (!navigator.serviceWorker || !navigator.serviceWorker.register) {
+        console.log("This browser doesn\'t support service workers");
+        return;
+    }
+
+    // Listen to messages from service workers.
+    navigator.serviceWorker.addEventListener('message', function(event) {
+        console.log("Got reply from service worker: " + event.data);
+    });
+
+    // Are we being controlled?
+    if (navigator.serviceWorker.controller) {
+        // Yes, send our controller a message.
+        console.log("Sending 'hi' to controller");
+        navigator.serviceWorker.controller.postMessage("hi");
+    } else {
+        // No, register a service worker to control pages like us.
+        // Note that it won\'t control this instance of this page, it only takes effect
+        // for pages in its scope loaded *after* It is installed.
+        navigator.serviceWorker.register("service-worker.js")
+            .then(function(registration) {
+                console.log("Service worker registered, scope: " + registration.scope);
+                console.log("Refresh the page to talk to it.");
+                // If we want to, we might do `location.reload();` so that we\'d be controlled by it
+            })
+            .catch(function(error) {
+                console.log("Service worker registration failed: " + error.message);
+            });
+    }
+})();
+</script>
+</body>
+</html>
+```
+
+**service-worker.js** 
+
+```js
+self.addEventListener("message", function(event) {
+    //event.source.postMessage("Responding to " + event.data);
+    self.clients.matchAll().then(all => all.forEach(client => {
+        client.postMessage("Responding to " + event.data);
+    }));
+});
+```
+
+<div align="right">
+    <b><a href="#table-of-contents">↥ back to top</a></b>
+</div>
+
+## Q. How to use Web Workers in javascript?
+
+**Step 01: Create a Web Workers file**: Write a script to increment the count value.
+
+```js
+// counter.js
+let i = 0;
+
+function timedCount() {
+  i = i + 1;
+  postMessage(i);
+  setTimeout("timedCount()",500);
+}
+
+timedCount();
+```
+
+Here `postMessage()` method is used to post a message back to the HTML page.  
+
+**Step 02: Create a Web Worker Object**: Create a web worker object by checking for browser support.
+
+```js
+if (typeof(w) == "undefined") {
+  w = new Worker("counter.js");
+}
+```
+
+and we can receive messages from web workers
+
+```js
+w.onmessage = function(event){
+  document.getElementById("message").innerHTML = event.data;
+};
+```
+
+**Step 03: Terminate a Web Workers**: Web workers will continue to listen for messages (even after the external script is finished) until it is terminated. You can use terminate() method to terminate listening the messages.
+
+```js
+w.terminate();
+```
+
+**Step 04: Reuse the Web Workers**: If you set the worker variable to undefined you can reuse the code
+
+```js
+w = undefined;
+```
+
+**Example:**
+
+```html
+<!DOCTYPE html>
+<html>
+<body>
+  <p>Count numbers: <output id="result"></output></p>
+  <button onclick="startWorker()">Start</button>
+  <button onclick="stopWorker()">Stop</button>
+  
+  <script>
+    var w;
+
+    function startWorker() {
+      if (typeof(Worker) !== "undefined") {
+        if (typeof(w) == "undefined") {
+          w = new Worker("counter.js");
+        }
+        w.onmessage = function(event) {
+          document.getElementById("result").innerHTML = event.data;
+        };
+      } else {
+        document.getElementById("result").innerHTML = "Sorry! No Web Worker support.";
+      }
+    }
+
+    function stopWorker() {
+      w.terminate();
+      w = undefined;
+    }
+  </script>
+</body>
+</html>
+```
+
+<div align="right">
+    <b><a href="#table-of-contents">↥ back to top</a></b>
+</div>
+
+## Q. What are the restrictions of web workers on DOM?
+
+WebWorkers do not have access to below javascript objects since they are defined in an external files
+
+1. Window object
+2. Document object
+3. Parent object
+
+<div align="right">
+    <b><a href="#table-of-contents">↥ back to top</a></b>
+</div>
+
 ## # 31. Complex Problem Solving
 
 <br>
 
 ## Q. Implement a rate limiter that allows at most N requests per window — a real-world API throttling problem.
 
-Rate limiting is a core infrastructure concern for APIs, preventing abuse, protecting downstream services, and enforcing fair-use policies. There are several algorithms; the two most practical are the **Fixed Window** and **Sliding Window** counters, and the **Token Bucket** (smooth bursting).
+Rate limiting is a core infrastructure concern for APIs, preventing abuse, protecting downstream services, and enforcing fair-use policies. There are several algorithms; the two most practical are the **Sliding Window** counters, and the **Token Bucket** (smooth bursting).
+
+**Option 1: Sliding Window Log (Most Accurate)**
+
+This implementation uses an array to track timestamps. It is highly accurate and prevents burst traffic at the edges of time windows.
+
+**Example:**
 
 ```js
-// ── 1. Fixed Window Rate Limiter ──────────────────────────────────────────────
-// Simple: N requests per fixed time window per key
-class FixedWindowRateLimiter {
-  #windows  = new Map(); // key → { count, resetAt }
-  #limit;
-  #windowMs;
+/**
+ * Sliding Window Rate Limiter (precise, using timestamp log) 
+ */
 
-  constructor(limit, windowMs) {
-    this.#limit    = limit;
-    this.#windowMs = windowMs;
-  }
-
-  isAllowed(key) {
-    const now = Date.now();
-    let window = this.#windows.get(key);
-
-    if (!window || now >= window.resetAt) {
-      window = { count: 0, resetAt: now + this.#windowMs };
-      this.#windows.set(key, window);
-    }
-
-    if (window.count >= this.#limit) return false;
-    window.count++;
-    return true;
-  }
-}
-
-// ── 2. Sliding Window Rate Limiter (precise, using timestamp log) ─────────────
 class SlidingWindowRateLimiter {
-  #requests = new Map(); // key → timestamps[]
-  #limit;
-  #windowMs;
-
-  constructor(limit, windowMs) {
-    this.#limit    = limit;
-    this.#windowMs = windowMs;
+  constructor(maxRequests, windowSizeInMs) {
+    this.maxRequests = maxRequests;
+    this.windowSize = windowSizeInMs;
+    this.timestamps = []; // Stores request timestamps
   }
 
-  isAllowed(key) {
-    const now    = Date.now();
-    const cutoff = now - this.#windowMs;
+  allowRequest() {
+    const now = Date.now();
 
-    let timestamps = this.#requests.get(key) ?? [];
-    // Evict timestamps outside the window
-    timestamps = timestamps.filter(ts => ts > cutoff);
-
-    if (timestamps.length >= this.#limit) {
-      this.#requests.set(key, timestamps);
-      return false;
+    // Remove timestamps outside the current window
+    while (this.timestamps.length > 0 && this.timestamps[0] <= now - this.windowSize) {
+      this.timestamps.shift();
     }
 
-    timestamps.push(now);
-    this.#requests.set(key, timestamps);
-    return true;
-  }
-}
-
-// ── 3. Token Bucket (allows bursting up to bucket capacity) ──────────────────
-class TokenBucket {
-  #buckets     = new Map(); // key → { tokens, lastRefill }
-  #capacity;
-  #refillRate; // tokens per ms
-
-  constructor(capacity, refillRatePerSecond) {
-    this.#capacity   = capacity;
-    this.#refillRate = refillRatePerSecond / 1000;
-  }
-
-  consume(key, tokens = 1) {
-    const now    = Date.now();
-    let bucket   = this.#buckets.get(key);
-
-    if (!bucket) {
-      bucket = { tokens: this.#capacity, lastRefill: now };
-      this.#buckets.set(key, bucket);
+    // Check capacity
+    if (this.timestamps.length < this.maxRequests) {
+      this.timestamps.push(now);
+      return true;
     }
 
-    // Refill based on elapsed time
-    const elapsed       = now - bucket.lastRefill;
-    bucket.tokens       = Math.min(
-      this.#capacity,
-      bucket.tokens + elapsed * this.#refillRate
-    );
-    bucket.lastRefill   = now;
-
-    if (bucket.tokens < tokens) return false;
-    bucket.tokens -= tokens;
-    return true;
+    return false;
   }
 }
 
-// ── Express middleware using Sliding Window ───────────────────────────────────
-const apiLimiter = new SlidingWindowRateLimiter(100, 60_000); // 100 req/min
+// Example usage: 3 requests per 2 seconds
+const limiter = new SlidingWindowRateLimiter(3, 2000);
+```
 
-function rateLimitMiddleware(req, res, next) {
-  const key = req.ip; // or req.user?.id for per-user limiting
+**Option 2: Token Bucket (Most Scalable)**
 
-  if (!apiLimiter.isAllowed(key)) {
-    return res.status(429).json({
-      error: 'Too Many Requests',
-      retryAfter: 60,
-    });
+This implementation calculates available tokens dynamically on each request. It uses `(O(1))` constant memory, making it highly efficient.
+
+**Example:**
+
+```js
+/**
+ * Token Bucket (allows bursting up to bucket capacity) 
+ */
+
+class TokenBucketRateLimiter {
+  constructor(maxTokens, refillRatePerMs) {
+    this.capacity = maxTokens;
+    this.refillRate = refillRatePerMs; // Tokens per millisecond
+    this.tokens = maxTokens;
+    this.lastRefillTime = Date.now();
   }
-  next();
+
+  allowRequest() {
+    const now = Date.now();
+    const elapsed = now - this.lastRefillTime;
+
+    // Dynamically refill tokens based on elapsed time
+    this.tokens = Math.min(this.capacity, this.tokens + elapsed * this.refillRate);
+    this.lastRefillTime = now;
+
+    // Consume a token if available
+    if (this.tokens >= 1) {
+      this.tokens -= 1;
+      return true;
+    }
+
+    return false;
+  }
 }
 
-app.use('/api', rateLimitMiddleware);
+// Example usage: Capacity 10, refills 2 tokens per second (0.002 per ms)
+const bucket = new TokenBucketRateLimiter(10, 0.002);
 ```
 
 **Real-World Use Case:**
 
-GitHub\'s REST API uses a sliding window rate limit of 5,000 requests/hour for authenticated users. Stripe uses token bucket semantics for their API — allowing short bursts (e.g., batch operations) up to a ceiling while enforcing a steady-state throughput. Cloudflare\'s Workers implement rate limiting at the edge using Durable Objects as distributed shared state counters, enabling per-IP or per-user limits across a globally distributed network without a centralised database bottleneck.
+In a real `Express.js` application, you map limiters to specific identifiers like IP addresses using a `Map`.
+
+**Example:**
+
+```js
+const express = require('express');
+const app = express();
+
+const ipLimiters = new Map();
+const MAX_REQUESTS = 100;
+const WINDOW_MS = 15 * 60 * 1000; // 15 minutes
+
+app.use((req, res, next) => {
+  const ip = req.ip;
+
+  // Initialize a limiter for new IP addresses
+  if (!ipLimiters.has(ip)) {
+    ipLimiters.set(ip, new SlidingWindowRateLimiter(MAX_REQUESTS, WINDOW_MS));
+  }
+
+  const limiter = ipLimiters.get(ip);
+
+  if (limiter.allowRequest()) {
+    next();
+  } else {
+    res.status(429).send('Too Many Requests');
+  }
+});
+```
 
 <div align="right">
     <b><a href="#table-of-contents">↥ back to top</a></b>
@@ -15232,104 +16103,155 @@ GitHub\'s REST API uses a sliding window rate limit of 5,000 requests/hour for a
 
 ## Q. Implement an LRU (Least Recently Used) cache — a classic data structure interview problem.
 
-An **LRU cache** evicts the least recently accessed entry when at capacity. The target complexity is **O(1) for both `get` and `put`**. The key insight: a **doubly linked list** (for O(1) insertion/deletion from any position) combined with a **HashMap** (for O(1) key lookup) achieves this. JavaScript\'s `Map` preserves insertion order and supports O(1) `get`/`set`/`delete`, making it a natural LRU implementation tool.
+An LRU (Least Recently Used) cache discards the least recently examined items first when it reaches capacity. To achieve `(O(1))` time complexity for both get and put operations, you must combine two data structures:
+
+* **Doubly Linked List**: Tracks the usage order (Head = Most Recent, Tail = Least Recent).
+
+* **Hash Map / Object**: Provides `(O(1))` lookup for the linked list nodes.
+
+**1. Using Doubly Linked List**
+
+To implement an LRU cache using a Doubly Linked List, we use a custom class structure. This provides the standard architecture where we explicitly manage memory pointers instead of relying on JavaScript\'s built-in Map ordering.
+
+**Example:**
 
 ```js
-class LRUCache {
-  #capacity;
-  #cache; // Map preserves insertion order — oldest at front, newest at back
+/**
+ * LRU cache using a Doubly Linked List
+ */
 
+class Node {
+  constructor(key, value) {
+    this.key = key;
+    this.value = value;
+    this.prev = null;
+    this.next = null;
+  }
+}
+
+class LRUCache {
   constructor(capacity) {
-    if (capacity < 1) throw new RangeError('Capacity must be >= 1');
-    this.#capacity = capacity;
-    this.#cache    = new Map();
+    this.capacity = capacity;
+    this.map = new Map(); // Maps key -> Node
+
+    // Dummy sentinel nodes to prevent edge cases with null pointers
+    this.head = new Node(0, 0);
+    this.tail = new Node(0, 0);
+    this.head.next = this.tail;
+    this.tail.prev = this.head;
+  }
+
+  // O(1) Remove node from its current position in the linked list
+  _remove(node) {
+    const prevNode = node.prev;
+    const nextNode = node.next;
+    prevNode.next = nextNode;
+    nextNode.prev = prevNode;
+  }
+
+  // O(1) Move node to the head of the list (Most Recently Used position)
+  _moveToHead(node) {
+    node.next = this.head.next;
+    node.next.prev = node;
+    this.head.next = node;
+    node.prev = this.head;
   }
 
   get(key) {
-    if (!this.#cache.has(key)) return -1;
+    if (!this.map.has(key)) {
+      return -1;
+    }
 
-    // Move to end (most recently used) by delete + re-insert
-    const value = this.#cache.get(key);
-    this.#cache.delete(key);
-    this.#cache.set(key, value);
+    const node = this.map.get(key);
+    this._remove(node);     // Splice out
+    this._moveToHead(node); // Move to front
+
+    return node.value;
+  }
+
+  put(key, value) {
+    // Scenario 1: Key already exists. Update value and refresh position.
+    if (this.map.has(key)) {
+      const node = this.map.get(key);
+      node.value = value;
+      this._remove(node);
+      this._moveToHead(node);
+      return;
+    }
+
+    // Scenario 2: Cache is full. Evict the Least Recently Used (LRU) node.
+    if (this.map.size === this.capacity) {
+      const lruNode = this.tail.prev; // Node right before dummy tail
+      this._remove(lruNode);
+      this.map.delete(lruNode.key);   // Evict from lookup map
+    }
+
+    // Scenario 3: Insert brand new key-value pair
+    const newNode = new Node(key, value);
+    this.map.set(key, newNode);
+    this._moveToHead(newNode);
+  }
+}
+```
+
+**2. Using Built-in JS `Map`**
+
+To implement an LRU cache using only a **Hash Map** (JavaScript\'s native `Map`), you can take advantage of a unique feature: **JavaScript Maps preserve insertion order**.
+
+When you iterate over a `Map`, elements are returned in the exact order they were added. By deleting and re-inserting a key whenever it is accessed or updated, that key automatically moves to the "most recently used" (end) position. The first key in the map is always the "least recently used."
+
+This allows you to implement a fully functional LRU cache with `(O(1))` time complexity for both `get` and `put` operations without manually managing linked list node pointers.
+
+**Example:** 
+
+```js
+/**
+ * LRU cache using a Hash Map
+ */
+
+class LRUCache {
+  constructor(capacity) {
+    this.capacity = capacity;
+    this.map = new Map(); // Stores key-value pairs and tracks insertion order
+  }
+
+  get(key) {
+    // 1. If key doesn't exist, return -1
+    if (!this.map.has(key)) return -1;
+
+    // 2. Extract value, refresh order by deleting and re-inserting
+    const value = this.map.get(key);
+    this.map.delete(key);
+    this.map.set(key, value); 
+
     return value;
   }
 
   put(key, value) {
-    if (this.#cache.has(key)) {
-      this.#cache.delete(key); // remove old position
-    } else if (this.#cache.size >= this.#capacity) {
-      // Evict least recently used — first key in Map (oldest insertion)
-      this.#cache.delete(this.#cache.keys().next().value);
+    // 1. If key already exists, delete it first so re-insertion moves it to the end
+    if (this.map.has(key)) {
+      this.map.delete(key);
+    } 
+    
+    // 2. If at capacity, evict the oldest item (the very first key in the Map)
+    else if (this.map.size === this.capacity) {
+      // .keys().next().value retrieves the first/oldest key in O(1) time
+      const oldestKey = this.map.keys().next().value;
+      this.map.delete(oldestKey);
     }
-    this.#cache.set(key, value); // insert at end (most recently used)
+
+    // 3. Insert the new key-value pair (goes to the end of the insertion order)
+    this.map.set(key, value);
   }
-
-  get size()  { return this.#cache.size; }
-  get keys()  { return [...this.#cache.keys()]; }
-
-  // Useful for debugging — returns entries from LRU to MRU
-  toArray() {
-    return [...this.#cache.entries()];
-  }
-}
-
-// ── Verification ──────────────────────────────────────────────────────────────
-const cache = new LRUCache(3);
-
-cache.put('a', 1); // cache: [a]
-cache.put('b', 2); // cache: [a, b]
-cache.put('c', 3); // cache: [a, b, c]
-
-cache.get('a');    // access 'a' → moves to MRU: [b, c, a]
-cache.put('d', 4); // capacity exceeded → evict LRU ('b'): [c, a, d]
-
-console.log(cache.get('b')); // -1 — evicted
-console.log(cache.get('c')); // 3  — still present
-console.log(cache.keys);     // ['a', 'd', 'c'] — c just became MRU
-
-// ── Async LRU with TTL — production pattern ───────────────────────────────────
-class AsyncLRUCache {
-  #lru;
-  #ttlMs;
-
-  constructor(capacity, ttlMs) {
-    this.#lru   = new LRUCache(capacity);
-    this.#ttlMs = ttlMs;
-  }
-
-  get(key) {
-    const entry = this.#lru.get(key);
-    if (entry === -1) return null;
-    if (Date.now() > entry.expiresAt) {
-      // Expired — remove and return null
-      this.#lru.put(key, undefined); // overwrite with dummy to trigger eviction pattern
-      return null;
-    }
-    return entry.value;
-  }
-
-  set(key, value) {
-    this.#lru.put(key, { value, expiresAt: Date.now() + this.#ttlMs });
-  }
-}
-
-// Wrap expensive DB call
-const userCache = new AsyncLRUCache(1000, 5 * 60_000); // 1000 users, 5 min TTL
-
-async function getUserById(id) {
-  const cached = userCache.get(id);
-  if (cached) return cached;
-
-  const user = await db.users.findById(id);
-  userCache.set(id, user);
-  return user;
 }
 ```
 
 **Real-World Use Case:**
 
-Node.js\'s `require()` module cache is a simplified LRU — modules are cached after first load. The `node-lru-cache` npm package (by Isaac Schlueter, npm\'s creator) is used internally by npm, GitHub\'s backend, and many production Node.js services as an in-process cache layer in front of Redis, reducing database round-trips by 80–95% for hot data (user sessions, feature flags, route configs). Apollo Server\'s in-memory cache uses LRU eviction to bound GraphQL response cache size.
+* Database Query Caching (e.g., **Redis** / **Memcached**)
+* Content Delivery Networks (CDNs) & Asset Edge Caching
+* Operating System Virtual Memory / Page Replacement
+* API Rate Limiting
 
 <div align="right">
     <b><a href="#table-of-contents">↥ back to top</a></b>
@@ -15337,12 +16259,21 @@ Node.js\'s `require()` module cache is a simplified LRU — modules are cached a
 
 ## Q. Implement a task scheduler with concurrency control and priority queues.
 
-Production systems frequently need to run async tasks with controlled parallelism — e.g., a batch image processor that must not exceed 5 concurrent S3 uploads, or a web scraper limited to 3 concurrent requests per domain. A scheduler with a priority queue also enables urgent tasks (user-initiated) to preempt background tasks.
+To implement a task scheduler with concurrency control and a priority queue, you need a system that executes asynchronous tasks concurrently up to a limit **`M`**, while prioritizing high-priority tasks over low-priority ones.
+
+Because JavaScript does not have a native Priority Queue data structure, we maintain a sorted array as a priority queue alongside a concurrency worker loop.
+
+**Example 01:**
+
+Here is an implementation using a sorted array for **`O(n log n)`** priority ordering on insert, combined with an async worker pool.
 
 ```js
-// ── Concurrent task scheduler with priority support ───────────────────────────
+/**
+ * Concurrent task scheduler with priority support 
+ */
+
 class TaskScheduler {
-  #queue       = [];       // min-heap by priority (lower number = higher priority)
+  #queue       = [];   // sorted array by priority (lower number = higher priority)
   #running     = 0;
   #concurrency;
   #paused      = false;
@@ -15390,8 +16321,15 @@ class TaskScheduler {
   get pending()  { return this.#queue.length; }
   get active()   { return this.#running; }
 }
+```
 
-// ── Usage: batch S3 uploads with max 3 concurrent ─────────────────────────────
+**Example 02:**
+
+```js
+/**
+ * Usage: batch S3 uploads with max 3 concurrent 
+ */
+
 const scheduler = new TaskScheduler(3);
 
 async function uploadFiles(files) {
@@ -15405,8 +16343,15 @@ async function uploadFiles(files) {
   );
   return results;
 }
+```
 
-// ── Retry logic with exponential backoff ──────────────────────────────────────
+**Example 03:**
+
+```js
+/**
+ * Retry logic with exponential backoff 
+ */
+
 async function withRetry(fn, { maxAttempts = 3, baseDelayMs = 100, jitter = true } = {}) {
   for (let attempt = 1; attempt <= maxAttempts; attempt++) {
     try {
@@ -15421,24 +16366,14 @@ async function withRetry(fn, { maxAttempts = 3, baseDelayMs = 100, jitter = true
     }
   }
 }
-
-// ── Integration: scheduler + retry ────────────────────────────────────────────
-async function processQueue(items) {
-  const s = new TaskScheduler(5);
-
-  return Promise.allSettled(
-    items.map(item =>
-      s.add(() =>
-        withRetry(() => processItem(item), { maxAttempts: 3, baseDelayMs: 200 })
-      )
-    )
-  );
-}
 ```
 
 **Real-World Use Case:**
 
-Vercel\'s build system queues build tasks across their infrastructure with priority given to production deployments over preview deployments. Their internal scheduler ensures that a sudden spike in preview builds (triggered by a large team\'s PRs) cannot starve a production deployment. The `p-queue` npm package (downloaded 50M+ times/month) implements this exact pattern and is used by Gatsby\'s build pipeline, Lighthouse CI, and many CI/CD tools to control the concurrency of async asset processing tasks.
+* E-Commerce Order Processing Systems
+* Video Encoding & Media Rendering Pipelines (e.g., YouTube, Netflix)
+* High-Throughput Web Crawlers & Scrapers
+* Cloud Infrastructure & Microservice Rate-Limiting (e.g., AWS SQS / BullMQ)
 
 <div align="right">
     <b><a href="#table-of-contents">↥ back to top</a></b>
@@ -15457,13 +16392,22 @@ Vercel\'s build system queues build tasks across their infrastructure with prior
 As a tech lead reviewing JavaScript PRs, you are looking beyond syntax — you are evaluating correctness, performance, security, and maintainability. The highest-leverage anti-patterns to enforce in code review fall into five categories:
 
 **1. Mutation of shared state** — produces unpredictable bugs in React, Redux, and concurrent environments.
+
 **2. Floating Promises** — un-awaited async calls silently swallow errors.
+
 **3. `any`-typed or unchecked data boundaries** — `JSON.parse` results, API responses, and `localStorage` reads used without validation.
+
 **4. N+1 query patterns** — sequential `await` inside loops when parallel execution is possible.
+
 **5. Missing cleanup** — `addEventListener`, `setInterval`, WebSocket handlers not removed on component unmount.
 
+**Example 01:**
+
 ```js
-// ── Anti-pattern 1: Mutating props / shared state ────────────────────────────
+/**
+ * Anti-pattern 1: Mutating props / shared state
+ */
+
 //  Code review flag: direct mutation of function argument
 function processCart(cart) {
   cart.items.push(newItem);   // mutates caller\'s object
@@ -15478,8 +16422,15 @@ function processCart(cart) {
     total: cart.total + newItem.price,
   };
 }
+```
 
-// ── Anti-pattern 2: Floating Promise (no await, no .catch) ───────────────────
+**Example 02:**
+
+```js
+/**
+ * Anti-pattern 2: Floating Promise (no await, no .catch) 
+ */
+
 //  Flag: missing await — rejection silently discarded
 function handleSubmit(data) {
   saveToDatabase(data);       // fire-and-forget — errors invisible
@@ -15494,8 +16445,15 @@ async function handleSubmit(data) {
     showErrorToast(err.message);
   }
 }
+```
 
-// ── Anti-pattern 3: N+1 sequential await in loop ─────────────────────────────
+**Example 03:**
+
+```js
+/**
+ * Anti-pattern 3: N+1 sequential await in loop 
+ */
+
 //  Flag: 50 sequential API calls instead of 1 parallel batch
 async function enrichOrders(orderIds) {
   const orders = [];
@@ -15508,8 +16466,15 @@ async function enrichOrders(orderIds) {
 async function enrichOrders(orderIds) {
   return Promise.all(orderIds.map(fetchOrder)); // ~200ms total
 }
+```
 
-// ── Anti-pattern 4: Unchecked external data ──────────────────────────────────
+**Example 04:**
+
+```js
+/**
+ * Anti-pattern 4: Unchecked external data
+ */
+
 //  Flag: no validation of JSON.parse result from localStorage
 function loadConfig() {
   const raw = localStorage.getItem('config');
@@ -15527,8 +16492,15 @@ function loadConfig() {
     return DEFAULT_CONFIG;
   }
 }
+```
 
-// ── Anti-pattern 5: Missing cleanup ──────────────────────────────────────────
+**Example 05:**
+
+```js
+/**
+ * Anti-pattern 5: Missing cleanup 
+ */
+
 //  Flag: listener added but never removed
 useEffect(() => {
   window.addEventListener('resize', handleResize);
@@ -15541,14 +16513,15 @@ useEffect(() => {
 }, []);
 ```
 
-**Enforcement tools:**
-- ESLint rules: `no-floating-promises` (TypeScript ESLint), `no-param-reassign`, `react-hooks/exhaustive-deps`.
-- PR checklist template with categories: Security, Performance, Error Handling, Test Coverage.
-- Danger.js CI bot to flag PRs that add `TODO` comments, skip tests, or modify security-sensitive files without a security review label.
+**Enforcement Tools:**
 
-**Real-World Use Case:**
-
-Airbnb\'s JavaScript style guide (which became the basis of the `eslint-config-airbnb` package used by thousands of teams) codifies many of these anti-patterns as ESLint rules — `no-param-reassign` (prevents prop mutation), `no-await-in-loop` (prevents N+1 patterns), and `no-floating-promises`. Running these rules in CI as a required check means anti-patterns are caught automatically before human review, allowing code review to focus on architecture and business logic rather than mechanical issues.
+- **ESLint** rules: `no-floating-promises` (TypeScript ESLint), `no-param-reassign`, `react-hooks/exhaustive-deps`.
+- **Prettier** — opinionated code formatter enforced in CI (`prettier --check`); eliminates style debates and ensures consistent formatting across the entire codebase.
+- **Husky** — Git hooks manager that runs linters and tests pre-commit and pre-push, preventing non-compliant code from ever reaching the remote branch.
+- **SonarQube** — continuous code quality and security analysis platform; tracks code smells, duplications, coverage trends, and security hotspots across the entire codebase over time.
+- **Snyk** — scans dependencies and source code for known vulnerabilities (CVEs, licence issues) in CI; blocks merges if high-severity issues are detected.
+- **Lighthouse CI** — automated performance, accessibility, and best-practice auditing on every PR; fails the build if Core Web Vitals (LCP, CLS, INP) drop below defined thresholds.
+- **CodeCritique** — AI-powered code review tool that flags anti-patterns, complexity hotspots, and style violations as inline PR comments.
 
 <div align="right">
     <b><a href="#table-of-contents">↥ back to top</a></b>
@@ -15564,6 +16537,8 @@ Coding standards only have value if they are **automated and enforced in CI** �
 4. **Husky + lint-staged** — run linting only on changed files pre-commit (fast).
 5. **CI gate** — fail the build if lint or type errors exist.
 6. **Conventional Commits** — structured commit messages enabling automatic changelog generation.
+
+**Example 01:**
 
 ```jsonc
 // package.json — toolchain configuration
@@ -15581,6 +16556,8 @@ Coding standards only have value if they are **automated and enforced in CI** �
   }
 }
 ```
+
+**Example 02:**
 
 ```jsonc
 // .eslintrc.json — team config (extends shared base)
@@ -15602,6 +16579,8 @@ Coding standards only have value if they are **automated and enforced in CI** �
 }
 ```
 
+**Example 03:**
+
 ```yaml
 # .github/workflows/ci.yml — CI gate
 jobs:
@@ -15619,7 +16598,10 @@ jobs:
 **Introducing standards to an existing codebase:**
 
 ```js
-// Gradual adoption strategy — eslint-disable budget
+/**
+ * Gradual adoption strategy — eslint-disable budget
+ */
+
 // 1. Enable rule, suppress all existing violations with baseline snapshot
 // 2. New code must comply; existing violations tracked in ESLINT_BASELINE.json
 // 3. Each sprint: reduce baseline violations by 10%
@@ -15631,10 +16613,6 @@ module.exports = {
   // Enables automatic CHANGELOG.md generation and semantic versioning
 };
 ```
-
-**Real-World Use Case:**
-
-Google\'s internal JavaScript style guide is enforced via their `goog.lint` tool. Externally, `eslint-config-google` and `@google/eslint-plugin-closure` implement many of these rules. The Airbnb engineering team open-sourced their entire ESLint config, which is now the most downloaded ESLint config on npm (>100M weekly downloads). The key insight: teams that automate style enforcement spend 40% less time in code review on mechanical issues and more on architecture — measurably improving PR throughput.
 
 <div align="right">
     <b><a href="#table-of-contents">↥ back to top</a></b>
@@ -15659,8 +16637,12 @@ In a large codebase maintained by multiple teams, inconsistent async patterns �
 | Fire-and-forget with error logging | `.catch(logger.error)` explicitly | Prevents silent failures |
 | Background tasks in Node.js | Worker threads + message passing | Non-blocking CPU work |
 
+**Example 01:**
+
 ```js
-// ── Team convention: async service layer pattern ──────────────────────────────
+/**
+ * Team convention: async service layer pattern 
+ */
 
 //  Canonical pattern: async/await + typed Result object (no thrown errors from services)
 type Result<T> =
@@ -15682,14 +16664,28 @@ async function fetchUser(id: string): Promise<Result<User>> {
 const result = await fetchUser('42');
 if (!result.ok) return showError(result.error);
 renderUser(result.data);
+```
 
-// ── Enforcing the pattern: ESLint rules ──────────────────────────────────────
+**Example 02:**
+
+```js
+/**
+ * Enforcing the pattern: ESLint rules
+ */
+
 // .eslintrc — disallow raw Promise without .catch or await
 // "@typescript-eslint/no-floating-promises": "error"
 // "no-return-await": "off"  // allow return await for proper stack traces
 // "@typescript-eslint/return-await": ["error", "in-try-catch"]
+```
 
-// ── Enforcing cancellation for all async operations in components ─────────────
+**Example 03:**
+
+```js
+/**
+ * Enforcing cancellation for all async operations in components 
+ */
+
 // Team rule: every useEffect with async work MUST use AbortController
 function useRemoteData<T>(url: string) {
   const [state, setState] = React.useState<Result<T> | null>(null);
@@ -15715,17 +16711,17 @@ function useRemoteData<T>(url: string) {
 
   return state;
 }
+```
 
+**Example 04:**
+
+```js
 // ── Team convention: retry with exponential backoff is a shared utility ───────
 // Bad: every developer rolls their own retry logic
 // Good: one canonical withRetry() in @company/utils, reviewed, tested, shared
 import { withRetry } from '@company/utils/async';
 const data = await withRetry(() => fetchCriticalData(), { maxAttempts: 3 });
 ```
-
-**Real-World Use Case:**
-
-Netflix\'s UI platform team standardised on RxJS for all user interaction streams (search autocomplete, play button state machines, connection quality monitoring) but `async`/`await` for all API calls. This hybrid strategy was enforced by a custom ESLint plugin that flagged using `Subscription` patterns for simple one-shot API calls (where `async`/`await` is clearer) and using raw Promises for event streams (where Observable cancellation and retry operators are superior). The tooling decision eliminated an entire class of memory leaks from unsubscribed Observables.
 
 <div align="right">
     <b><a href="#table-of-contents">↥ back to top</a></b>
@@ -15742,8 +16738,13 @@ In large SPAs and micro-frontend architectures, errors fall into four categories
 | Network errors | API calls | Service layer Result type + UI error states |
 | Unexpected global errors | Any code | `window.onerror` + crash reporter |
 
+**Example 01:**
+
 ```js
-// ── React Error Boundary — catches sync render errors ────────────────────────
+/**
+ * React Error Boundary — catches sync render errors 
+ */
+
 class ErrorBoundary extends React.Component {
   state = { hasError: false, error: null };
 
@@ -15771,8 +16772,15 @@ class ErrorBoundary extends React.Component {
 <ErrorBoundary section="checkout" fallback={<CheckoutErrorFallback />}>
   <CheckoutFlow />
 </ErrorBoundary>
+```
 
-// ── Global async error capture ────────────────────────────────────────────────
+**Example 02:**
+
+```js
+/**
+ * Global async error capture 
+ */
+
 // Catches Promise rejections not handled by try/catch or .catch()
 window.addEventListener('unhandledrejection', (event) => {
   event.preventDefault(); // suppress default browser console error
@@ -15786,8 +16794,15 @@ window.addEventListener('error', (event) => {
     extra: { filename: event.filename, line: event.lineno },
   });
 });
+```
 
-// ── Correlation IDs for distributed tracing ───────────────────────────────────
+**Example 03:**
+
+```js
+/**
+ * Correlation IDs for distributed tracing 
+ */
+
 // Every API call carries a trace ID that links frontend errors to backend logs
 const traceId = crypto.randomUUID();
 
@@ -15812,10 +16827,6 @@ Sentry.init({
 });
 ```
 
-**Real-World Use Case:**
-
-Slack\'s web frontend uses a multi-layer error strategy: React Error Boundaries per workspace panel (so a broken sidebar doesn\'t crash the message list), `unhandledrejection` capture shipping to their internal error aggregation pipeline, and a correlation ID on every API request that links a user-visible error in Sentry to the precise backend trace in Jaeger. When an incident occurs, an on-call engineer can go from "user reports blank screen" to the exact server-side exception in under 2 minutes — only possible because the frontend error captures the same trace ID as the backend logs.
-
 <div align="right">
     <b><a href="#table-of-contents">↥ back to top</a></b>
 </div>
@@ -15829,6 +16840,8 @@ Slack\'s web frontend uses a multi-layer error strategy: React Error Boundaries 
 **Module organisation** at scale requires deliberate structure. The most common pattern is **feature-based (vertical slice) architecture** rather than type-based (horizontal layers), because it co-locates everything a feature needs, making it easier to delete features and reason about dependency boundaries.
 
 **Barrel files** (`index.ts` re-exporting from a directory) are convenient but dangerous: they create implicit dependencies that prevent tree-shaking, cause circular dependency chains, and significantly slow TypeScript compilation at scale.
+ 
+**Example:** Directory Structure
 
 ```
 //  Type-based (horizontal layers) — tight coupling across features
@@ -15858,8 +16871,13 @@ src/
       Button.tsx
 ```
 
+**Example:** Barrel file discipline
+
 ```js
-// ── Barrel file discipline ────────────────────────────────────────────────────
+/**
+ * Barrel file - Public API Gateway
+ */
+
 // features/user/index.ts — explicit public API
 export { UserCard }    from './UserCard';
 export { useUser }     from './useUser';
@@ -15910,17 +16928,13 @@ import { UserCard, useUser } from '@/features/user'; //  imports from barrel
 // Use:        import { Button } from '@shared/components/Button'
 ```
 
-**Real-World Use Case:**
-
-Spotify\'s web player migrated from a monolithic feature layout to vertical slice architecture with strict barrel-file discipline after their TypeScript compilation time exceeded 4 minutes. The root cause was barrel files that inadvertently imported the entire `@emotion/react` theme object into every feature, creating a 500-module chain for what should have been a 10-module import. After enforcing the `import/no-cycle` ESLint rule and trimming barrel exports to only the feature\'s public API, compilation dropped to 45 seconds — a 5× improvement with zero code logic changes.
-
 <div align="right">
     <b><a href="#table-of-contents">↥ back to top</a></b>
 </div>
 
 ## Q. What are the trade-offs between monorepo and polyrepo, and how do you manage shared code?
 
-This is one of the most consequential architectural decisions for a frontend platform team. The choice affects CI speed, dependency management, code sharing, team autonomy, and onboarding.
+This is one of the most consequential architectural decisions for a frontend platform team. The choice affects CI speed, dependency management, code sharing, team autonomy, and onboarding. Choosing between a monorepo (one repository containing multiple projects/packages) and a polyrepo (isolated repositories for each project) involves a direct trade-off between coordination speed and tooling complexity.
 
 | Dimension | Monorepo | Polyrepo |
 |---|---|---|
@@ -15931,8 +16945,13 @@ This is one of the most consequential architectural decisions for a frontend pla
 | Dependency versioning | Single version per dep (no diamond) | Risk of version mismatches |
 | Tooling | Nx, Turborepo, Lerna, Bazel | Standard npm/yarn per repo |
 
+**Example 01:**
+
 ```js
-// ── Turborepo monorepo structure ──────────────────────────────────────────────
+/**
+ * Turborepo monorepo structure 
+ */
+
 // packages/
 //   ui/          @company/ui — shared design system
 //   utils/       @company/utils — shared utility functions
@@ -15956,8 +16975,15 @@ This is one of the most consequential architectural decisions for a frontend pla
     "lint": { "outputs": [] }
   }
 }
+```
 
-// Shared package: packages/utils/src/index.ts
+**Example 02:**
+
+```js
+/**
+ * Shared package: packages/utils/src/index.ts
+ */
+
 export { formatCurrency } from './formatCurrency';
 export { debounce }       from './debounce';
 export { withRetry }      from './withRetry';
@@ -15976,10 +17002,6 @@ export { withRetry }      from './withRetry';
 // npx changeset publish → publishes to npm registry
 ```
 
-**Real-World Use Case:**
-
-Vercel, Meta (React), and Google all use monorepos (with Turborepo, Buck2, and Blaze/Bazel respectively). Turborepo\'s remote caching means a developer who runs `turbo build` on a branch that shares most of its changes with `main` gets cache hits for unaffected packages from the shared cloud cache — reducing a 10-minute full build to under 30 seconds. Conversely, Stripe uses a polyrepo approach with a private npm registry (via `verdaccio`) for shared packages, favouring team autonomy over atomic changes.
-
 <div align="right">
     <b><a href="#table-of-contents">↥ back to top</a></b>
 </div>
@@ -15992,7 +17014,7 @@ Vercel, Meta (React), and Google all use monorepos (with Turborepo, Buck2, and B
 
 Ad-hoc `try/catch` blocks scattered throughout the codebase create inconsistent error messages, missing observability, and duplicated retry logic. A centralised strategy separates **error classification**, **error handling**, and **error reporting** into distinct layers.
 
-**Error taxonomy:**
+**Error Taxonomy:**
 
 | Error type | Recoverability | User-visible | Example |
 |---|---|---|---|
@@ -16002,8 +17024,13 @@ Ad-hoc `try/catch` blocks scattered throughout the codebase create inconsistent 
 | Business rule error |  Recoverable |  Yes | Insufficient balance |
 | Unexpected/programmer error |  Non-recoverable |  Generic | TypeError, RangeError |
 
+**Example:**
+
 ```js
-// ── 1. Typed custom error hierarchy ──────────────────────────────────────────
+/**
+ * Typed custom error hierarchy
+ */
+
 class AppError extends Error {
   constructor(
     message,
@@ -16029,81 +17056,107 @@ class NetworkError      extends AppError {
     super(message, 'NETWORK_ERROR', 0);
   }
 }
+```
 
-// ── 2. Centralised error handler (Express) ───────────────────────────────────
+**Example 02:** Centralised Express error handler
+
+```js
+/**
+ * Centralised error handler (Express)
+ */
+
+// app.use() — must be defined AFTER all routes
 app.use((err, req, res, next) => {
-  // Log all errors with context
+  // Log all errors with full context
   logger.error({
-    message:    err.message,
-    code:       err.code,
-    stack:      err.stack,
-    requestId:  req.headers['x-request-id'],
-    userId:     req.user?.id,
-    path:       req.path,
-    method:     req.method,
+    message: err.message,
+    code:    err.code,
+    stack:   err.stack,
+    url:     req.url,
+    method:  req.method,
+    userId:  req.user?.id,
   });
 
-  // Non-operational errors: crash fast in development, generic response in production
+  // Ship non-operational (programmer) errors to Sentry
   if (!err.isOperational) {
-    if (process.env.NODE_ENV !== 'production') throw err;
-    return res.status(500).json({ error: 'Internal server error' });
+    Sentry.captureException(err);
   }
 
-  // Operational errors: send structured response
-  res.status(err.statusCode ?? 500).json({
-    error:  err.message,
-    code:   err.code,
-    fields: err instanceof ValidationError ? err.fields : undefined,
-  });
-});
+  // Determine safe response — never leak stack traces to clients
+  const statusCode = err instanceof AppError ? err.statusCode : 500;
+  const body = err instanceof AppError
+    ? { error: err.code, message: err.message, ...(err.fields && { fields: err.fields }) }
+    : { error: 'INTERNAL_ERROR', message: 'An unexpected error occurred' };
 
-// ── 3. Client-side API error handler ─────────────────────────────────────────
+  res.status(statusCode).json(body);
+});
+```
+
+**Example 03:** Client-side API error handler
+
+```js
+/**
+ * Client-side API error handler
+ */
+
 async function apiRequest(url, options = {}) {
   try {
     const res = await fetch(url, options);
 
-    if (res.status === 401) throw new UnauthorizedError();
-    if (res.status === 404) throw new NotFoundError(url);
-
     if (!res.ok) {
       const body = await res.json().catch(() => ({}));
-      throw new AppError(
-        body.error ?? `HTTP ${res.status}`,
-        body.code  ?? 'API_ERROR',
-        res.status
-      );
+      // Map HTTP status codes to typed errors
+      if (res.status === 401) throw new UnauthorizedError();
+      if (res.status === 404) throw new NotFoundError(url);
+      if (res.status === 422) throw new ValidationError(body.message, body.fields);
+      throw new NetworkError(body.message ?? `HTTP ${res.status}`, res.status >= 500);
     }
 
     return res.json();
   } catch (err) {
-    if (err instanceof AppError) throw err;  // re-throw structured errors
-    throw new NetworkError(err.message);     // wrap unexpected fetch errors
+    if (err instanceof AppError) throw err;                    // re-throw typed errors
+    throw new NetworkError(err.message, true);                 // wrap unknown errors
   }
 }
+```
 
-// ── 4. React integration — error state in UI layer ───────────────────────────
+**Example 04:** React integration — error state in UI layer
+
+```js
+/**
+ * React hook — maps typed errors to user-facing messages
+ */
+
 function useApiData(url) {
   const [state, setState] = React.useState({ data: null, error: null, loading: true });
 
   React.useEffect(() => {
-    const ctrl = new AbortController();
-    apiRequest(url, { signal: ctrl.signal })
-      .then(data  => setState({ data, error: null,       loading: false }))
-      .catch(err  => {
-        if (err.name === 'AbortError') return;
-        if (err instanceof UnauthorizedError) redirectToLogin();
-        setState({ data: null, error: err.message, loading: false });
-      });
-    return () => ctrl.abort();
+    let cancelled = false;
+    setState(s => ({ ...s, loading: true, error: null }));
+
+    apiRequest(url)
+      .then(data  => { if (!cancelled) setState({ data, error: null,  loading: false }); })
+      .catch(err  => { if (!cancelled) setState({ data: null, error: err, loading: false }); });
+
+    return () => { cancelled = true; };
   }, [url]);
 
   return state;
 }
+
+// Consumer — error type drives the UI response
+function UserProfile({ userId }) {
+  const { data, error, loading } = useApiData(`/api/users/${userId}`);
+
+  if (loading) return <Spinner />;
+  if (error instanceof UnauthorizedError) return <LoginPrompt />;
+  if (error instanceof NotFoundError)     return <NotFoundPage />;
+  if (error instanceof NetworkError && error.retryable) return <RetryBanner />;
+  if (error) return <GenericError message={error.message} />;
+
+  return <ProfileCard user={data} />;
+}
 ```
-
-**Real-World Use Case:**
-
-Stripe\'s Node.js library (`stripe` npm package) implements a clean error hierarchy: `StripeCardError`, `StripeInvalidRequestError`, `StripeAuthenticationError`, `StripeAPIError` — all extending `StripeError`. Every method returns a known error type with a `code`, `statusCode`, `param`, and `decline_code` field. This allows merchant applications to write precise error handling: `if (err.code === 'card_declined') showDeclineMessage(err.decline_code)` — a pattern that Stripe credits with reducing incorrect error handling in merchant integrations by over 60% compared to generic Error objects.
 
 <div align="right">
     <b><a href="#table-of-contents">↥ back to top</a></b>
@@ -16115,7 +17168,13 @@ Stripe\'s Node.js library (`stripe` npm package) implements a clean error hierar
 
 ## Q. As a tech lead, how do you conduct a performance review of a JavaScript codebase — what do you look for and how do you prioritise fixes?
 
-A performance review is a systematic audit across three dimensions: **runtime performance** (CPU, memory), **network performance** (bundle size, waterfall), and **rendering performance** (paint, layout, interactivity). The output should be a prioritised backlog with expected impact, not a list of micro-optimisations.
+A performance review is a systematic audit across three dimensions: 
+
+* **runtime performance** (CPU, memory), 
+* **network performance** (bundle size, waterfall), and 
+* **rendering performance** (paint, layout, interactivity). 
+
+The output should be a prioritised backlog with expected impact, not a list of micro-optimisations.
 
 **Audit checklist by category:**
 
@@ -16139,8 +17198,13 @@ A performance review is a systematic audit across three dimensions: **runtime pe
 - Chrome DevTools → Performance → enable "Layout" track → look for forced reflows (purple bars).
 - Audit CSS animations: `top`/`left` changes (reflow) vs `transform` (compositor only).
 
+**Example 01:**
+
 ```js
-// ── Bundle size: tree-shaking fix ─────────────────────────────────────────────
+/**
+ * Bundle size: tree-shaking fix 
+ */
+
 //  Imports entire lodash (70 KB gzipped)
 import _ from 'lodash';
 const result = _.debounce(fn, 300);
@@ -16149,8 +17213,15 @@ const result = _.debounce(fn, 300);
 import debounce from 'lodash/debounce';
 // Or use native implementation — no dependency at all:
 const debounce = (fn, ms) => { let t; return (...a) => { clearTimeout(t); t = setTimeout(() => fn(...a), ms); }; };
+```
 
-// ── React render audit: unstable references ───────────────────────────────────
+**Example 02:**
+
+```js
+/**
+ * React render audit: unstable references
+ */
+
 //  Causes ALL child components to re-render on every parent render
 function Parent() {
   const config = { pageSize: 20 };      // new object reference every render
@@ -16164,8 +17235,15 @@ function Parent() {
   const onLoad = React.useCallback(() => fetchData(), []);
   return <DataGrid config={GRID_CONFIG} onLoad={onLoad} />;
 }
+```
 
-// ── Performance budget in CI ──────────────────────────────────────────────────
+**Example 03:**
+
+```js
+/**
+ * Performance budget in CI
+ */
+
 // bundlewatch.config.js — fail CI if bundle exceeds budget
 module.exports = {
   files: [
@@ -16175,8 +17253,15 @@ module.exports = {
   ],
 };
 // CI: npx bundlewatch — fails with diff if any budget is exceeded
+```
 
-// ── Core Web Vitals monitoring ────────────────────────────────────────────────
+**Example 04:**
+
+```js
+/**
+ * Core Web Vitals monitoring 
+ */
+
 import { onLCP, onFID, onCLS, onINP, onTTFB } from 'web-vitals';
 
 function sendToAnalytics({ name, value, rating, id }) {
@@ -16203,8 +17288,6 @@ onTTFB(sendToAnalytics); // Time to First Byte         — target < 800ms
 
 **Real-World Use Case:**
 
-The Google Chrome team\'s annual "State of the Web" report consistently shows that bundle size is the single largest controllable factor in LCP for JavaScript-heavy sites. Airbnb conducted a performance review in 2022 that identified `moment.js` (67 KB gzipped) being imported in 40 components when only `date-fns/format` (2 KB) was needed. Replacing it saved 65 KB from the initial bundle and reduced Time-to-Interactive by 800ms on 3G connections — a single `webpack-bundle-analyzer` session worth millions of dollars in conversion rate improvement.
-
 <div align="right">
     <b><a href="#table-of-contents">↥ back to top</a></b>
 </div>
@@ -16219,21 +17302,266 @@ The Google Chrome team\'s annual "State of the Web" report consistently shows th
 
 ## Q. What is micro-frontend architecture and how do you implement it with Webpack 5 Module Federation?
 
-Micro-frontends extend the microservices idea to the frontend: the UI is decomposed into independently developed, tested, and deployed applications owned by different teams. The key architectural challenge is **runtime composition** \u2014 how to stitch independently deployed bundles together in the browser without requiring a full rebuild of the shell application.
+Micro-frontend architecture breaks a monolithic frontend application into smaller, independent, and deployable pieces that work together as a single app. Webpack 5 Module Federation enables this by allowing separate builds to share code and dynamically load modules at runtime.
 
-**Approaches ranked by isolation vs integration trade-off:**
+Micro-frontends apply the concept of microservices to the browser. Instead of one massive codebase, different teams build separate parts of the user interface independently.
 
-| Approach | Isolation | Integration complexity | Shared state | Use when |
-|---|---|---|---|---|
-| `<iframe>` | Maximum | Low | Hard | Third-party content, maximum security boundary |
-| Webpack Module Federation | Medium | Medium | Easy (singletons) | Same-org teams, React/shared dependencies |
-| Web Components | Medium | Low | Medium | Cross-framework teams, design system |
-| `single-spa` framework | Low | High | Easy | Migrating legacy apps |
-| Build-time composition | None | Low | Trivial | Small teams, short-term monolith split |
+* **Independent Deployment**: Teams can ship updates to their specific feature without rebuilding the whole app.
+* **Technology Agnostic**: One team can use React while another uses Vue (though sharing the same framework reduces bundle sizes).
+* **Isolated Code**: Bugs in one micro-frontend are less likely to crash the entire application
 
-**Real-World Use Case:**
+**Key Concepts of Module Federation**
 
-IKEA decomposed their e-commerce frontend using Module Federation: the product catalog, cart, checkout, and account sections are owned by separate teams deploying independently to their respective CDNs. The shell application fetches `remoteEntry.js` at runtime, meaning a bug fix in the checkout team\'s code is live for all users within minutes of their CI pipeline completing \u2014 with zero coordination required from the shell team. The `singleton: true` constraint on React ensures that despite six independent bundles, there is exactly one React reconciler instance, which is critical for shared context (Auth, i18n, design tokens) to work correctly.
+Webpack 5 introduced Module Federation, which relies on three core roles
+
+* **Host**: The main wrapper application that consumes remote modules and handles initial loading.
+* **Remote**: An independent micro-frontend that exposes code (components, functions) for other apps to use.
+* **Bidirectional Host/Remote**: An application that both consumes remote modules and exposes its own modules.
+
+**Example:**
+
+The setup below models a typical e-commerce platform split across three independently deployed apps.
+
+```
+// Project layout
+//
+// shell/           → Host — loads and orchestrates remote MFEs
+// catalog/         → Remote — product listing & search
+// cart/            → Remote — shopping cart widget
+```
+
+**Step 1 — Remote: `catalog` app (`catalog/webpack.config.js`)**
+
+```js
+const { ModuleFederationPlugin } = require('webpack').container;
+const HtmlWebpackPlugin = require('html-webpack-plugin');
+const path = require('path');
+
+module.exports = {
+  entry: './src/index.js',
+  mode: 'development',
+  devServer: { port: 3001, historyApiFallback: true },
+  output: {
+    publicPath: 'http://localhost:3001/',  // must be absolute for remote loading
+    path: path.resolve(__dirname, 'dist'),
+    filename: '[name].bundle.js',
+    clean: true,
+  },
+  plugins: [
+    new ModuleFederationPlugin({
+      name: 'catalog',                      // global variable name exposed on window
+      filename: 'remoteEntry.js',           // manifest consumed by the host
+      exposes: {
+        './ProductList': './src/ProductList',   // path consumers import
+        './ProductCard': './src/ProductCard',
+      },
+      shared: {
+        react:        { singleton: true, requiredVersion: '^18.0.0' },
+        'react-dom':  { singleton: true, requiredVersion: '^18.0.0' },
+      },
+    }),
+    new HtmlWebpackPlugin({ template: './public/index.html' }),
+  ],
+  module: {
+    rules: [{ test: /\.jsx?$/, loader: 'babel-loader', exclude: /node_modules/ }],
+  },
+};
+```
+
+**Step 2 — Remote: `cart` app (`cart/webpack.config.js`)**
+
+```js
+const { ModuleFederationPlugin } = require('webpack').container;
+
+module.exports = {
+  entry: './src/index.js',
+  mode: 'development',
+  devServer: { port: 3002, historyApiFallback: true },
+  output: { publicPath: 'http://localhost:3002/' },
+  plugins: [
+    new ModuleFederationPlugin({
+      name: 'cart',
+      filename: 'remoteEntry.js',
+      exposes: {
+        './CartWidget': './src/CartWidget',
+      },
+      shared: {
+        react:       { singleton: true, requiredVersion: '^18.0.0' },
+        'react-dom': { singleton: true, requiredVersion: '^18.0.0' },
+      },
+    }),
+  ],
+};
+```
+
+**Step 3 — Host: `shell` app (`shell/webpack.config.js`)**
+
+```js
+const { ModuleFederationPlugin } = require('webpack').container;
+const HtmlWebpackPlugin = require('html-webpack-plugin');
+
+module.exports = {
+  entry: './src/index.js',
+  mode: 'development',
+  devServer: { port: 3000, historyApiFallback: true },
+  output: { publicPath: 'http://localhost:3000/' },
+  plugins: [
+    new ModuleFederationPlugin({
+      name: 'shell',
+      remotes: {
+        // key: globalName@remoteEntryUrl
+        catalog: 'catalog@http://localhost:3001/remoteEntry.js',
+        cart:    'cart@http://localhost:3002/remoteEntry.js',
+      },
+      shared: {
+        react:       { singleton: true, requiredVersion: '^18.0.0' },
+        'react-dom': { singleton: true, requiredVersion: '^18.0.0' },
+      },
+    }),
+    new HtmlWebpackPlugin({ template: './public/index.html' }),
+  ],
+};
+```
+
+**Step 4 — Shell bootstrap (MUST use dynamic `import()` — not a static import)**
+
+```js
+// shell/src/index.js  ← thin entry point; real code lives in bootstrap.js
+import('./bootstrap');   // defers execution so Module Federation can resolve remotes first
+
+// shell/src/bootstrap.js
+import React from 'react';
+import { createRoot } from 'react-dom/client';
+import App from './App';
+
+createRoot(document.getElementById('root')).render(<App />);
+```
+
+**Step 5 — Shell app consuming remote components**
+
+```js
+// shell/src/App.js
+import React, { Suspense, lazy } from 'react';
+
+// Lazy-load remote components — webpack resolves them from remoteEntry.js at runtime
+const ProductList = lazy(() => import('catalog/ProductList'));
+const CartWidget  = lazy(() => import('cart/CartWidget'));
+
+function App() {
+  return (
+    <div>
+      <header>
+        <h1>My Shop</h1>
+        {/* CartWidget is loaded from the cart MFE bundle */}
+        <Suspense fallback={<span>Loading cart…</span>}>
+          <CartWidget />
+        </Suspense>
+      </header>
+
+      <main>
+        {/* ProductList is loaded from the catalog MFE bundle */}
+        <Suspense fallback={<span>Loading products…</span>}>
+          <ProductList category="shoes" />
+        </Suspense>
+      </main>
+    </div>
+  );
+}
+
+export default App;
+```
+
+**Step 6 — Remote component implementation (catalog MFE)**
+
+```js
+// catalog/src/ProductList.js
+import React, { useEffect, useState } from 'react';
+
+export default function ProductList({ category }) {
+  const [products, setProducts] = useState([]);
+
+  useEffect(() => {
+    fetch(`/api/products?category=${category}`)
+      .then(r => r.json())
+      .then(setProducts);
+  }, [category]);
+
+  return (
+    <ul>
+      {products.map(p => (
+        <li key={p.id}>
+          <strong>{p.name}</strong> — ${p.price}
+          <button
+            onClick={() =>
+              // Cross-MFE communication via Custom Events (no shared state library needed)
+              document.dispatchEvent(
+                new CustomEvent('mfe:cart:add', { detail: p, bubbles: true })
+              )
+            }
+          >
+            Add to cart
+          </button>
+        </li>
+      ))}
+    </ul>
+  );
+}
+```
+
+```js
+// cart/src/CartWidget.js
+import React, { useEffect, useState } from 'react';
+
+export default function CartWidget() {
+  const [items, setItems] = useState([]);
+
+  useEffect(() => {
+    const handler = ({ detail }) =>
+      setItems(prev => [...prev, detail]);
+
+    document.addEventListener('mfe:cart:add', handler);
+    return () => document.removeEventListener('mfe:cart:add', handler);
+  }, []);
+
+  return (
+    <div>
+      Cart ({items.length})
+      <ul>
+        {items.map((item, i) => <li key={i}>{item.name}</li>)}
+      </ul>
+    </div>
+  );
+}
+```
+
+**Running the setup:**
+
+```bash
+# Start each MFE independently — any team can deploy their app without the others
+cd catalog && npm start   # http://localhost:3001
+cd cart    && npm start   # http://localhost:3002
+cd shell   && npm start   # http://localhost:3000  ← composed app
+```
+
+**What happens at runtime:**
+
+```
+1. Browser loads shell at :3000
+2. webpack runtime fetches catalog/remoteEntry.js from :3001
+3. webpack runtime fetches cart/remoteEntry.js   from :3002
+4. Shared `react` singleton is negotiated — only ONE copy of React loads
+5. Suspense boundaries render fallbacks until each remote chunk resolves
+6. User sees the composed application with zero knowledge of the split
+```
+
+**Key `shared` config options:**
+
+| Option | Effect |
+|---|---|
+| `singleton: true` | Enforces one shared instance — required for React (hooks break with two copies) |
+| `requiredVersion` | Validates semver compatibility at runtime; warns if versions mismatch |
+| `eager: true` | Includes shared module in the initial chunk (avoids async boundary, use for tiny libs) |
+| `strictVersion: true` | Throws at runtime if version requirement is not satisfied |
 
 <div align="right">
     <b><a href="#table-of-contents">↥ back to top</a></b>
@@ -16245,15 +17573,11 @@ Micro-frontends introduce organisational scalability but create five engineering
 
 | Pitfall | Symptom | Mitigation |
 |---|---|---|
-| Dependency version mismatch | Multiple React instances \u2192 hook errors | `singleton: true` in Module Federation shared config |
+| Dependency version mismatch | Multiple React instances → hook errors | `singleton: true` in Module Federation shared config |
 | Style conflicts | CSS class name collisions | CSS Modules, CSS-in-JS, or BEM namespacing per MFE |
-| Performance \u2014 duplicate vendor bundles | 3\u00d7 React loaded | Module Federation shared modules |
+| Performance — duplicate vendor bundles | 3× React loaded | Module Federation shared modules |
 | Auth/session ownership | Each MFE duplicates auth logic | Shell owns auth; passes token via context or custom event |
 | Integration testing difficulty | Works in isolation, breaks in composition | Contract testing (Pact), integration test environments |
-
-**Real-World Use Case:**
-
-SAP Fiori Elements uses Web Components as the integration mechanism for their micro-frontend platform (SAP UI5 Web Components), allowing teams using Angular, React, or Vue to render the same design system components in their MFE without shipping duplicate framework code. This is the pattern recommended when MFEs are owned by different technology stacks \u2014 Module Federation requires both sides to use webpack, while Web Components work with any build tool.
 
 <div align="right">
     <b><a href="#table-of-contents">↥ back to top</a></b>
@@ -16545,7 +17869,10 @@ Frontend security architecture is not a checklist — it is a layered defence st
 CSP is an HTTP response header that tells the browser which origins may execute scripts. Even if an attacker injects `<script>alert(1)</script>`, the browser refuses to execute it if the source is not whitelisted.
 
 ```js
-// ── Nonce-based CSP (preferred over hash-based for SPAs) ─────────────────────
+/**
+ * Nonce-based CSP (preferred over hash-based for SPAs) 
+ */
+
 // Server generates a cryptographically random nonce per request
 const nonce = crypto.randomBytes(16).toString('base64');
 
@@ -16567,8 +17894,13 @@ res.setHeader('Content-Security-Policy',
 // 'strict-dynamic' — trust dynamically created scripts from trusted scripts
 // This allows React, webpack bundles with dynamic imports to work
 // without listing every chunk URL
+```
 
-// ── CSP violation reporting ──────────────────────────────────────────────────
+```js
+/**
+ * CSP violation reporting 
+ */
+
 // report-to header sends violation reports to your monitoring endpoint
 res.setHeader('Reporting-Endpoints', 'csp-endpoint="https://api.company.com/csp-report"');
 res.setHeader('Content-Security-Policy',
@@ -16581,7 +17913,10 @@ res.setHeader('Content-Security-Policy',
 **2. CORS (Cross-Origin Resource Sharing) — API server configuration**
 
 ```js
-// ── Express CORS configuration ──────────────────────────────────────────────────
+/**
+ * Express CORS configuration 
+ */
+
 const ALLOWED_ORIGINS = new Set([
   'https://app.company.com',
   'https://admin.company.com',
@@ -16615,7 +17950,8 @@ app.use((req, res, next) => {
 **3. Supply chain security**
 
 ```bash
-# ── Dependency security toolchain ───────────────────────────────────────────────
+# ── Dependency security toolchain 
+
 # 1. Lock file integrity — always commit package-lock.json or pnpm-lock.yaml
 # 2. npm audit in CI — fail on high/critical vulnerabilities
 npm audit --audit-level=high
@@ -16631,7 +17967,10 @@ npm audit --audit-level=high
 ```
 
 ```js
-// ── Secrets: never in client-side JavaScript ───────────────────────────────────
+/**
+ * Secrets: never in client-side JavaScript 
+ */
+
 //  NEVER: API keys, database credentials, signing secrets in frontend bundles
 // They are visible to any user via DevTools > Sources
 const client = new Stripe(process.env.REACT_APP_STRIPE_SECRET_KEY); // 
@@ -16639,16 +17978,17 @@ const client = new Stripe(process.env.REACT_APP_STRIPE_SECRET_KEY); //
 //  Frontend only uses publishable/public keys
 const client = new Stripe(process.env.REACT_APP_STRIPE_PUBLISHABLE_KEY); // 
 // Secret operations (e.g., capture payment) done server-side only
+```
 
-// ── Additional security headers (Helmet.js in Express) ───────────────────────
+```js
+/**
+ * Additional security headers (Helmet.js in Express)
+ */
+
 import helmet from 'helmet';
 app.use(helmet());  // Sets: X-Frame-Options, X-Content-Type-Options,
                    // Strict-Transport-Security, Permissions-Policy
 ```
-
-**Real-World Use Case:**
-
-GitHub\'s 2023 security incident involved a stolen OAuth token from a CI provider (CircleCI) accessing private repositories. GitHub\'s response included publishing their full CSP configuration (nonce-based `strict-dynamic`) and enabling mandatory Subresource Integrity for all external scripts. Their CSP report endpoint recorded ~20,000 attempted XSS injections per day that were silently blocked — none resulted in account compromise because the browser refused to execute injected scripts without the matching server-generated nonce. This is the definitive proof that CSP is not optional for any application handling user data.
 
 <div align="right">
     <b><a href="#table-of-contents">↥ back to top</a></b>
@@ -16656,22 +17996,74 @@ GitHub\'s 2023 security incident involved a stolen OAuth token from a CI provide
 
 ## Q. How do you defend against supply chain attacks in a JavaScript ecosystem?
 
-Supply chain attacks target dependencies, build tools, and CDN resources rather than your application code directly. The `event-stream` incident (2018), `ua-parser-js` hijack (2021), and `node-ipc` protest-ware (2022) demonstrated that even well-maintained packages can be compromised.
+Supply chain attacks target dependencies, build tools, and CDN resources rather than your application code directly. 
+
+Defending against supply chain attacks in JavaScript requires securing three distinct vectors: 
+
+* **third-party packages (npm)**, 
+* **build-time infrastructure (CI/CD)**, and 
+* **runtime execution (the browser)**.
+
+**1. Lock Down the Registry & Dependencies (Package Time)**
+
+The primary entry point for malicious code is the npm registry through typosquatting, account takeovers, or compromised dependencies
+
+* **Enforce Dependency Pinning**: Never use loose version ranges (`^` or `~`). Pin your versions exactly and commit your `package-lock.json`, `pnpm-lock.yaml`, or `yarn.lock` to ensure identical builds across environments.
+
+* **Run Manifest Validation**: Use tools like `lockfile-lint` in your pre-commit hooks. This prevents attackers from secretly modifying your lockfile to point to external, malicious registry URLs.
+
+* **Isolate Script Execution**: Malicious packages often execute code during installation using lifecycle hooks (`preinstall`, `postinstall`). Block this entirely by adding `ignore-scripts=true` to your global or project `.npmrc` file.
+
+* **Leverage Behavior-Based Scanners**: Standard CVE scanners only catch known vulnerabilities. Implement tools like **Socket.dev** or **Phylum** in your pull request workflow. These platforms look for intent, alerting you if a minor package update suddenly adds network requests, disk access, or obfuscated code.
+
+**2. Harden the CI/CD Pipeline (Build Time)**
+
+Attackers target build pipelines to inject malicious code immediately before application assets are bundled and deployed
+
+* **Use Immutable Build Commands**: Never run a standard npm install in your CI pipeline, as it can update packages. Use `npm ci`, `pnpm install --frozen-lockfile`, or `yarn install --immutable`.
+
+* **Employ Network Sandboxing**: Restrict your CI/CD runner\'s outbound network access. It should only be permitted to communicate with your source code repository, artifact registries, and your authorized npm proxy (like Artifactory or Sonatype Nexus).
+
+* **Generate an SBOM**: Generate a Software Bill of Materials (SBOM) on every production release using tools like **CycloneDX** or **Syft**. This creates a cryptographic inventory of all code present in the production bundle for continuous auditing
+
+**3. Contain Exposure in the Browser (Run Time)**
+
+If a malicious package slips past your registry and build defenses, the final line of defense is containing its destructive capabilities inside the user\'s browser.
+
+* **Deploy Subresource Integrity (SRI)**: When loading third-party scripts from CDNs (like analytics, tag managers, or fonts), compute and include an SRI hash attribute (`integrity="sha384-..."`). If an attacker compromises the CDN and alters the script file, the browser will refuse to execute it.
+
+* **Enforce a Zero-Trust CSP**: A strict Content Security Policy acts as a firewall for your frontend. Use `connect-src` to strictly limit which domains your JavaScript can exfiltrate data to. If a compromised npm package steals a user\'s credit card data, the browser will block the script from sending that data to an unapproved hacker-controlled domain.
+
+* **Sandbox Dynamic Third-Party Scripts**: Avoid injecting dynamic marketing or analytics scripts directly into your main window DOM. Run them inside a sandboxed `<iframe>` or offload them entirely to a background thread using **Web Workers** via tools like Partytown, preventing them from accessing `document.cookie` or capturing keypresses
+
+**Example:**
 
 ```js
-// ── Defense layer 1: Minimal dependency footprint ───────────────────────────────
+/**
+ * Defense layer 1: Minimal dependency footprint 
+ */
+
 // Before adding ANY dependency, ask:
 // 1. Can this be implemented in < 20 lines of code? (is-odd, is-even packages)
 // 2. What is the maintenance status? (last commit, # of maintainers)
 // 3. How many transitive dependencies does it add? (bundlephobia.com)
 // 4. Does it require network access or filesystem access at runtime?
+```
 
-// ── Defense layer 2: package-lock.json integrity + reproducible builds ───────
+```js
+/**
+ * Defense layer 2: package-lock.json integrity + reproducible builds
+ */
+
 // Use `npm ci` in CI, NEVER `npm install`
 // npm ci: installs EXACTLY what is in package-lock.json, fails if mismatch
 // npm install: may update patch versions, bypassing your lock file
+```
+```js
+/**
+ * Defense layer 3: npm audit in CI pipeline 
+ */
 
-// ── Defense layer 3: npm audit in CI pipeline ─────────────────────────────
 // .github/workflows/security.yml
 jobs:
   audit:
@@ -16680,8 +18072,12 @@ jobs:
       - run: npm audit --audit-level=moderate
         # Or use Socket.dev for deeper analysis than npm audit
       - run: npx better-npm-audit audit --level=moderate
+```
+```js
+/**
+ * Defense layer 4: runtime integrity for CDN resources (SRI) 
+ */
 
-// ── Defense layer 4: runtime integrity for CDN resources (SRI) ─────────────
 // Generate hash: openssl dgst -sha384 -binary lodash.min.js | openssl base64 -A
 // <script
 //   src="https://cdn.jsdelivr.net/npm/lodash@4.17.21/lodash.min.js"
@@ -16689,17 +18085,17 @@ jobs:
 //   crossorigin="anonymous">
 // </script>
 // If the CDN file is modified, the hash won\'t match and browser won\'t execute it
+```
+```js
+/**
+ * Defense layer 5: private registry proxying 
+ */
 
-// ── Defense layer 5: private registry proxying ──────────────────────────────
 // All npm installs go through your private registry (Artifactory/Verdaccio)
 // which caches approved versions and scans for vulnerabilities before caching
 // .npmrc
 // registry=https://artifactory.company.com/npm/
 ```
-
-**Real-World Use Case:**
-
-Socket.dev (founded by Feross Aboukhadijeh, creator of many popular npm packages) performs deep static analysis of npm packages to detect supply chain attacks: looking for obfuscated code, dynamic `require()` calls added in new versions, network access in `install` scripts, and packages that suddenly changed maintainers. Companies including Shopify, Microsoft, and Vercel use Socket in their CI pipelines as a second line of defence after `npm audit`, which only catches known CVEs — not novel attack patterns.
 
 <div align="right">
     <b><a href="#table-of-contents">↥ back to top</a></b>
@@ -16713,7 +18109,7 @@ Socket.dev (founded by Feross Aboukhadijeh, creator of many popular npm packages
 
 The most common mistake in state management at scale is using a single solution for all state. The key architectural insight is that **server state** (data fetched from an API that can change on the server) and **client state** (UI state local to the browser) have fundamentally different characteristics and require different tools.
 
-**State taxonomy:**
+**State Taxonomy:**
 
 | State type | Examples | Best tool |
 |---|---|---|
@@ -16724,8 +18120,13 @@ The most common mistake in state management at scale is using a single solution 
 | URL state | Filters, pagination, current tab | URL search params (React Router) |
 | Form state | Field values, validation errors | React Hook Form / Formik |
 
+**Example:**
+
 ```js
-// ── Layer 1: Server state with React Query (TanStack Query) ────────────────────
+/**
+ * Layer 1: Server state with React Query (TanStack Query) 
+ */
+
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 
 // Automatic caching, background refetching, deduplication, stale-while-revalidate
@@ -16759,8 +18160,12 @@ function useUpdateUser() {
     },
   });
 }
+```
+```js
+/**
+ * Layer 2: Global client state with Zustand
+ */
 
-// ── Layer 2: Global client state with Zustand ─────────────────────────────────
 import { create } from 'zustand';
 import { devtools, persist } from 'zustand/middleware';
 
@@ -16782,8 +18187,12 @@ const useAuthStore = create(
 // ✔ No Provider boilerplate (unlike Context + useReducer)
 // ✔ DevTools support (action names visible in Redux DevTools)
 // ✔ Fine-grained subscriptions (components only re-render for selected slice)
+```
+```js
+/**
+ * Layer 3: Complex UI state with XState
+ */
 
-// ── Layer 3: Complex UI state with XState ───────────────────────────────────
 import { createMachine, assign } from 'xstate';
 
 const checkoutMachine = createMachine({
@@ -16812,17 +18221,17 @@ const checkoutMachine = createMachine({
 // simultaneously in 'processing' and 'cart'. No boolean flag soup.
 ```
 
-**Real-World Use Case:**
-
-Shopify\'s Storefront builder team (used to create custom storefronts) migrated from Redux to a hybrid React Query + Zustand architecture in 2022. The key insight was that 80% of their Redux store was server data that Redux treated as client state — requiring manual invalidation, loading state management, and error state that React Query handles automatically. After migration, they deleted 40% of their state management code and reduced bug reports related to stale data by 70%. Zustand replaced Redux for the remaining 20% of genuinely global client state (auth, theme, cart), with 90% less boilerplate than Redux Toolkit.
-
 <div align="right">
     <b><a href="#table-of-contents">↥ back to top</a></b>
 </div>
 
 ## Q. How do you manage state in a micro-frontend architecture where multiple teams own different parts of the UI?
 
-Micro-frontend state management requires clear ownership boundaries. The golden rule: **each MFE owns its own state; shared state is minimal and contract-defined**.
+Managing state in a **micro-frontend (MFE) architecture** requires one golden rule: Never share a global, mutable JavaScript store (like a single Redux or Pinia store) across independently deployed micro-frontends. Doing so instantly couples your teams, invalidates independent deployments, and creates a distributed monolith.
+
+Instead, you must treat micro-frontends like microservices—encapsulating state within boundaries and using explicit, decoupled contracts for cross-app communication.
+
+**Example:**
 
 ```js
 // ── State ownership model ──────────────────────────────────────────────────────────
@@ -16845,8 +18254,12 @@ document.dispatchEvent(new CustomEvent('mfe:cart:add', {
 document.addEventListener('mfe:cart:add', ({ detail }) => {
   cartStore.addItem(detail);
 });
+```
+```js
+/**
+ * Approach 2: Shared store singleton (Module Federation shared config)
+ */
 
-// Approach 2: Shared store singleton (Module Federation shared config)
 // @company/cart-store in webpack shared config with singleton:true
 // Both Catalog and Cart MFE import the SAME store instance
 import { useCartStore } from '@company/cart-store';
@@ -16873,10 +18286,6 @@ const state = {
 // Redux Toolkit\'s createEntityAdapter() generates this structure automatically
 ```
 
-**Real-World Use Case:**
-
-The BBC News website uses a micro-frontend architecture where the Header team, the Article team, and the Sports team own separate bundles. Their state sharing contract is documented in an ADR (Architecture Decision Record): only `userId`, `sessionToken`, `locale`, and `darkMode` are shared through the shell — everything else is MFE-private. This contract is enforced via TypeScript types published to their internal registry and validated at the shell boundary. When the Article team tried to read cart state (owned by a different team), the TypeScript compilation failed — preventing an accidental cross-team dependency before it reached production.
-
 <div align="right">
     <b><a href="#table-of-contents">↥ back to top</a></b>
 </div>
@@ -16889,10 +18298,51 @@ The BBC News website uses a micro-frontend architecture where the Header team, t
 
 Large-scale frontend migrations (Angular → React, jQuery monolith → SPA, plain JS → TypeScript) fail when attempted as big-bang rewrites. The proven strategy is the **Strangler Fig pattern**: route-by-route, feature-by-feature, with the legacy and modern codebases running in parallel until the legacy is fully strangled.
 
-**Strangler Fig for frontend migration:**
+**1. Establish the Infrastructure**
+
+Before changing any application code, set up the routing layers to handle dual applications.
+
+* **Reverse Proxy**: Deploy Nginx, AWS CloudFront, or Cloudflare in front of your applications.
+* **Route Routing**: Configure the proxy to send specific URL paths to the new app while keeping the rest on the legacy app.
+* **Shared Session**: Implement a unified authentication system (like JWT or a shared cookie domain) so users do not have to log in twice.
+
+**2. Implement the Strangler Fig Pattern**
+
+Monoliths should be replaced micro-frontend by micro-frontend or page by page.
+
+* **Identify Sliders**: Start migrating low-risk, isolated pages first (e.g., FAQ, Settings) to test the pipeline.
+* **Embed Frameworks**: Use tools like single-spa or Module Federation if you need to run the new framework inside the old layout.
+* **Feature Flags**: Wrap new pages in feature flags (using LaunchDarkly or Split) to instantly roll back if errors occur.
+
+**3. Bridge the Data and State**
+
+Keep the user experience seamless by sharing data between the two codebases
+
+* **Global Window Object**: Share critical user state by attaching minimal data to `window.__SHARED_STATE__`.
+* **Custom Events**: Use `window.dispatchEvent` to let the old and new apps communicate asynchronously.
+* **API Gateway**: Abstract your backend services so both frontends consume identical data structures.
+
+**4. Maintain a Unified Design**
+
+Users should not notice they are bouncing between two different codebases.
+
+* **Shared CSS**: Export the legacy CSS variables or Tailwind config to the new repository.
+* **Component Library**: Build a small, isolated UI kit (like buttons and headers) that both stacks can import.
+
+**5. Monitor and Throttle Canary Releases**
+
+Minimize the blast radius of any migration bugs.
+
+* **Canary Deployment**: Route 1% of traffic to the new stack, then 5%, 25%, and finally 100%.
+* **Error Tracking**: Use Sentry or LogRocket to monitor frontend exceptions specifically on the newly migrated routes.
+
+**Example: Strangler Fig for frontend migration:**
 
 ```js
-// ── Phase 1: Route-level code splitting — new code, new route ──────────────────
+/**
+ * Phase 1: Route-level code splitting — new code, new route
+ */
+
 // The shell router decides whether to render the legacy or modern implementation
 // Nginx / CDN: route /new/* to new SPA, /legacy/* to old jQuery app
 
@@ -16935,19 +18385,32 @@ function LegacyReportsWrapper({ filter }) {
     "strictNullChecks": true // enable incrementally
   }
 }
+```
+```js
+/**
+ * Phase 2: JSDoc types in JS files (zero friction, works with editor IntelliSense)
+ */
 
-// Phase 2: JSDoc types in JS files (zero friction, works with editor IntelliSense)
 /**
  * @param {string} userId
  * @returns {Promise<import('./types').User>}
  */
 async function fetchUser(userId) { /* ... */ }
+```
+```js
+/**
+ * Phase 3: Rename .js → .ts file-by-file (start with utility files, not UI)
+ */
 
-// Phase 3: Rename .js → .ts file-by-file (start with utility files, not UI)
 // Use ts-migrate for automated initial conversion:
 // npx @airbnb/ts-migrate migrate --dir src/utils
 
-// Phase 4: Enable strict mode per-file (ambient declaration)
+```
+```js
+/**
+ * Phase 4: Enable strict mode per-file (ambient declaration)
+ */
+
 // @ts-strict (per-file strict mode — experimental, TypeScript 5.5+)
 // OR gradually enable strictNullChecks, noImplicitAny in tsconfig
 
@@ -16982,20 +18445,31 @@ module.exports = function transformer(file, api) {
 | Legacy route count | 47 routes | 0 routes |
 | Test coverage | 12% | > 80% |
 
-**Real-World Use Case:**
-
-Airbnb\'s migration of their ~1 million line JavaScript codebase to TypeScript (2019–2022) is the most documented large-scale JS → TS migration. Their strategy: use `ts-migrate` (open-sourced) to automatically convert files — adding `// @ts-expect-error` suppressions for every type error — then track "suppression debt" as a metric and require all new code to be fully typed. They migrated all 1 million lines in 6 months without stopping feature development, by treating migration as a background track rather than a separate project. Their open-sourced `ts-migrate` tool has since been used by Stripe, Shopify, and dozens of other companies.
-
 <div align="right">
     <b><a href="#table-of-contents">↥ back to top</a></b>
 </div>
 
 ## Q. How do you implement feature flags for gradual rollouts and safe migrations?
 
-Feature flags (feature toggles) decouple deployment from release, enabling teams to merge code daily without exposing unfinished features, run A/B tests, and roll back without code deploys.
+Feature flags decouple code deployment from feature activation, allowing you to control visibility dynamically without redeploying code. Implementing feature flags requires a central configuration layer, an evaluation engine, and fallback defaults.
+
+**Step-by-Step Gradual Rollout**
+
+Gradual rollouts mitigate blast radius by exposing new code to small percentages of traffic.
+
+* **Define Targeting Context**: Pass a unique identifier (like `user_id` or `tenant_id`) and attributes (like `region` or `app_version`) to the evaluation engine.
+* **Apply Deterministic Hashing**: Consistent user experience requires a user to always see the same variant.
+  * Hash the user ID combined with the feature key: `Hash(user_id + feature_key) % 100`.
+  * If the result is less than your rollout percentage (e.g., 10), enable the feature.
+* **Incrementally Scale**: Move traffic from 1% -> 10% -> 50% -> 100% while monitoring system health metrics.
+
+**Example:**
 
 ```js
-// ── Feature flag service (wrapping LaunchDarkly / Unleash / custom) ───────────
+/**
+ * Feature flag service (wrapping LaunchDarkly / Unleash / custom) 
+ */
+
 // flags.ts — single source of truth for all flags
 export const Flags = {
   NEW_CHECKOUT:      'new-checkout-flow',
@@ -17036,10 +18510,6 @@ function CheckoutPage() {
 // forcing the team to remove the legacy branch
 ```
 
-**Real-World Use Case:**
-
-Facebook\'s Gatekeeper system (now Meta) manages over 10,000 active feature flags simultaneously. Every new feature at Facebook ships behind a flag — code reaches 100% of servers within hours of merge, but only activates for the percentage of users specified in Gatekeeper. This enabled Facebook to deploy code 2× per day while maintaining the ability to kill any feature in under 30 seconds without a deployment. Their open-source equivalent, `unleash`, is used by enterprises including Telenor and Red Hat for the same pattern.
-
 <div align="right">
     <b><a href="#table-of-contents">↥ back to top</a></b>
 </div>
@@ -17047,145 +18517,6 @@ Facebook\'s Gatekeeper system (now Meta) manages over 10,000 active feature flag
 ## # 42. MISCELLANEOUS
 
 <br>
-
-## Q. Describe the Revealing Module Pattern in javascript?
-
-Revealing module pattern is a design pattern, which let you organise your javascript code in modules, and gives better code structure. It gives you power to create public/private variables/methods (using closure), and avoids polluting global scope
-
-It uses IIFE (Immediately invoked function expression: (function(){})();) to wrap your module function, thus creating a local scope for all your variables and methods.
-
-**Syntax:**
-
-```js
-const returnedValue = (function() { ... })();
-```
-
-**Example:**
-
-```js
-const myModule = (function () {
-  "use strict";
-
-  var _privateProperty = "I am a private property";
-  var publicProperty = "I am a public property";
-
-  function _privateMethod() {
-    console.log(_privateProperty);
-  }
-
-  function publicMethod() {
-    _privateMethod();
-  }
-
-  return {
-    publicMethod: publicMethod,
-    publicProperty: publicProperty
-  };
-})();
-
-myModule.publicMethod(); // outputs 'I am a private property'
-console.log(myModule.publicProperty); // outputs 'I am a public property'
-console.log(myModule._privateProperty); // is undefined protected by the module closure
-myModule._privateMethod(); // TypeError: protected by the module closure
-```
-
-**&#9885; [Try this example on CodeSandbox](https://codesandbox.io/s/js-iterator-sh0tvo?file=/src/index.js)**
-
-<div align="right">
-    <b><a href="#table-of-contents">↥ back to top</a></b>
-</div>
-
-## Q. What are XSS and CSRF attacks, and how do you prevent them in JavaScript?
-
-**XSS (Cross-Site Scripting):**
-
-XSS is an injection attack where an attacker injects malicious scripts into content that is served to other users. The injected script executes in the victim\'s browser with the same privileges as the trusted site.
-
-**Types of XSS:**
-
-| Type | Description |
-|------|-------------|
-| Stored XSS | Malicious script is persisted in the database and served to every user |
-| Reflected XSS | Script is included in the request and immediately reflected back in the response |
-| DOM-based XSS | Vulnerability exists entirely in the client-side code |
-
-**Prevention:**
-
-```js
-//  Dangerous — directly inserting user input into DOM
-element.innerHTML = userInput;
-document.write(userInput);
-
-//  Safe — use textContent which does NOT parse HTML
-element.textContent = userInput;
-
-//  Sanitize with a trusted library (DOMPurify)
-import DOMPurify from 'dompurify';
-element.innerHTML = DOMPurify.sanitize(userInput);
-
-//  Set Content-Security-Policy header (server-side)
-// Content-Security-Policy: default-src 'self'; script-src 'self'
-
-//  Use HttpOnly cookies — prevents JS from reading sensitive cookies
-// Set-Cookie: session=abc123; HttpOnly; Secure; SameSite=Strict
-
-//  Encode user data before rendering in HTML contexts
-function escapeHtml(str) {
-  return str
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;')
-    .replace(/"/g, '&quot;')
-    .replace(/'/g, '&#039;');
-}
-```
-
-**CSRF (Cross-Site Request Forgery):**
-
-CSRF tricks an authenticated user\'s browser into making an unwanted request to a server (e.g., transferring money, changing email) using the user\'s existing session cookies.
-
-**Example attack:**
-
-```html
-<!-- Attacker\'s page -->
-<img src="https://bank.com/transfer?to=attacker&amount=1000" />
-<!-- Browser automatically sends the victim\'s cookies with this request -->
-```
-
-**Prevention:**
-
-```js
-//  1. CSRF Token — include a secret token in every state-changing request
-// Server generates a unique token per session and validates it on each request
-
-fetch('/api/transfer', {
-  method: 'POST',
-  headers: {
-    'Content-Type': 'application/json',
-    'X-CSRF-Token': document.querySelector('meta[name="csrf-token"]').content
-  },
-  body: JSON.stringify({ to: 'friend', amount: 100 })
-});
-
-//  2. SameSite Cookie attribute — prevents cookies from being sent cross-origin
-// Set-Cookie: session=abc; SameSite=Strict; Secure
-
-//  3. Check the Origin/Referer header on the server
-
-//  4. Use custom request headers — simple AJAX requests don\'t send custom headers
-//    so requiring a custom header (X-Requested-With) blocks simple cross-site forms
-```
-
-**Summary:**
-
-| Attack | Exploits | Key Defense |
-|--------|---------|-------------|
-| XSS | Trusting user input in DOM | Sanitize output, CSP, `textContent` |
-| CSRF | Trusting browser cookies automatically | CSRF tokens, `SameSite=Strict` cookies |
-
-<div align="right">
-    <b><a href="#table-of-contents">↥ back to top</a></b>
-</div>
 
 ## Q. How do you detect javascript disabled in the page?
 
@@ -17227,277 +18558,6 @@ The Strict Mode is allows you to place a program, or a function, in a `strict` o
 * `this` is undefined in the global context.
 * It catches some common coding bloopers, throwing exceptions.
 * It disables features that are confusing or poorly thought out.
-
-<div align="right">
-    <b><a href="#table-of-contents">↥ back to top</a></b>
-</div>
-
-## Q. How do you implement an LRU Cache in JavaScript?
-
-An **LRU (Least Recently Used) Cache** evicts the least recently accessed item when the cache reaches its capacity. The optimal implementation uses a `Map` (which maintains insertion order) to achieve O(1) get and put operations.
-
-**Implementation using `Map`:**
-
-```js
-class LRUCache {
-  constructor(capacity) {
-    this.capacity = capacity;
-    this.cache = new Map(); // Map preserves insertion order
-  }
-
-  get(key) {
-    if (!this.cache.has(key)) return -1;
-
-    // Move to end to mark as recently used
-    const value = this.cache.get(key);
-    this.cache.delete(key);
-    this.cache.set(key, value);
-    return value;
-  }
-
-  put(key, value) {
-    if (this.cache.has(key)) {
-      this.cache.delete(key); // remove old entry
-    } else if (this.cache.size >= this.capacity) {
-      // Evict the least recently used (first item in Map)
-      const lruKey = this.cache.keys().next().value;
-      this.cache.delete(lruKey);
-    }
-    this.cache.set(key, value);
-  }
-}
-
-// Usage
-const cache = new LRUCache(3);
-cache.put(1, 'A'); // {1:'A'}
-cache.put(2, 'B'); // {1:'A', 2:'B'}
-cache.put(3, 'C'); // {1:'A', 2:'B', 3:'C'}
-cache.get(1);      // 'A' — 1 is now most recent: {2:'B', 3:'C', 1:'A'}
-cache.put(4, 'D'); // capacity exceeded, evict 2: {3:'C', 1:'A', 4:'D'}
-console.log(cache.get(2)); // -1 (evicted)
-console.log(cache.get(3)); // 'C'
-```
-
-**Why `Map` works:**
-
-* `Map` remembers insertion order, so the first key returned by `map.keys()` is always the **oldest** (LRU) entry.
-* All operations — `has`, `get`, `set`, `delete` — are O(1) on average.
-
-**Time & Space Complexity:**
-
-| Operation | Complexity |
-|-----------|-----------|
-| `get` | O(1) |
-| `put` | O(1) |
-| Space | O(capacity) |
-
-<div align="right">
-    <b><a href="#table-of-contents">↥ back to top</a></b>
-</div>
-
-## Q. What is dependency injection in JavaScript?
-
-**Dependency Injection (DI)** is a design pattern where an object\'s dependencies are provided externally rather than created inside the object. This promotes loose coupling, testability, and adherence to the Single Responsibility Principle.
-
-**Without dependency injection (tightly coupled):**
-
-```js
-// Bad — UserService creates its own logger
-class UserService {
-  constructor() {
-    this.logger = new ConsoleLogger(); // hard dependency
-  }
-  createUser(name) {
-    this.logger.log(`Creating user: ${name}`);
-  }
-}
-```
-
-**With dependency injection:**
-
-```js
-// Good — logger is injected, making it easy to swap in tests
-class UserService {
-  constructor(logger, userRepository) {
-    this.logger = logger;
-    this.userRepository = userRepository;
-  }
-
-  async createUser(name) {
-    this.logger.log(`Creating user: ${name}`);
-    return this.userRepository.save({ name });
-  }
-}
-
-// Production
-const service = new UserService(new ConsoleLogger(), new DatabaseRepository());
-
-// Tests — inject mocks
-const mockLogger = { log: jest.fn() };
-const mockRepo   = { save: jest.fn().mockResolvedValue({ id: 1 }) };
-const testService = new UserService(mockLogger, mockRepo);
-```
-
-**DI via function arguments (functional style):**
-
-```js
-function createOrderProcessor(paymentGateway, inventoryService, notifier) {
-  return async function processOrder(order) {
-    await inventoryService.reserve(order.items);
-    await paymentGateway.charge(order.total);
-    await notifier.send(order.userId, 'Order confirmed!');
-  };
-}
-
-const processOrder = createOrderProcessor(
-  new StripeGateway(),
-  new InventoryService(),
-  new EmailNotifier()
-);
-```
-
-**Benefits:**
-
-* Easier unit testing — inject mocks/stubs
-* Loose coupling — swap implementations without changing consuming code
-* Explicit dependencies — easier to understand what a class needs
-* Single Responsibility — classes focus on logic, not construction
-
-<div align="right">
-    <b><a href="#table-of-contents">↥ back to top</a></b>
-</div>
-
-## Q. What are MVC and MVVM patterns in JavaScript?
-
-**MVC (Model-View-Controller):**
-
-MVC separates an application into three components:
-
-* **Model** — manages data and business logic
-* **View** — renders the UI based on model data
-* **Controller** — handles user input, updates model and view
-
-```js
-// Model
-class UserModel {
-  constructor(name, email) {
-    this.name = name;
-    this.email = email;
-  }
-  validate() {
-    return this.email.includes('@');
-  }
-}
-
-// View
-class UserView {
-  render(user) {
-    document.getElementById('name').textContent = user.name;
-    document.getElementById('email').textContent = user.email;
-  }
-  getFormData() {
-    return {
-      name: document.getElementById('nameInput').value,
-      email: document.getElementById('emailInput').value
-    };
-  }
-}
-
-// Controller
-class UserController {
-  constructor(model, view) {
-    this.model = model;
-    this.view = view;
-    document.getElementById('submit').addEventListener('click', () => this.handleSubmit());
-  }
-  handleSubmit() {
-    const data = this.view.getFormData();
-    const model = new UserModel(data.name, data.email);
-    if (model.validate()) {
-      this.view.render(model);
-    }
-  }
-}
-
-const controller = new UserController(null, new UserView());
-```
-
-**MVVM (Model-View-ViewModel):**
-
-MVVM replaces the controller with a **ViewModel** that exposes data bindings, enabling **two-way data binding** between View and ViewModel. Used in frameworks like Angular (two-way binding), Vue.js, and Knockout.
-
-```js
-// Vue.js demonstrates MVVM — ViewModel is the Vue instance
-const vm = new Vue({
-  el: '#app',
-  data: {           // Model
-    message: 'Hello'
-  }
-  // The template (View) binds to `message` automatically
-  // Any change to vm.message immediately updates the DOM
-});
-```
-
-**Comparison:**
-
-| | MVC | MVVM |
-|--|-----|------|
-| Data flow | Controller mediates | Two-way data binding |
-| View knowledge | View knows controller | View knows ViewModel (via binding) |
-| Testability | Controller is testable | ViewModel is testable without UI |
-| Used by | Express, Angular 1 | Vue.js, Angular, React (+hooks) |
-
-<div align="right">
-    <b><a href="#table-of-contents">↥ back to top</a></b>
-</div>
-
-## Q. Describe Singleton Pattern In JavaScript?
-
-The **singleton pattern** is a type of creational pattern that restricts the instantiation of a class to a **single** object. This allows the class to create an instance of the class the first time it is instantiated; however, on the next try, the existing instance of the class is returned. No new instance is created.
-
-<p align="center">
-  <img src="assets/singleton-pattern.png" alt="Singleton Pattern" width="400px" />
-</p>
-
-**Example:**
-
-```js
-/**
- * Singleton Pattern
- **/
-
-let instance = null;
-
-class Printer {
-
-  constructor(pages) {
-    this.display = function () {
-      console.log(
-        `You are connected to the printer. You want to print ${pages} pages.`
-      );
-    };
-  }
-
-  static getInstance(numOfpages) {
-    if (!instance) {
-      instance = new Printer(numOfpages);
-    }
-    return instance;
-  }
-}
-
-var obj1 = Printer.getInstance(2);
-console.log(obj1);
-obj1.display();
-
-var obj2 = Printer.getInstance(3);
-console.log(obj2);
-obj2.display();
-
-console.log(obj2 === obj1); // true
-```
-
-**&#9885; [Try this example on CodeSandbox](https://codesandbox.io/s/js-singleton-pattern-3cvgkr?file=/src/index.js)**
 
 <div align="right">
     <b><a href="#table-of-contents">↥ back to top</a></b>
@@ -17588,259 +18648,6 @@ function copy() {
   alert("Copied the text: " + copyText.value);
 }
 ```
-
-<div align="right">
-    <b><a href="#table-of-contents">↥ back to top</a></b>
-</div>
-
-## Q. What is a service worker?
-
-A Service worker is basically a JavaScript file that runs in background, separate from a web page and provide features that don\'t need a web page or user interaction. 
-
-Some of the major features of service workers are 
-* Offline first web application development
-* Periodic background syncs, push notifications
-* Intercept and handle network requests
-* Programmatically managing a cache of responses
-
-**Lifecycle of a Service Worker**
-
-It consists of the following phases:
-* Download
-* Installation
-* Activation
-
-**Registering a Service Worker**
-
-To register a service worker we first check if the browser supports it and then register it.
-
-```js
-if ('serviceWorker' in navigator) {
-  navigator.serviceWorker.register('/ServiceWorker.js')
-  .then(function(response) {
-
-    // Service worker registration done
-    console.log('Registration Successful', response);
-  }, function(error) {
-    // Service worker registration failed
-    console.log('Registration Failed', error);
-  }
-```
-
-**Installation of service worker:**
-
-After the controlled page that takes care of the registration process, we come to the service worker script that handles the installation part.
-
-Basically, you will need to define a callback for the install event and then decide on the files that you wish to cache. Inside a callback, one needs to take of the following three points –
-
-* Open a cache
-* Cache the files
-* Seek confirmation for the required caches and whether they have been successful.
-
-```js
-var CACHENAME = 'My site cache'; 
-var urlstocache = [ 
-	'/', 
-  '/styles/main1.css', 
-	'/script/main1.js' 
-]; 
-self.addEventListener('install', function(event) { 
-	// Performing installation steps 
-	event.waitUntil( 
-		caches.open(CACHENAME) 
-		.then(function(cache) { 
-			console.log('Opening of cache'); 
-			return cache.addAll(urlstocache);
-		}) 
-);
-```
-
-**Cache and return requests:**
-
-After a service worker is installed and the user navigates to a different page or refreshes, the service worker will begin to receive fetch events, an example of which is below.
-
-```js
-self.addEventListener('fetch', function(event) {
-  event.respondWith(
-    caches.match(event.request)
-      .then(function(response) {
-        // Cache hit - return response
-        if (response) {
-          return response;
-        }
-        return fetch(event.request);
-      }
-    )
-  );
-});
-```
-
-<div align="right">
-    <b><a href="#table-of-contents">↥ back to top</a></b>
-</div>
-
-## Q. How do you manipulate DOM using service worker?
-
-Service worker can\'t access the DOM directly. But it can communicate with the pages it controls by responding to messages sent via the `postMessage` interface, and those pages can manipulate the DOM.
-
-**Example:** service-worker.html
-
-```html
-<!doctype html>
-<html>
-<head>
-<meta charset="UTF-8">
-<title>Service Worker</title>
-</head>
-<body>
-(Look in the console.)
-<script>
-(function() {
-    "use strict";
-
-    if (!navigator.serviceWorker || !navigator.serviceWorker.register) {
-        console.log("This browser doesn\'t support service workers");
-        return;
-    }
-
-    // Listen to messages from service workers.
-    navigator.serviceWorker.addEventListener('message', function(event) {
-        console.log("Got reply from service worker: " + event.data);
-    });
-
-    // Are we being controlled?
-    if (navigator.serviceWorker.controller) {
-        // Yes, send our controller a message.
-        console.log("Sending 'hi' to controller");
-        navigator.serviceWorker.controller.postMessage("hi");
-    } else {
-        // No, register a service worker to control pages like us.
-        // Note that it won\'t control this instance of this page, it only takes effect
-        // for pages in its scope loaded *after* It is installed.
-        navigator.serviceWorker.register("service-worker.js")
-            .then(function(registration) {
-                console.log("Service worker registered, scope: " + registration.scope);
-                console.log("Refresh the page to talk to it.");
-                // If we want to, we might do `location.reload();` so that we\'d be controlled by it
-            })
-            .catch(function(error) {
-                console.log("Service worker registration failed: " + error.message);
-            });
-    }
-})();
-</script>
-</body>
-</html>
-```
-
-**service-worker.js** 
-
-```js
-self.addEventListener("message", function(event) {
-    //event.source.postMessage("Responding to " + event.data);
-    self.clients.matchAll().then(all => all.forEach(client => {
-        client.postMessage("Responding to " + event.data);
-    }));
-});
-```
-
-<div align="right">
-    <b><a href="#table-of-contents">↥ back to top</a></b>
-</div>
-
-## Q. How to use Web Workers in javascript?
-
-**Step 01: Create a Web Workers file**: Write a script to increment the count value.
-
-```js
-// counter.js
-let i = 0;
-
-function timedCount() {
-  i = i + 1;
-  postMessage(i);
-  setTimeout("timedCount()",500);
-}
-
-timedCount();
-```
-
-Here `postMessage()` method is used to post a message back to the HTML page.  
-
-**Step 02: Create a Web Worker Object**: Create a web worker object by checking for browser support.
-
-```js
-if (typeof(w) == "undefined") {
-  w = new Worker("counter.js");
-}
-```
-
-and we can receive messages from web workers
-
-```js
-w.onmessage = function(event){
-  document.getElementById("message").innerHTML = event.data;
-};
-```
-
-**Step 03: Terminate a Web Workers**: Web workers will continue to listen for messages (even after the external script is finished) until it is terminated. You can use terminate() method to terminate listening the messages.
-
-```js
-w.terminate();
-```
-
-**Step 04: Reuse the Web Workers**: If you set the worker variable to undefined you can reuse the code
-
-```js
-w = undefined;
-```
-
-**Example:**
-
-```html
-<!DOCTYPE html>
-<html>
-<body>
-  <p>Count numbers: <output id="result"></output></p>
-  <button onclick="startWorker()">Start</button>
-  <button onclick="stopWorker()">Stop</button>
-  
-  <script>
-    var w;
-
-    function startWorker() {
-      if (typeof(Worker) !== "undefined") {
-        if (typeof(w) == "undefined") {
-          w = new Worker("counter.js");
-        }
-        w.onmessage = function(event) {
-          document.getElementById("result").innerHTML = event.data;
-        };
-      } else {
-        document.getElementById("result").innerHTML = "Sorry! No Web Worker support.";
-      }
-    }
-
-    function stopWorker() {
-      w.terminate();
-      w = undefined;
-    }
-  </script>
-</body>
-</html>
-```
-
-<div align="right">
-    <b><a href="#table-of-contents">↥ back to top</a></b>
-</div>
-
-## Q. What are the restrictions of web workers on DOM?
-
-WebWorkers do not have access to below javascript objects since they are defined in an external files
-
-1. Window object
-2. Document object
-3. Parent object
 
 <div align="right">
     <b><a href="#table-of-contents">↥ back to top</a></b>
@@ -18159,74 +18966,6 @@ $(window).on('resize', _.debounce(function() {
     <b><a href="#table-of-contents">↥ back to top</a></b>
 </div>
 
-## Q. What is same-origin policy?
-
-The same-origin policy is a policy that prevents JavaScript from making requests across domain boundaries. An origin is defined as a combination of URI scheme, hostname, and port number. If you enable this policy then it prevents a malicious script on one page from obtaining access to sensitive data on another web page using Document Object Model(DOM).
-
-<div align="right">
-    <b><a href="#table-of-contents">↥ back to top</a></b>
-</div>
-
-## Q. What is Content Security Policy (CSP) in JavaScript?
-
-**Content Security Policy (CSP)** is an HTTP response header that lets servers declare which dynamic resources (scripts, styles, fonts, images, etc.) are allowed to load. It is the primary defense against **XSS** and **data injection attacks**.
-
-**How to enable CSP:**
-
-```http
-# Server response header
-Content-Security-Policy: default-src 'self'; script-src 'self' https://cdn.example.com; style-src 'self' 'unsafe-inline'; img-src *; report-uri /csp-violation-report
-```
-
-**Key directives:**
-
-| Directive | Purpose |
-|-----------|---------|
-| `default-src` | Fallback for all resource types |
-| `script-src` | Allowed JavaScript sources |
-| `style-src` | Allowed CSS sources |
-| `img-src` | Allowed image sources |
-| `connect-src` | Allowed `fetch`, `XHR`, `WebSocket` endpoints |
-| `frame-ancestors` | Controls iframe embedding (replaces `X-Frame-Options`) |
-| `report-uri` / `report-to` | URL for violation reports |
-
-**Common values:**
-
-| Value | Meaning |
-|-------|---------|
-| `'self'` | Same origin only |
-| `'none'` | Block all |
-| `'unsafe-inline'` | Allow inline scripts/styles (weakens protection) |
-| `'nonce-abc123'` | Allow specific inline script with matching nonce |
-| `https://cdn.com` | Allow specific external domain |
-
-**Nonce-based CSP (recommended for inline scripts):**
-
-```html
-<!-- Server generates a unique nonce per request -->
-<meta http-equiv="Content-Security-Policy" content="script-src 'nonce-2726c7f26c'">
-
-<!-- Only this inline script will execute -->
-<script nonce="2726c7f26c">
-  console.log('This is allowed');
-</script>
-
-<!-- This will be blocked -->
-<script>console.log('This will be blocked');</script>
-```
-
-**Report-only mode (for testing):**
-
-```http
-Content-Security-Policy-Report-Only: default-src 'self'; report-uri /csp-report
-```
-
-This reports violations without blocking resources — useful for testing CSP before enforcement.
-
-<div align="right">
-    <b><a href="#table-of-contents">↥ back to top</a></b>
-</div>
-
 ## Q. What is server-sent events?
 
 Server-sent events (SSE) is a server push technology enabling a browser to receive automatic updates from a server via HTTP connection without resorting to polling. These are a one way communications channel - events flow from server to client only. This is been used in Facebook/Twitter updates, stock price updates, news feeds etc.
@@ -18404,147 +19143,6 @@ In this example, setting `myObj` to `null` removes the only reference to the obj
     <b><a href="#table-of-contents">↥ back to top</a></b>
 </div>
 
-## Q. What are the SOLID principles in JavaScript?
-
-**SOLID** is an acronym for five object-oriented design principles that make software more maintainable and extensible.
-
-**S — Single Responsibility Principle (SRP)**
-
-A class/function should have only one reason to change.
-
-```js
-//  Violates SRP — handles both business logic and persistence
-class UserService {
-  createUser(data) { /* validate + save to DB */ }
-  sendWelcomeEmail(user) { /* send email */ }
-}
-
-//  Each class has one responsibility
-class UserRepository { save(user) { /* DB logic */ } }
-class EmailService    { sendWelcome(user) { /* email logic */ } }
-class UserService {
-  constructor(repo, email) { this.repo = repo; this.email = email; }
-  createUser(data) {
-    const user = this.repo.save(data);
-    this.email.sendWelcome(user);
-    return user;
-  }
-}
-```
-
-**O — Open/Closed Principle (OCP)**
-
-Open for extension, closed for modification.
-
-```js
-//  Add new discount types without modifying existing code
-class DiscountStrategy { apply(price) { return price; } }
-class StudentDiscount  extends DiscountStrategy { apply(p) { return p * 0.8; } }
-class SeniorDiscount   extends DiscountStrategy { apply(p) { return p * 0.7; } }
-
-function checkout(price, strategy) { return strategy.apply(price); }
-```
-
-**L — Liskov Substitution Principle (LSP)**
-
-Subtypes must be substitutable for their base type.
-
-**I — Interface Segregation Principle (ISP)**
-
-No code should be forced to depend on methods it does not use. In JavaScript this means keeping interfaces (objects/mixins) small and focused.
-
-**D — Dependency Inversion Principle (DIP)**
-
-High-level modules should not depend on low-level modules. Both should depend on abstractions.
-
-```js
-//  OrderService depends on an abstraction (any object with .save())
-class OrderService {
-  constructor(repository) { this.repository = repository; }
-  placeOrder(order) { return this.repository.save(order); }
-}
-
-const sqlRepo   = { save: order => console.log('SQL save', order) };
-const noSqlRepo = { save: order => console.log('NoSQL save', order) };
-
-new OrderService(sqlRepo).placeOrder({ id: 1 });
-new OrderService(noSqlRepo).placeOrder({ id: 2 });
-```
-
-<div align="right">
-    <b><a href="#table-of-contents">↥ back to top</a></b>
-</div>
-
-## Q. What is the DRY principle in JavaScript?
-
-**DRY** stands for **Don\'t Repeat Yourself**. It states that every piece of knowledge must have a single, unambiguous, authoritative representation within a system. Duplicated logic makes code harder to maintain because changes must be applied in multiple places.
-
-**Violation:**
-
-```js
-function getFullNameAdmin(user) {
-  return user.firstName + ' ' + user.lastName + ' (admin)';
-}
-
-function getFullNameGuest(user) {
-  return user.firstName + ' ' + user.lastName + ' (guest)';
-}
-```
-
-**Applying DRY:**
-
-```js
-function getFullName(user) {
-  return `${user.firstName} ${user.lastName}`;
-}
-
-function getDisplayName(user) {
-  return `${getFullName(user)} (${user.role})`;
-}
-```
-
-**DRY vs. WET (Write Everything Twice):**
-
-DRY does not mean *never write similar-looking code*. Premature abstractions can introduce unnecessary coupling. A practical rule: abstract duplication only when the same logic appears **three or more times** and the abstraction does not make the code harder to understand.
-
-<div align="right">
-    <b><a href="#table-of-contents">↥ back to top</a></b>
-</div>
-
-## Q. What is the 12-Factor App methodology?
-
-The **12-Factor App** is a methodology for building modern, scalable, maintainable software-as-a-service applications. It was created by Heroku engineers and applies equally to Node.js/JavaScript back-end services.
-
-| Factor | Description |
-|--------|-------------|
-| **1. Codebase** | One codebase tracked in VCS, many deploys |
-| **2. Dependencies** | Explicitly declare and isolate dependencies (`package.json`, `npm install`) |
-| **3. Config** | Store config (API keys, ports, DB URLs) in environment variables, never in code |
-| **4. Backing services** | Treat databases, queues, caches as attached resources |
-| **5. Build, release, run** | Strictly separate build (`npm run build`), release, and run stages |
-| **6. Processes** | Execute the app as one or more stateless processes |
-| **7. Port binding** | Export services via port binding (e.g. `app.listen(process.env.PORT)`) |
-| **8. Concurrency** | Scale out via the process model |
-| **9. Disposability** | Fast startup and graceful shutdown |
-| **10. Dev/prod parity** | Keep development, staging, and production as similar as possible |
-| **11. Logs** | Treat logs as event streams; write to stdout |
-| **12. Admin processes** | Run admin/management tasks as one-off processes |
-
-**JavaScript example — Factor 3 (Config):**
-
-```js
-//  Config from environment variables
-const config = {
-  port:       process.env.PORT       || 3000,
-  dbUrl:      process.env.DATABASE_URL,
-  jwtSecret:  process.env.JWT_SECRET
-};
-```
-
-<div align="right">
-    <b><a href="#table-of-contents">↥ back to top</a></b>
-</div>
-
 ## Q. What are CommonJS, AMD, and UMD module systems?
 
 Before native ES Modules (ESM) were standardised, several module formats existed to solve the lack of a built-in module system in JavaScript.
@@ -18618,54 +19216,6 @@ import Calculator, { add } from './math.js';
 | Loading | Sync | Async | Both | Static/Dynamic |
 | Tree-shakeable | No | No | No | Yes |
 | Native browser support | No | No | No | Yes |
-
-<div align="right">
-    <b><a href="#table-of-contents">↥ back to top</a></b>
-</div>
-
-## Q. What is Component-based Architecture in JavaScript?
-
-**Component-based architecture** is a design approach where the UI (and sometimes back-end logic) is broken into independent, reusable, self-contained **components**. Each component manages its own structure (HTML), style (CSS), and behaviour (JavaScript).
-
-**Key characteristics:**
-
-| Principle | Description |
-|-----------|-------------|
-| **Encapsulation** | A component owns its template, styles, and logic |
-| **Reusability** | Components can be used in multiple places without modification |
-| **Composability** | Complex UIs are built by composing simpler components |
-| **Single responsibility** | Each component has one clear purpose |
-| **Unidirectional data flow** | Data flows down via props; events bubble up |
-
-**Example — React-style component:**
-
-```jsx
-// Atomic component
-function Button({ label, onClick, variant = 'primary' }) {
-  return (
-    <button className={`btn btn-${variant}`} onClick={onClick}>
-      {label}
-    </button>
-  );
-}
-
-// Composed component
-function LoginForm({ onSubmit }) {
-  return (
-    <form onSubmit={onSubmit}>
-      <input type="email" placeholder="Email" />
-      <input type="password" placeholder="Password" />
-      <Button label="Sign In" onClick={onSubmit} />
-    </form>
-  );
-}
-```
-
-**Benefits over monolithic architecture:**
-
-* Easier testing — components can be tested in isolation
-* Parallel development — teams can work on different components simultaneously
-* Incremental updates — a single component can be changed without affecting the whole app
 
 <div align="right">
     <b><a href="#table-of-contents">↥ back to top</a></b>
