@@ -678,7 +678,7 @@ console.log(Number('  42  '));
 
 **Answer: B) `1`, `0`, `0`, `NaN`, `42`**
 
-**Explanation:** `Number(true)` â†’ `1`, `Number(false)` â†’ `0`. `Number(null)` â†’ `0`. `Number(undefined)` â†’ `NaN`. `Number('  42  ')` â†’ `42` — `Number()` trims whitespace before parsing. Knowing these rules prevents bugs when doing arithmetic with mixed-type data.
+**Explanation:** `Number(true)` → `1`, `Number(false)` → `0`. `Number(null)` → `0`. `Number(undefined)` → `NaN`. `Number('  42  ')` → `42` — `Number()` trims whitespace before parsing. Knowing these rules prevents bugs when doing arithmetic with mixed-type data.
 
 </details>
 
@@ -792,7 +792,7 @@ console.log('' == '0');
 
 **Answer: B) `true`, `true`, `true`, `false`**
 
-**Explanation:** `'' == false` â†’ both coerce to `0`, so `true`. `0 == ''` â†’ `''` coerces to `0`, so `true`. `0 == '0'` â†’ `'0'` coerces to `0`, so `true`. `'' == '0'` â†’ string comparison, `""` â‰  `"0"`, so `false`. This non-transitivity illustrates why `===` is always preferred.
+**Explanation:** `'' == false` → both coerce to `0`, so `true`. `0 == ''` → `''` coerces to `0`, so `true`. `0 == '0'` → `'0'` coerces to `0`, so `true`. `'' == '0'` → string comparison, `""` â‰  `"0"`, so `false`. This non-transitivity illustrates why `===` is always preferred.
 
 </details>
 
@@ -820,7 +820,7 @@ console.log(parseInt('10abc'));
 
 **Answer: B) `10`, `10.9`, `255`, `10`, `10`**
 
-**Explanation:** `parseInt('10.9')` â†’ `10` (truncates decimal). `parseFloat('10.9')` â†’ `10.9`. `parseInt('0xFF', 16)` â†’ `255`. `parseInt('010')` â†’ `10` (ES5+ defaults to base 10 without explicit radix). `parseInt('10abc')` â†’ `10` (parses until invalid character).
+**Explanation:** `parseInt('10.9')` → `10` (truncates decimal). `parseFloat('10.9')` → `10.9`. `parseInt('0xFF', 16)` → `255`. `parseInt('010')` → `10` (ES5+ defaults to base 10 without explicit radix). `parseInt('10abc')` → `10` (parses until invalid character).
 
 `parseInt('0xFF', 16)` works as follows:
 
@@ -1004,7 +1004,7 @@ console.log(a, b, c);
 
 **Answer: B) `99`, `0`, `null`**
 
-**Explanation:** `&&=` only assigns the right side if the left side is **truthy**. `a = 1` (truthy) â†’ assigned `99`. `b = 0` (falsy) â†’ not assigned, stays `0`. `c = null` (falsy) â†’ not assigned, stays `null`. This is shorthand for `a = a && 99`.
+**Explanation:** `&&=` only assigns the right side if the left side is **truthy**. `a = 1` (truthy) → assigned `99`. `b = 0` (falsy) → not assigned, stays `0`. `c = null` (falsy) → not assigned, stays `null`. This is shorthand for `a = a && 99`.
 
 </details>
 
@@ -1095,7 +1095,7 @@ console.log(classify(55));
 
 **Answer: C) `'B'`, `'F'`**
 
-**Explanation:** Chained ternaries act like if/else if chains. `85 >= 90` is false, `85 >= 80` is true â†’ `'B'`. For `55`: all conditions fail â†’ `'F'`. This pattern is readable for simple grading/classification but should be avoided for complex multi-branch logic.
+**Explanation:** Chained ternaries act like if/else if chains. `85 >= 90` is false, `85 >= 80` is true → `'B'`. For `55`: all conditions fail → `'F'`. This pattern is readable for simple grading/classification but should be avoided for complex multi-branch logic.
 
 </details>
 
@@ -1233,7 +1233,7 @@ console.log('make' in Object.create(car));
 
 **Answer: B) `true`, `false`, `true`, `true`**
 
-**Explanation:** The `in` operator checks if a property exists on an object **or its prototype chain**. `"make"` is an own property â†’ `true`. `"price"` doesn\'t exist â†’ `false`. `"toString"` exists on `Object.prototype` â†’ `true`. An object created with `Object.create(car)` inherits `car`\'s properties, so `"make" in child` is also `true`.
+**Explanation:** The `in` operator checks if a property exists on an object **or its prototype chain**. `"make"` is an own property → `true`. `"price"` doesn\'t exist → `false`. `"toString"` exists on `Object.prototype` → `true`. An object created with `Object.create(car)` inherits `car`\'s properties, so `"make" in child` is also `true`.
 
 </details>
 
@@ -1343,7 +1343,7 @@ console.log(Math.trunc(-4.9));
 
 **Answer: A) `5`, `-4`, `-4`, `-5`, `-4`**
 
-**Explanation:** `Math.round(4.5)` â†’ `5`. `Math.round(-4.5)` â†’ `-4` (rounds toward +âˆž). `Math.ceil(-4.1)` â†’ `-4` (rounds toward +âˆž). `Math.floor(-4.1)` â†’ `-5` (rounds toward -âˆž). `Math.trunc(-4.9)` â†’ `-4` (removes decimal part, rounds toward zero).
+**Explanation:** `Math.round(4.5)` → `5`. `Math.round(-4.5)` → `-4` (rounds toward +âˆž). `Math.ceil(-4.1)` → `-4` (rounds toward +âˆž). `Math.floor(-4.1)` → `-5` (rounds toward -âˆž). `Math.trunc(-4.9)` → `-4` (removes decimal part, rounds toward zero).
 
 </details>
 
@@ -1371,7 +1371,7 @@ console.log(isFinite(Infinity));
 
 **Answer: B) `Infinity`, `-Infinity`, `NaN`, `NaN`, `false`**
 
-**Explanation:** Division by zero in JavaScript produces `Infinity` (not an error). `Infinity - Infinity` is an indeterminate form â†’ `NaN`. `0/0` â†’ `NaN`. `isFinite(Infinity)` â†’ `false`. JavaScript arithmetic never throws for overflow or division by zero.
+**Explanation:** Division by zero in JavaScript produces `Infinity` (not an error). `Infinity - Infinity` is an indeterminate form → `NaN`. `0/0` → `NaN`. `isFinite(Infinity)` → `false`. JavaScript arithmetic never throws for overflow or division by zero.
 
 </details>
 
@@ -1399,7 +1399,7 @@ console.log(isFinite('42'));
 
 **Answer: B) `true`, `false`, `false`, `true`, `true`**
 
-**Explanation:** `Number.isInteger(5.0)` â†’ `true` (5.0 is mathematically an integer). `Number.isFinite(Infinity)` â†’ `false`. `Number.isFinite(42)` â†’ `true`. The global `isFinite('42')` â†’ `true` because it **coerces** its argument to a number first, unlike `Number.isFinite` which strictly checks the type.
+**Explanation:** `Number.isInteger(5.0)` → `true` (5.0 is mathematically an integer). `Number.isFinite(Infinity)` → `false`. `Number.isFinite(42)` → `true`. The global `isFinite('42')` → `true` because it **coerces** its argument to a number first, unlike `Number.isFinite` which strictly checks the type.
 
 </details>
 
@@ -1426,7 +1426,7 @@ console.log(parseInt('z', 36));
 
 **Answer: A) `3`, `255`, `63`, `35`**
 
-**Explanation:** `parseInt('11', 2)` converts binary `11` â†’ decimal `3`. `parseInt('ff', 16)` converts hex `ff` â†’ `255`. `parseInt('077', 8)` converts octal `077` â†’ `63`. `parseInt('z', 36)` converts base-36 `z` â†’ `35`. Always provide the radix parameter to avoid unexpected behavior.
+**Explanation:** `parseInt('11', 2)` converts binary `11` → decimal `3`. `parseInt('ff', 16)` converts hex `ff` → `255`. `parseInt('077', 8)` converts octal `077` → `63`. `parseInt('z', 36)` converts base-36 `z` → `35`. Always provide the radix parameter to avoid unexpected behavior.
 
 </details>
 
@@ -1454,7 +1454,7 @@ console.log(Math.sqrt(144));
 
 **Answer: A) `5`, `3`, `2`, `256`, `12`**
 
-**Explanation:** `Math.abs(-5)` â†’ `5`. `Math.max(1,3,2)` â†’ `3`. `Math.min(...[4,2,7])` â†’ `2` (spread expands the array into individual arguments). `Math.pow(2,8) = 256` (equivalent to `2**8`). `Math.sqrt(144) = 12`.
+**Explanation:** `Math.abs(-5)` → `5`. `Math.max(1,3,2)` → `3`. `Math.min(...[4,2,7])` → `2` (spread expands the array into individual arguments). `Math.pow(2,8) = 256` (equivalent to `2**8`). `Math.sqrt(144) = 12`.
 
 </details>
 
@@ -1482,7 +1482,7 @@ console.log(typeof n.toFixed(2));
 
 **Answer: A) `"123.46"`, `"123.46"`, `"1.2e+2"`, `"string"`**
 
-**Explanation:** `toFixed(2)` formats to 2 decimal places â†’ `"123.46"`. `toPrecision(5)` uses 5 significant digits â†’ `"123.46"`. `toPrecision(2)` uses only 2 significant digits â†’ `"1.2e+2"` (scientific notation). Both return **strings**, not numbers.
+**Explanation:** `toFixed(2)` formats to 2 decimal places → `"123.46"`. `toPrecision(5)` uses 5 significant digits → `"123.46"`. `toPrecision(2)` uses only 2 significant digits → `"1.2e+2"` (scientific notation). Both return **strings**, not numbers.
 
 </details>
 
@@ -1511,7 +1511,7 @@ console.log(isNaN('hello'));
 
 **Answer: A) `false`, `true`, `true`, `false`, `true`**
 
-**Explanation:** `NaN` is the only value not equal to itself. `x === x` â†’ `false`, `x !== x` â†’ `true` (idiomatic NaN check). `Number.isNaN(NaN)` â†’ `true` (no coercion). `Number.isNaN('hello')` â†’ `false` (it\'s a string, not NaN). Global `isNaN('hello')` â†’ `true` (coerces `'hello'` to `NaN` first — misleading).
+**Explanation:** `NaN` is the only value not equal to itself. `x === x` → `false`, `x !== x` → `true` (idiomatic NaN check). `Number.isNaN(NaN)` → `true` (no coercion). `Number.isNaN('hello')` → `false` (it\'s a string, not NaN). Global `isNaN('hello')` → `true` (coerces `'hello'` to `NaN` first — misleading).
 
 </details>
 
@@ -1652,7 +1652,7 @@ console.log('hello'.padStart(3));
 
 **Answer: A) `"00042"`, `"42***"`, `"hello"`**
 
-**Explanation:** `padStart(5, '0')` pads from the left to reach length 5 â†’ `"00042"`. `padEnd(5, '*')` pads from the right â†’ `"42***"`. If the string is already >= the target length, it is returned unchanged — `'hello'` has length 5, which is >= 3, so it is returned as-is.
+**Explanation:** `padStart(5, '0')` pads from the left to reach length 5 → `"00042"`. `padEnd(5, '*')` pads from the right → `"42***"`. If the string is already >= the target length, it is returned unchanged — `'hello'` has length 5, which is >= 3, so it is returned as-is.
 
 </details>
 
@@ -1816,7 +1816,7 @@ console.log(url.includes('example'));
 
 **Answer: B) `true`, `true`, `true`, `true`**
 
-**Explanation:** `startsWith('https')` â†’ `true`. `endsWith('/users')` â†’ `true`. `startsWith('api', 8)` — the second argument is the start position, so it checks from index 8 where `'api'` begins â†’ `true`. `includes('example')` â†’ `true`. All these methods are case-sensitive.
+**Explanation:** `startsWith('https')` → `true`. `endsWith('/users')` → `true`. `startsWith('api', 8)` — the second argument is the start position, so it checks from index 8 where `'api'` begins → `true`. `includes('example')` → `true`. All these methods are case-sensitive.
 
 </details>
 
@@ -1843,7 +1843,7 @@ console.log(padded.trimEnd().startsWith('  '));
 
 **Answer: B) `11`, `true`, `true`**
 
-**Explanation:** `trim()` removes whitespace from both ends â†’ `'hello world'` (length 11). `trimStart()` only removes leading whitespace â†’ `'hello world  '` (still ends with `'  '` â†’ `true`). `trimEnd()` only removes trailing whitespace â†’ `'  hello world'` (still starts with `'  '` â†’ `true`).
+**Explanation:** `trim()` removes whitespace from both ends → `'hello world'` (length 11). `trimStart()` only removes leading whitespace → `'hello world  '` (still ends with `'  '` → `true`). `trimEnd()` only removes trailing whitespace → `'  hello world'` (still starts with `'  '` → `true`).
 
 </details>
 
@@ -1897,7 +1897,7 @@ console.log(String.fromCharCode(72, 101, 108, 108, 111));
 
 **Answer: A) `65`, `97`, `"Hello"`**
 
-**Explanation:** `'A'.charCodeAt(0)` â†’ `65` (Unicode code point for uppercase A). `'a'.charCodeAt(0)` â†’ `97` (lowercase a). `String.fromCharCode(72, 101, 108, 108, 111)` converts code points back to a string: H=72, e=101, l=108, l=108, o=111 â†’ `"Hello"`. Useful for encoding/decoding ASCII data.
+**Explanation:** `'A'.charCodeAt(0)` → `65` (Unicode code point for uppercase A). `'a'.charCodeAt(0)` → `97` (lowercase a). `String.fromCharCode(72, 101, 108, 108, 111)` converts code points back to a string: H=72, e=101, l=108, l=108, o=111 → `"Hello"`. Useful for encoding/decoding ASCII data.
 
 </details>
 
@@ -2127,7 +2127,7 @@ console.log(arr.indexOf(null));
 
 **Answer: A) `true`, `-1`, `true`, `2`**
 
-**Explanation:** `includes()` uses the SameValueZero algorithm — it correctly finds `NaN` (unlike `NaN === NaN` which is false). `indexOf()` uses strict equality (`===`), so it cannot find `NaN` â†’ returns `-1`. Both find `null` at index 2.
+**Explanation:** `includes()` uses the SameValueZero algorithm — it correctly finds `NaN` (unlike `NaN === NaN` which is false). `indexOf()` uses strict equality (`===`), so it cannot find `NaN` → returns `-1`. Both find `null` at index 2.
 
 </details>
 
@@ -2209,7 +2209,7 @@ console.log(result);
 
 **Answer: B) `[5,6,3,4,1,2]`**
 
-**Explanation:** `reduceRight` processes elements from right to left. Starting with `[]`: concat `[5,6]` â†’ `[5,6]`, concat `[3,4]` â†’ `[5,6,3,4]`, concat `[1,2]` â†’ `[5,6,3,4,1,2]`. Compare with `reduce` (left-to-right) which would produce `[1,2,3,4,5,6]`.
+**Explanation:** `reduceRight` processes elements from right to left. Starting with `[]`: concat `[5,6]` → `[5,6]`, concat `[3,4]` → `[5,6,3,4]`, concat `[1,2]` → `[5,6,3,4,1,2]`. Compare with `reduce` (left-to-right) which would produce `[1,2,3,4,5,6]`.
 
 </details>
 
@@ -2450,7 +2450,7 @@ console.log(sum);
 
 **Answer: B) `16`**
 
-**Explanation:** The loop adds odd numbers below 8. `continue` skips even numbers. `break` exits when `i > 7`. Odd numbers added: `1, 3, 5, 7` â†’ sum = `16`. (`9` is odd but `i > 7` triggers break before adding).
+**Explanation:** The loop adds odd numbers below 8. `continue` skips even numbers. `break` exits when `i > 7`. Odd numbers added: `1, 3, 5, 7` → sum = `16`. (`9` is odd but `i > 7` triggers break before adding).
 
 </details>
 
@@ -2608,7 +2608,7 @@ console.log(result);
 
 **Answer: B) `"big"`, `20`**
 
-**Explanation:** The ternary operator can be used as a statement (though this is generally discouraged for readability). `10 > 5` is true â†’ `console.log('big')` is executed. The second ternary evaluates `x * 2 = 20` and assigns it to `result`.
+**Explanation:** The ternary operator can be used as a statement (though this is generally discouraged for readability). `10 > 5` is true → `console.log('big')` is executed. The second ternary evaluates `x * 2 = 20` and assigns it to `result`.
 
 </details>
 
@@ -2700,7 +2700,7 @@ console.log(Array.isArray(arguments));
 
 **Answer: D) `15`, and the second line throws `ReferenceError`**
 
-**Explanation:** Inside `sum()`, `arguments` works fine. Outside a function, `arguments` is not defined â†’ `ReferenceError`. The `arguments` object is array-like (has `length`, numeric indices) but is NOT an actual array — `Array.isArray(arguments)` inside the function returns `false`. Use rest parameters (`...args`) in modern code.
+**Explanation:** Inside `sum()`, `arguments` works fine. Outside a function, `arguments` is not defined → `ReferenceError`. The `arguments` object is array-like (has `length`, numeric indices) but is NOT an actual array — `Array.isArray(arguments)` inside the function returns `false`. Use rest parameters (`...args`) in modern code.
 
 </details>
 
@@ -2734,7 +2734,7 @@ console.log(typeof count);
 
 **Answer: B) `2`, `"undefined"`**
 
-**Explanation:** The IIFE creates a private `count` variable inaccessible from outside. The returned object provides controlled access. `counter.inc()` increments twice â†’ `2`. `typeof count` outside the IIFE â†’ `"undefined"` (undeclared variable, `typeof` is safe). This is the classic module pattern.
+**Explanation:** The IIFE creates a private `count` variable inaccessible from outside. The returned object provides controlled access. `counter.inc()` increments twice → `2`. `typeof count` outside the IIFE → `"undefined"` (undeclared variable, `typeof` is safe). This is the classic module pattern.
 
 </details>
 
@@ -2767,7 +2767,7 @@ console.log(double(triple(4)));
 
 **Answer: A) `10`, `15`, `24`**
 
-**Explanation:** `multiplier` is a higher-order function — it returns a function. `double(5)` â†’ `5*2 = 10`. `triple(5)` â†’ `5*3 = 15`. `double(triple(4))` â†’ `triple(4) = 12`, then `double(12) = 24`. Each closure captures its own `factor` value.
+**Explanation:** `multiplier` is a higher-order function — it returns a function. `double(5)` → `5*2 = 10`. `triple(5)` → `5*3 = 15`. `double(triple(4))` → `triple(4) = 12`, then `double(12) = 24`. Each closure captures its own `factor` value.
 
 </details>
 
@@ -2955,7 +2955,7 @@ console.log(callCount);
 
 **Answer: B) `1`**
 
-**Explanation:** Default parameter expressions are evaluated **lazily** — only when the parameter is actually `undefined`. The first two calls provide explicit values, so `getDefault()` is never called. The third call omits the argument â†’ `getDefault()` is called once. `callCount = 1`.
+**Explanation:** Default parameter expressions are evaluated **lazily** — only when the parameter is actually `undefined`. The first two calls provide explicit values, so `getDefault()` is never called. The third call omits the argument → `getDefault()` is called once. `callCount = 1`.
 
 </details>
 
@@ -3062,7 +3062,7 @@ console.log(counter.value());
 
 **Answer: B) `1`**
 
-**Explanation:** The closure retains access to `count`. Starting at `0`: `increment()` â†’ `1`, `increment()` â†’ `2`, `decrement()` â†’ `1`. `counter.value()` returns `1`.
+**Explanation:** The closure retains access to `count`. Starting at `0`: `increment()` → `1`, `increment()` → `2`, `decrement()` → `1`. `counter.value()` returns `1`.
 
 </details>
 
@@ -3126,7 +3126,7 @@ console.log(times1(), times2(), times3());
 
 **Answer: C) `10`, `20`, `30`**
 
-**Explanation:** Because `let` is block-scoped, each loop iteration creates a new `i` binding. Each arrow function closes over its own `i` (1, 2, 3). With `var`, all closures would share the same `i` (â†’ `40, 40, 40` after the loop ends at 4). This demonstrates how `let` fixed the classic closure-in-loop bug.
+**Explanation:** Because `let` is block-scoped, each loop iteration creates a new `i` binding. Each arrow function closes over its own `i` (1, 2, 3). With `var`, all closures would share the same `i` (→ `40, 40, 40` after the loop ends at 4). This demonstrates how `let` fixed the classic closure-in-loop bug.
 
 </details>
 
@@ -3228,7 +3228,7 @@ console.log(sixTimes(5));
 
 **Answer: A) `24`, `30`**
 
-**Explanation:** Partial application pre-fills some arguments. `double(3, 4)` â†’ `multiply(2, 3, 4) = 24`. `sixTimes(5)` â†’ `multiply(2, 3, 5) = 30`. Closures make this possible by preserving `presetArgs` across calls. Unlike `bind`, this pattern allows remaining args to be supplied flexibly.
+**Explanation:** Partial application pre-fills some arguments. `double(3, 4)` → `multiply(2, 3, 4) = 24`. `sixTimes(5)` → `multiply(2, 3, 5) = 30`. Closures make this possible by preserving `presetArgs` across calls. Unlike `bind`, this pattern allows remaining args to be supplied flexibly.
 
 </details>
 
@@ -3264,7 +3264,7 @@ console.log(calls);
 
 **Answer: B) `16 16 25`, `2`**
 
-**Explanation:** The cache (closed over) persists between calls. `square(4)` â†’ cache miss, calls `fn(4)`, stores `16`. `square(4)` again â†’ cache hit, returns `16` without calling `fn`. `square(5)` â†’ cache miss, calls `fn(5)`. Total `fn` calls: `2`.
+**Explanation:** The cache (closed over) persists between calls. `square(4)` → cache miss, calls `fn(4)`, stores `16`. `square(4)` again → cache hit, returns `16` without calling `fn`. `square(5)` → cache miss, calls `fn(5)`. Total `fn` calls: `2`.
 
 </details>
 
@@ -3366,7 +3366,7 @@ console.log(letFns.map(f => f()));
 
 **Answer: B) `[3,3,3]`, `[0,1,2]`**
 
-**Explanation:** `var` creates a single `i` variable shared by all closures. After the loop, `i = 3` â†’ all functions return `3`. `let` creates a new `j` binding per iteration â†’ each closure captures a different value (0, 1, 2). This is the canonical example of why `let` was introduced.
+**Explanation:** `var` creates a single `i` variable shared by all closures. After the loop, `i = 3` → all functions return `3`. `let` creates a new `j` binding per iteration → each closure captures a different value (0, 1, 2). This is the canonical example of why `let` was introduced.
 
 </details>
 
@@ -3501,7 +3501,7 @@ console.log(x);
 
 **Answer: C) `undefined`, `"local"`, `"global"`**
 
-**Explanation:** Inside `outer()`, the local `var x` is hoisted to the top of the function, shadowing the global. At the first `console.log(x)`, `x` is hoisted but not yet assigned â†’ `undefined`. After assignment, it\'s `"local"`. The global `x` remains `"global"`.
+**Explanation:** Inside `outer()`, the local `var x` is hoisted to the top of the function, shadowing the global. At the first `console.log(x)`, `x` is hoisted but not yet assigned → `undefined`. After assignment, it\'s `"local"`. The global `x` remains `"global"`.
 
 </details>
 
@@ -3651,7 +3651,7 @@ console.log(foo);
 
 **Answer: B) `"function"`, `"variable"`**
 
-**Explanation:** Function declarations are hoisted above `var` declarations. Before execution: `foo` is the function. The `var foo` declaration is ignored (already declared by function), but the assignment `foo = 'variable'` runs. Before the assignment: `typeof foo` â†’ `"function"`. After: `foo` â†’ `"variable"`.
+**Explanation:** Function declarations are hoisted above `var` declarations. Before execution: `foo` is the function. The `var foo` declaration is ignored (already declared by function), but the assignment `foo = 'variable'` runs. Before the assignment: `typeof foo` → `"function"`. After: `foo` → `"variable"`.
 
 </details>
 
@@ -3943,7 +3943,7 @@ console.log(typeof name);
 
 **Answer: B) `"Alice"` `25` `"US"`, `"undefined"`**
 
-**Explanation:** `name: firstName` renames `name` to `firstName`. `age = 18` defaults only if `age` is `undefined` — since it\'s `25`, the default is not used. `country` is not in the source object, so it defaults to `'US'`. The variable `name` is never created â†’ `typeof name` is `"undefined"`.
+**Explanation:** `name: firstName` renames `name` to `firstName`. `age = 18` defaults only if `age` is `undefined` — since it\'s `25`, the default is not used. `country` is not in the source object, so it defaults to `'US'`. The variable `name` is never created → `typeof name` is `"undefined"`.
 
 </details>
 
@@ -4099,7 +4099,7 @@ console.log(obj.key, obj.value, obj.dynamicKey, obj.greet());
 
 **Answer: C) `"dynamic"`, `42`, `true`, `"hello"`**
 
-**Explanation:** Property shorthand `{ key }` is `{ key: key }` where `key = 'dynamic'` â†’ property named `key` with value `'dynamic'`. Similarly `{ value }` â†’ `{ value: 42 }`. Computed property `[key + 'Key']` evaluates to `'dynamicKey'`. Method shorthand `greet()` creates a method.
+**Explanation:** Property shorthand `{ key }` is `{ key: key }` where `key = 'dynamic'` → property named `key` with value `'dynamic'`. Similarly `{ value }` → `{ value: 42 }`. Computed property `[key + 'Key']` evaluates to `'dynamicKey'`. Method shorthand `greet()` creates a method.
 
 </details>
 
@@ -4128,7 +4128,7 @@ console.log(weakMap.size);
 
 **Answer: C) `true`, `undefined` — WeakMap has no `size` property**
 
-**Explanation:** `WeakMap` holds **weak references** to its keys — if the key object has no other references, it can be garbage collected. `weakMap.has(obj)` â†’ `true`. `weakMap.size` is `undefined` — `WeakMap` deliberately has no `size` property (and is not iterable) because the entries may disappear at any time due to GC.
+**Explanation:** `WeakMap` holds **weak references** to its keys — if the key object has no other references, it can be garbage collected. `weakMap.has(obj)` → `true`. `weakMap.size` is `undefined` — `WeakMap` deliberately has no `size` property (and is not iterable) because the entries may disappear at any time due to GC.
 
 </details>
 
@@ -4232,7 +4232,7 @@ console.log(a, b, c, d);
 
 **Answer: B) `"default-a"`, `"default-b"`, `0`, `""`**
 
-**Explanation:** `??=` (nullish assignment) only assigns if the left side is `null` or `undefined`. `a = null` and `b = undefined` are nullish â†’ assigned. `c = 0` and `d = ''` are **not** nullish (they have values, even falsy ones) â†’ not assigned. This differs from `||=` which assigns for any falsy value.
+**Explanation:** `??=` (nullish assignment) only assigns if the left side is `null` or `undefined`. `a = null` and `b = undefined` are nullish → assigned. `c = 0` and `d = ''` are **not** nullish (they have values, even falsy ones) → not assigned. This differs from `||=` which assigns for any falsy value.
 
 </details>
 
@@ -4380,13 +4380,13 @@ document.getElementById("outer").addEventListener("click", function(e) {
 
 - A) Both log `"outer"`
 - B) Both log `"inner"`
-- C) `e.target` â†’ `"inner"`, `e.currentTarget` â†’ `"outer"`
-- D) `e.target` â†’ `"outer"`, `e.currentTarget` â†’ `"inner"`
+- C) `e.target` → `"inner"`, `e.currentTarget` → `"outer"`
+- D) `e.target` → `"outer"`, `e.currentTarget` → `"inner"`
 
 <details>
 <summary><strong>Answer & Explanation</strong></summary>
 
-**Answer: C) `e.target` â†’ `"inner"`, `e.currentTarget` â†’ `"outer"`**
+**Answer: C) `e.target` → `"inner"`, `e.currentTarget` → `"outer"`**
 
 **Explanation:** `e.target` is the element that **triggered** the event (the innermost clicked element). `e.currentTarget` is the element the listener is **attached to**. During bubbling, `currentTarget` changes with each handler, while `target` always remains the original element that was clicked.
 
@@ -4619,7 +4619,7 @@ requestAnimationFrame(animate);
 
 **Answer: B) The callback fires before the next browser repaint, synchronized with the display refresh rate**
 
-**Explanation:** `requestAnimationFrame` schedules callbacks to run before the next browser repaint, synchronized to the display\'s refresh rate (typically 60fps â†’ ~16.67ms). This ensures smooth animations without tearing. Unlike `setTimeout`, it automatically pauses in hidden tabs to save battery.
+**Explanation:** `requestAnimationFrame` schedules callbacks to run before the next browser repaint, synchronized to the display\'s refresh rate (typically 60fps → ~16.67ms). This ensures smooth animations without tearing. Unlike `setTimeout`, it automatically pauses in hidden tabs to save battery.
 
 </details>
 
@@ -4816,7 +4816,7 @@ console.log(lazy[0]);
 
 **Answer: B) `"<b>bold</b> and <i>italic</i>"`, `"<b>"`**
 
-**Explanation:** Greedy `.+` matches as much as possible â†’ matches everything from the first `<` to the last `>`. Non-greedy `.+?` matches as little as possible â†’ stops at the first `>`, capturing `"<b>"`. Add `?` after quantifiers (`*?`, `+?`, `{n,m}?`) to make them non-greedy.
+**Explanation:** Greedy `.+` matches as much as possible → matches everything from the first `<` to the last `>`. Non-greedy `.+?` matches as little as possible → stops at the first `>`, capturing `"<b>"`. Add `?` after quantifiers (`*?`, `+?`, `{n,m}?`) to make them non-greedy.
 
 </details>
 
@@ -4922,7 +4922,7 @@ console.log(text.match(/^hello/gim).length);
 
 **Answer: B) `3`, `3`**
 
-**Explanation:** `/hello/gi` with `g` (global) + `i` (case-insensitive) matches all three occurrences. Without `m`, `^` only matches the start of the entire string. With `m` (multiline), `^` matches the start of each line. All three `"hello"` variants appear at line starts â†’ 3 matches.
+**Explanation:** `/hello/gi` with `g` (global) + `i` (case-insensitive) matches all three occurrences. Without `m`, `^` only matches the start of the entire string. With `m` (multiline), `^` matches the start of each line. All three `"hello"` variants appear at line starts → 3 matches.
 
 </details>
 
@@ -4948,7 +4948,7 @@ console.log(/Hello.World/s.test(multiline));
 
 **Answer: C) `false`, `true`**
 
-**Explanation:** By default, `.` matches any character **except** newlines (`\n`, `\r`, etc.). Without the `s` flag, `/Hello.World/` does not match across a newline â†’ `false`. With the `s` (dotAll) flag (ES2018), `.` matches **all** characters including newlines â†’ `true`. This flag is essential for matching multi-line content.
+**Explanation:** By default, `.` matches any character **except** newlines (`\n`, `\r`, etc.). Without the `s` flag, `/Hello.World/` does not match across a newline → `false`. With the `s` (dotAll) flag (ES2018), `.` matches **all** characters including newlines → `true`. This flag is essential for matching multi-line content.
 
 </details>
 
@@ -5152,7 +5152,7 @@ console.log(types);
 
 **Answer: B) `["TypeError","ReferenceError","RangeError","URIError","SyntaxError"]`**
 
-**Explanation:** `null.property` â†’ `TypeError`. `undeclaredVar` â†’ `ReferenceError`. `new Array(-1)` â†’ `RangeError` (invalid length). `decodeURIComponent('%')` â†’ `URIError` (malformed URI). `eval('}{')` â†’ `SyntaxError`. Knowing error types helps write precise `catch` handlers.
+**Explanation:** `null.property` → `TypeError`. `undeclaredVar` → `ReferenceError`. `new Array(-1)` → `RangeError` (invalid length). `decodeURIComponent('%')` → `URIError` (malformed URI). `eval('}{')` → `SyntaxError`. Knowing error types helps write precise `catch` handlers.
 
 </details>
 
@@ -5190,7 +5190,7 @@ try {
 
 **Answer: B) `true` — the error is wrapped with a descriptive message**
 
-**Explanation:** Rethrowing errors is a best practice for creating error layers. Catch only the errors you expect (`SyntaxError`), wrap them with context, and rethrow unknown errors to avoid swallowing bugs. The new message starts with `'Invalid'` â†’ `startsWith` returns `true`.
+**Explanation:** Rethrowing errors is a best practice for creating error layers. Catch only the errors you expect (`SyntaxError`), wrap them with context, and rethrow unknown errors to avoid swallowing bugs. The new message starts with `'Invalid'` → `startsWith` returns `true`.
 
 </details>
 
@@ -5226,7 +5226,7 @@ try {
 
 **Answer: C) `"Failed to fetch data"`, `true`**
 
-**Explanation:** `Error.cause` (ES2022) allows chaining errors to preserve the original cause when wrapping errors. `new Error(msg, { cause: originalError })` stores the original error as `e.cause`. Logging tools can walk the `cause` chain to show the complete error context. `e.cause instanceof TypeError` â†’ `true`.
+**Explanation:** `Error.cause` (ES2022) allows chaining errors to preserve the original cause when wrapping errors. `new Error(msg, { cause: originalError })` stores the original error as `e.cause`. Logging tools can walk the `cause` chain to show the complete error context. `e.cause instanceof TypeError` → `true`.
 
 </details>
 
@@ -5265,7 +5265,7 @@ try {
 
 **Answer: B) `"caught: try error"`, `"finally"`, `"outer catch: catch error"`**
 
-**Explanation:** The sequence: `try` throws â†’ `catch` logs `"caught: try error"` then throws a new error â†’ `finally` runs (always!) â†’ `finally` completes without throwing â†’ the error from `catch` propagates â†’ outer `catch` receives `"catch error"`. If `finally` threw, it would replace the `catch` error.
+**Explanation:** The sequence: `try` throws → `catch` logs `"caught: try error"` then throws a new error → `finally` runs (always!) → `finally` completes without throwing → the error from `catch` propagates → outer `catch` receives `"catch error"`. If `finally` threw, it would replace the `catch` error.
 
 </details>
 
@@ -5295,7 +5295,7 @@ Promise.reject(new Error('handled')).catch(e => console.log('Caught:', e.message
 
 **Answer: B) `"Unhandled: whoops"` and `"Caught: handled"` — only uncaught rejections trigger the handler**
 
-**Explanation:** `unhandledRejection` fires for promises that have no rejection handler attached. The first `Promise.reject` has no `.catch()` â†’ triggers the handler. The second has `.catch()` â†’ handled normally. In Node.js, unhandled rejections can terminate the process in recent versions.
+**Explanation:** `unhandledRejection` fires for promises that have no rejection handler attached. The first `Promise.reject` has no `.catch()` → triggers the handler. The second has `.catch()` → handled normally. In Node.js, unhandled rejections can terminate the process in recent versions.
 
 </details>
 
@@ -5395,7 +5395,7 @@ level1();
 
 **Answer: B) `"level2 handled: RangeError"`**
 
-**Explanation:** `level3` throws a `RangeError`. `level2`\'s catch checks: `e instanceof TypeError` â†’ `false` (it\'s a `RangeError`). So it logs `"level2 handled: RangeError"` and does NOT rethrow. The error is fully handled in `level2`. `level1`\'s catch never runs.
+**Explanation:** `level3` throws a `RangeError`. `level2`\'s catch checks: `e instanceof TypeError` → `false` (it\'s a `RangeError`). So it logs `"level2 handled: RangeError"` and does NOT rethrow. The error is fully handled in `level2`. `level1`\'s catch never runs.
 
 </details>
 
@@ -5480,7 +5480,7 @@ console.log(retrieved === user);
 
 **Answer: B) `"Alice"`, `true`, `false`**
 
-**Explanation:** Objects must be serialized with `JSON.stringify()` before storage and deserialized with `JSON.parse()` on retrieval. The retrieved object is a new copy — it has the same values but is a different object reference (`retrieved === user` â†’ `false`). Note: `JSON.stringify` loses functions, `undefined` values, and `Date` objects become strings.
+**Explanation:** Objects must be serialized with `JSON.stringify()` before storage and deserialized with `JSON.parse()` on retrieval. The retrieved object is a new copy — it has the same values but is a different object reference (`retrieved === user` → `false`). Note: `JSON.stringify` loses functions, `undefined` values, and `Date` objects become strings.
 
 </details>
 
@@ -5604,7 +5604,7 @@ console.log(localStorage.length);
 
 **Answer: B) `2`, `null`, `0`**
 
-**Explanation:** `removeItem('b')` removes only the `b` key. `length` drops from 3 to 2. `getItem('b')` returns `null` (not `undefined`) for missing keys. `clear()` removes **all** items in the storage for the origin â†’ `length` becomes `0`.
+**Explanation:** `removeItem('b')` removes only the `b` key. `length` drops from 3 to 2. `getItem('b')` returns `null` (not `undefined`) for missing keys. `clear()` removes **all** items in the storage for the origin → `length` becomes `0`.
 
 </details>
 
@@ -6028,7 +6028,7 @@ Promise.allSettled(promises)
 
 **Answer: B) `"all failed: fail"`, `"settled count: 3"`**
 
-**Explanation:** `Promise.all` rejects immediately on the first rejection â†’ `"all failed: fail"`. `Promise.allSettled` waits for all promises regardless and returns all results â†’ `"settled count: 3"`. Use `allSettled` when you need results from all promises even if some fail.
+**Explanation:** `Promise.all` rejects immediately on the first rejection → `"all failed: fail"`. `Promise.allSettled` waits for all promises regardless and returns all results → `"settled count: 3"`. Use `allSettled` when you need results from all promises even if some fail.
 
 </details>
 
@@ -6068,7 +6068,7 @@ parallel().then(console.log);
 
 **Answer: B) `3`, `3`**
 
-**Explanation:** Both produce `3` (1 + 2). The difference is performance: `sequential` awaits each promise one by one (if they took 1s each â†’ 2s total). `parallel` starts both simultaneously via `Promise.all` (1s total). Always use `Promise.all` for independent async operations.
+**Explanation:** Both produce `3` (1 + 2). The difference is performance: `sequential` awaits each promise one by one (if they took 1s each → 2s total). `parallel` starts both simultaneously via `Promise.all` (1s total). Always use `Promise.all` for independent async operations.
 
 </details>
 
@@ -6485,7 +6485,7 @@ console.log('sync');
 
 **Answer: B) `"bar start"`, `"foo start"`, `"sync"`, `"foo end"`, `"bar end"`**
 
-**Explanation:** `bar()` runs synchronously until its first `await` (which is `foo()`). `foo()` runs synchronously until its first `await` â†’ suspension. Control returns to `bar()` which suspends (awaiting `foo()`). Then `"sync"` logs. Microtask queue: `foo` resumes â†’ `"foo end"` â†’ `foo` resolves â†’ `bar` resumes â†’ `"bar end"`.
+**Explanation:** `bar()` runs synchronously until its first `await` (which is `foo()`). `foo()` runs synchronously until its first `await` → suspension. Control returns to `bar()` which suspends (awaiting `foo()`). Then `"sync"` logs. Microtask queue: `foo` resumes → `"foo end"` → `foo` resolves → `bar` resumes → `"bar end"`.
 
 </details>
 
@@ -6755,7 +6755,7 @@ console.log(bound.call({ x: 99 })); // can you override bind?
 
 **Answer: B) `undefined`, `42`, `42`**
 
-**Explanation:** `detached()` — `this` is global (no `x` â†’ `undefined`). `bound()` — permanently bound to `module`, returns `42`. Importantly, `.call()` **cannot** override a bound function\'s `this` — `.bind()` creates a function with a hardcoded `this` that ignores subsequent `.call()/.apply()/.bind()` attempts.
+**Explanation:** `detached()` — `this` is global (no `x` → `undefined`). `bound()` — permanently bound to `module`, returns `42`. Importantly, `.call()` **cannot** override a bound function\'s `this` — `.bind()` creates a function with a hardcoded `this` that ignores subsequent `.call()/.apply()/.bind()` attempts.
 
 </details>
 
@@ -6826,7 +6826,7 @@ try {
 
 **Answer: B) `"78.54"`, `NaN`**
 
-**Explanation:** `circle.area` invokes the getter with `this = circle` â†’ `Math.PI * 25 â‰ˆ 78.54`. When you destructure a getter with `const { area } = circle`, you get the **current value** (a number), not the getter function. So `area` is `78.54` and `area` (the variable) equals that number — no error, but `NaN` wouldn\'t occur. Actually, `area` is `78.54`, not NaN. The correct answer is A.
+**Explanation:** `circle.area` invokes the getter with `this = circle` → `Math.PI * 25 â‰ˆ 78.54`. When you destructure a getter with `const { area } = circle`, you get the **current value** (a number), not the getter function. So `area` is `78.54` and `area` (the variable) equals that number — no error, but `NaN` wouldn\'t occur. Actually, `area` is `78.54`, not NaN. The correct answer is A.
 
 **Correction — Answer: A) `"78.54"`, `"78.54"`**
 
@@ -7049,7 +7049,7 @@ const logger = new Logger('[INFO]');
 
 **Answer: B) First throws `TypeError`; second logs `"[INFO]: a"`, `"[INFO]: b"`, `"[INFO]: c"`**
 
-**Explanation:** `logger.log` passed as a callback loses its `this` context. In class (strict mode), `this` becomes `undefined` â†’ `this.prefix` throws `TypeError`. `.bind(logger)` creates a new function permanently bound to `logger`, so `this.prefix` is `"[INFO]"`.
+**Explanation:** `logger.log` passed as a callback loses its `this` context. In class (strict mode), `this` becomes `undefined` → `this.prefix` throws `TypeError`. `.bind(logger)` creates a new function permanently bound to `logger`, so `this.prefix` is `"[INFO]"`.
 
 </details>
 
@@ -7086,7 +7086,7 @@ console.log(MathUtils.square(5));
 
 **Answer: B) `"I am MathUtils"`, `25`**
 
-**Explanation:** In a static method, `this` refers to the **class itself** (the constructor function), not an instance. `this.name` on a function/class is its name string â†’ `"MathUtils"`. Static methods are called on the class, so `this` is the class. Instance properties (like `this.value`) are not accessible from static methods.
+**Explanation:** In a static method, `this` refers to the **class itself** (the constructor function), not an instance. `this.name` on a function/class is its name string → `"MathUtils"`. Static methods are called on the class, so `this` is the class. Instance properties (like `this.value`) are not accessible from static methods.
 
 </details>
 
@@ -7467,7 +7467,7 @@ console.log(c instanceof Shape);
 
 **Answer: A) `"red shape"`, `true`**
 
-**Explanation:** `Shape.call(this, color)` sets `this.color = 'red'` on the `Circle` instance. `describe()` is not on `Circle.prototype` — it\'s found up the prototype chain on `Shape.prototype`. `this.color` in `describe` resolves to `'red'`. `instanceof Shape` checks the prototype chain â†’ `true`.
+**Explanation:** `Shape.call(this, color)` sets `this.color = 'red'` on the `Circle` instance. `describe()` is not on `Circle.prototype` — it\'s found up the prototype chain on `Shape.prototype`. `this.color` in `describe` resolves to `'red'`. `instanceof Shape` checks the prototype chain → `true`.
 
 </details>
 
@@ -7588,7 +7588,7 @@ console.log(result);
 
 **Answer: B) `{ alice: 'B', bob: 'A', carol: 'C' }`**
 
-**Explanation:** `Object.entries` returns `[['alice',85],['bob',92],['carol',78]]`. `reduce` builds a new object. Destructuring `[name, score]` in the callback extracts each pair. `85 >= 90` â†’ false, `85 >= 80` â†’ true â†’ `'B'`. `92 >= 90` â†’ true â†’ `'A'`. `78 >= 90` â†’ false, `78 >= 80` â†’ false â†’ `'C'`.
+**Explanation:** `Object.entries` returns `[['alice',85],['bob',92],['carol',78]]`. `reduce` builds a new object. Destructuring `[name, score]` in the callback extracts each pair. `85 >= 90` → false, `85 >= 80` → true → `'B'`. `92 >= 90` → true → `'A'`. `78 >= 90` → false, `78 >= 80` → false → `'C'`.
 
 </details>
 
@@ -7618,7 +7618,7 @@ console.log(Object.getPrototypeOf(dog1) === Object.getPrototypeOf(dog2));
 
 **Answer: B) `true`, `true`, `true`**
 
-**Explanation:** `Object.create(proto)` creates a new object with the specified prototype. `Object.setPrototypeOf(obj, proto)` changes the prototype of an **existing** object. Both result in the same prototype chain. `dog1.breathes` and `dog2.breathes` both find `breathes: true` via prototype lookup. Their prototypes are the same `animal` object â†’ `true`. Note: `setPrototypeOf` on existing objects is slow — prefer `Object.create`.
+**Explanation:** `Object.create(proto)` creates a new object with the specified prototype. `Object.setPrototypeOf(obj, proto)` changes the prototype of an **existing** object. Both result in the same prototype chain. `dog1.breathes` and `dog2.breathes` both find `breathes: true` via prototype lookup. Their prototypes are the same `animal` object → `true`. Note: `setPrototypeOf` on existing objects is slow — prefer `Object.create`.
 
 </details>
 
@@ -7880,7 +7880,7 @@ console.log(immutable[0].val);
 
 **Answer: B) `99`, `198`**
 
-**Explanation:** `mutated = original` creates an alias (same reference). `mutated[0].val = 99` mutates `original[0].val` to `99`. `immutable` spreads each item into a new object, so `original[0].val` is `99` at map time â†’ `99 * 2 = 198`. The `immutable` array contains new objects, not references to originals.
+**Explanation:** `mutated = original` creates an alias (same reference). `mutated[0].val = 99` mutates `original[0].val` to `99`. `immutable` spreads each item into a new object, so `original[0].val` is `99` at map time → `99 * 2 = 198`. The `immutable` array contains new objects, not references to originals.
 
 </details>
 
@@ -8177,7 +8177,7 @@ console.log(d instanceof Animal);
 
 **Answer: A) `"Rex says Woof"`, `true`**
 
-**Explanation:** `super('Woof')` must be called in the subclass constructor before accessing `this`. `super.speak()` calls the parent\'s `speak()` method — which accesses `#sound` on the instance (`'Woof'`). Private fields are accessible within the class that defines them, so `speak()` can access `#sound`. `instanceof` checks the prototype chain â†’ `true`.
+**Explanation:** `super('Woof')` must be called in the subclass constructor before accessing `this`. `super.speak()` calls the parent\'s `speak()` method — which accesses `#sound` on the instance (`'Woof'`). Private fields are accessible within the class that defines them, so `speak()` can access `#sound`. `instanceof` checks the prototype chain → `true`.
 
 </details>
 
@@ -8296,7 +8296,7 @@ console.log(new Circle(5).area().toFixed(2));
 
 **Answer: B) `"Shape is abstract"`, `"78.54"`**
 
-**Explanation:** `new.target` inside a constructor refers to the class being constructed. If `Shape` is instantiated directly, `new.target === Shape` â†’ throw. If a subclass extends `Shape`, `new.target` is the subclass (`Circle`) â†’ passes. `Circle` overrides `area()` â†’ works correctly. This is JavaScript\'s pattern for abstract classes.
+**Explanation:** `new.target` inside a constructor refers to the class being constructed. If `Shape` is instantiated directly, `new.target === Shape` → throw. If a subclass extends `Shape`, `new.target` is the subclass (`Circle`) → passes. `Circle` overrides `area()` → works correctly. This is JavaScript\'s pattern for abstract classes.
 
 </details>
 
@@ -8335,7 +8335,7 @@ console.log(typeof u.serialize());
 
 **Answer: A) `true`, `"string"`**
 
-**Explanation:** Mixins are functions that take a base class and return an extended class. Composing `Serializable(Validatable(Entity))` creates a class that has methods from all three. `u` has `name` and `age` (2 keys) â†’ `validate()` returns `true`. `serialize()` returns `JSON.stringify(u)` — a string. Mixins enable multiple-inheritance-like composition.
+**Explanation:** Mixins are functions that take a base class and return an extended class. Composing `Serializable(Validatable(Entity))` creates a class that has methods from all three. `u` has `name` and `age` (2 keys) → `validate()` returns `true`. `serialize()` returns `JSON.stringify(u)` — a string. Mixins enable multiple-inheritance-like composition.
 
 </details>
 
@@ -8449,7 +8449,7 @@ console.log(t.celsius);
 
 **Answer: A) `32`, `100`**
 
-**Explanation:** `new Temperature(0)` â†’ `#celsius = 0`. `t.fahrenheit` getter: `0 * 9/5 + 32 = 32`. `t.fahrenheit = 212` setter: `#celsius = (212 - 32) * 5/9 = 100`. `t.celsius` getter returns `100`. Getters/setters let you expose derived/computed properties while maintaining encapsulation.
+**Explanation:** `new Temperature(0)` → `#celsius = 0`. `t.fahrenheit` getter: `0 * 9/5 + 32 = 32`. `t.fahrenheit = 212` setter: `#celsius = (212 - 32) * 5/9 = 100`. `t.celsius` getter returns `100`. Getters/setters let you expose derived/computed properties while maintaining encapsulation.
 
 </details>
 
@@ -8489,7 +8489,7 @@ new Child();
 
 **Answer: B) `"Error: ReferenceError"`, `"After super: 1 undefined"`**
 
-**Explanation:** In a derived class, `this` is not available until `super()` is called. Accessing `this` before `super()` throws a `ReferenceError`. After `super()` is called, `this` is available. `this.x = 1` is set by `Base` constructor. `this.y` was never assigned (the assignment threw) â†’ `undefined`. So `"After super: 1 undefined"`.
+**Explanation:** In a derived class, `this` is not available until `super()` is called. Accessing `this` before `super()` throws a `ReferenceError`. After `super()` is called, `this` is available. `this.x = 1` is set by `Base` constructor. `this.y` was never assigned (the assignment threw) → `undefined`. So `"After super: 1 undefined"`.
 
 </details>
 
@@ -8608,7 +8608,7 @@ console.log('b.js:', a);
 
 **Answer: C) One of them will log `undefined` due to the circular dependency — the import is a live binding but may not be initialized yet**
 
-**Explanation:** ES Modules handle circular imports with **live bindings** — the binding exists but may be `undefined` at first execution. `b.js` imports `a` from `a.js`, but `a.js` hasn\'t finished evaluating yet â†’ `a` is `undefined` when `b.js` logs it. Circular dependencies are legal but can cause subtle initialization order bugs. Avoid them or restructure shared code into a third module.
+**Explanation:** ES Modules handle circular imports with **live bindings** — the binding exists but may be `undefined` at first execution. `b.js` imports `a` from `a.js`, but `a.js` hasn\'t finished evaluating yet → `a` is `undefined` when `b.js` logs it. Circular dependencies are legal but can cause subtle initialization order bugs. Avoid them or restructure shared code into a third module.
 
 </details>
 
@@ -8643,7 +8643,7 @@ console.log(getCount());
 
 **Answer: B) `2` — both imports share the same module singleton**
 
-**Explanation:** ES Modules are **singletons** — a module is evaluated once and cached. All imports of the same module share the same instance. Both `increment` and `inc2` reference the same function that closes over the same `count` variable. Two `increment()` calls â†’ `count = 2`.
+**Explanation:** ES Modules are **singletons** — a module is evaluated once and cached. All imports of the same module share the same instance. Both `increment` and `inc2` reference the same function that closes over the same `count` variable. Two `increment()` calls → `count = 2`.
 
 </details>
 
@@ -9101,7 +9101,7 @@ a();
 
 **Answer: B) `[Global, a, b, c]` — each nested call adds a frame; on return each is popped in reverse order**
 
-**Explanation:** The Call Stack is a LIFO (Last In, First Out) data structure. Global is always the base. `a()` is called â†’ pushed. `a` calls `b` â†’ pushed. `b` calls `c` â†’ pushed. At the peak: `[Global, a, b, c]`. `c` returns â†’ popped. `b` returns â†’ popped. `a` returns â†’ popped. This is why it's called a "stack" and why deeply nested calls can cause stack overflows.
+**Explanation:** The Call Stack is a LIFO (Last In, First Out) data structure. Global is always the base. `a()` is called → pushed. `a` calls `b` → pushed. `b` calls `c` → pushed. At the peak: `[Global, a, b, c]`. `c` returns → popped. `b` returns → popped. `a` returns → popped. This is why it's called a "stack" and why deeply nested calls can cause stack overflows.
 
 </details>
 
@@ -9157,7 +9157,7 @@ function fn() {}
 
 **Answer: B) `undefined`, `ReferenceError` — `var` is hoisted and initialized to `undefined`; `let` is hoisted but stays in the TDZ (uninitialized)**
 
-**Explanation:** During the **creation phase**, the engine: 1) creates the Variable Environment (`var` â†’ `undefined`, function declarations â†’ full function), 2) creates the Lexical Environment (`let`/`const` â†’ hoisted but **uninitialized** in TDZ), 3) binds `this`. Only during the **execution phase** are values assigned. Accessing a `let` variable before its declaration line (while still in the TDZ) throws `ReferenceError`.
+**Explanation:** During the **creation phase**, the engine: 1) creates the Variable Environment (`var` → `undefined`, function declarations → full function), 2) creates the Lexical Environment (`let`/`const` → hoisted but **uninitialized** in TDZ), 3) binds `this`. Only during the **execution phase** are values assigned. Accessing a `let` variable before its declaration line (while still in the TDZ) throws `ReferenceError`.
 
 </details>
 
@@ -9180,14 +9180,14 @@ outer();
 ```
 
 - A) `"global"` — functions always look up to the global scope first
-- B) `"outer"` — the scope chain walks from inner's context â†’ outer's context â†’ global; `x = 'outer'` is found first
+- B) `"outer"` — the scope chain walks from inner's context → outer's context → global; `x = 'outer'` is found first
 - C) `ReferenceError` — `x` is not in `inner`'s own execution context
 - D) `undefined` — `x` in outer is not accessible to inner
 
 <details>
 <summary><strong>Answer & Explanation</strong></summary>
 
-**Answer: B) `"outer"` — the scope chain walks from inner's context â†’ outer's context â†’ global; `x = 'outer'` is found first**
+**Answer: B) `"outer"` — the scope chain walks from inner's context → outer's context → global; `x = 'outer'` is found first**
 
 **Explanation:** The **scope chain** is built when a function is defined (lexical scoping). When `inner()` runs, its execution context has a reference to the outer function's environment (where `x = 'outer'`), and that has a reference to the global environment (where `x = 'global'`). Variable lookup walks inward-to-outward and stops at the first match. This chain is created at definition time, not at call time.
 
@@ -9429,7 +9429,7 @@ setInterval(leaky, 100); // keeps adding to cache forever
 
 **Answer: B) Memory usage grows indefinitely, eventually causing slowdowns, tab crashes, or OOM errors**
 
-**Explanation:** A memory leak occurs when objects that are no longer needed are still referenced (preventing garbage collection). Here, `cache` grows every 100ms with 1MB arrays. GC cannot collect them because `leaky` holds a closure reference. Over time: slowdowns â†’ UI freezes â†’ browser tab crash (OOM). Use Chrome DevTools Memory profiler to detect heap growth and leaked object retention.
+**Explanation:** A memory leak occurs when objects that are no longer needed are still referenced (preventing garbage collection). Here, `cache` grows every 100ms with 1MB arrays. GC cannot collect them because `leaky` holds a closure reference. Over time: slowdowns → UI freezes → browser tab crash (OOM). Use Chrome DevTools Memory profiler to detect heap growth and leaked object retention.
 
 </details>
 
@@ -9442,8 +9442,8 @@ setInterval(leaky, 100); // keeps adding to cache forever
 ```javascript
 // Thrashing: read then write then read then write
 elements.forEach(el => {
-  const height = el.offsetHeight; // read â†’ forces layout
-  el.style.height = height * 2 + 'px'; // write â†’ invalidates layout
+  const height = el.offsetHeight; // read → forces layout
+  el.style.height = height * 2 + 'px'; // write → invalidates layout
 });
 
 // Optimized: batch reads then batch writes
@@ -9770,7 +9770,7 @@ try { config.api = 'https://evil.com'; } catch(e) { console.log(e.message.includ
 
 **Answer: B) `"https://api.example.com"`, `true`**
 
-**Explanation:** `Proxy` wraps the target and intercepts operations. The `set` trap fires when attempting to write a property — here it throws. The `get` trap is not defined, so reads pass through to the target normally. This implements read-only objects without modifying the original. `e.message.includes('read-only')` â†’ `true`.
+**Explanation:** `Proxy` wraps the target and intercepts operations. The `set` trap fires when attempting to write a property — here it throws. The `get` trap is not defined, so reads pass through to the target normally. This implements read-only objects without modifying the original. `e.message.includes('read-only')` → `true`.
 
 </details>
 
@@ -9831,7 +9831,7 @@ console.log(auth.handle({ token: false, rateOk: true, data: 'payload' }));
 
 **Answer: B) `"Processed: payload"`, `"Unauthorized"`**
 
-**Explanation:** Chain of Responsibility passes a request along a chain of handlers. Each handler decides to process or pass forward. Request 1: `token=true` â†’ passes auth â†’ `rateOk=true` â†’ passes rate limit â†’ processed. Request 2: `token=false` â†’ auth handler rejects â†’ `"Unauthorized"`. Used in middleware pipelines (Express, Koa), validation chains, event handling.
+**Explanation:** Chain of Responsibility passes a request along a chain of handlers. Each handler decides to process or pass forward. Request 1: `token=true` → passes auth → `rateOk=true` → passes rate limit → processed. Request 2: `token=false` → auth handler rejects → `"Unauthorized"`. Used in middleware pipelines (Express, Koa), validation chains, event handling.
 
 </details>
 
@@ -9869,7 +9869,7 @@ console.log(counter._count);
 
 **Answer: B) `1`, `undefined`**
 
-**Explanation:** The Revealing Module Pattern uses an IIFE to create a private scope. `_count` is private — not exposed in the returned object. Only `increment`, `decrement`, `getCount` are public. `increment()` twice (â†’ 2), `decrement()` once (â†’ 1). `counter.getCount()` returns `1`. `counter._count` is `undefined` — the private variable is inaccessible from outside.
+**Explanation:** The Revealing Module Pattern uses an IIFE to create a private scope. `_count` is private — not exposed in the returned object. Only `increment`, `decrement`, `getCount` are public. `increment()` twice (→ 2), `decrement()` once (→ 1). `counter.getCount()` returns `1`. `counter._count` is `undefined` — the private variable is inaccessible from outside.
 
 </details>
 
@@ -9909,7 +9909,7 @@ console.log(new CSVProcessor().process(' a , b , c '));
 
 **Answer: C) `["a", "b", "c"]`**
 
-**Explanation:** Template Method defines the skeleton of an algorithm in the base class, letting subclasses override specific steps without changing the overall structure. `process()` is the template — it calls `parse` â†’ `validate` â†’ `format`. `CSVProcessor` overrides `parse` (split by comma) and `format` (trim). `validate` uses the default pass-through. Result: `["a","b","c"]`.
+**Explanation:** Template Method defines the skeleton of an algorithm in the base class, letting subclasses override specific steps without changing the overall structure. `process()` is the template — it calls `parse` → `validate` → `format`. `CSVProcessor` overrides `parse` (split by comma) and `format` (trim). `validate` uses the default pass-through. Result: `["a","b","c"]`.
 
 </details>
 
@@ -10057,7 +10057,7 @@ console.log({}.isAdmin); // prototype polluted!
 
 **Answer: B) `true` — the prototype is polluted, affecting all plain objects**
 
-**Explanation:** Prototype pollution occurs when attacker-controlled data modifies `Object.prototype`. After `Object.assign({}, payload)`, `Object.prototype.isAdmin = true`. Every plain object inherits from `Object.prototype` â†’ `{}.isAdmin` is `true`. This can bypass security checks like `if (user.isAdmin)`. Mitigate with: `JSON.parse` with a reviver filtering `__proto__`; using `Object.create(null)` for merge targets; input validation; or using `structuredClone`.
+**Explanation:** Prototype pollution occurs when attacker-controlled data modifies `Object.prototype`. After `Object.assign({}, payload)`, `Object.prototype.isAdmin = true`. Every plain object inherits from `Object.prototype` → `{}.isAdmin` is `true`. This can bypass security checks like `if (user.isAdmin)`. Mitigate with: `JSON.parse` with a reviver filtering `__proto__`; using `Object.create(null)` for merge targets; input validation; or using `structuredClone`.
 
 </details>
 
@@ -10282,7 +10282,7 @@ for (let i = 0; i < 1000; i++) {
 
 **Answer: B) The sequence of steps the browser takes to convert HTML, CSS, and JavaScript into pixels on the screen**
 
-**Explanation:** The Critical Rendering Path: 1) Parse HTML â†’ DOM. 2) Parse CSS â†’ CSSOM. 3) Combine DOM + CSSOM â†’ Render Tree. 4) Layout (calculate positions/sizes). 5) Paint (draw pixels). 6) Composite (GPU layers). Optimizing the CRP (inline critical CSS, defer non-critical JS, minimize render-blocking resources) reduces Time to First Paint and Time to Interactive.
+**Explanation:** The Critical Rendering Path: 1) Parse HTML → DOM. 2) Parse CSS → CSSOM. 3) Combine DOM + CSSOM → Render Tree. 4) Layout (calculate positions/sizes). 5) Paint (draw pixels). 6) Composite (GPU layers). Optimizing the CRP (inline critical CSS, defer non-critical JS, minimize render-blocking resources) reduces Time to First Paint and Time to Interactive.
 
 </details>
 
@@ -10978,7 +10978,7 @@ console.log(result);
 
 **Answer: C) `60`**
 
-**Explanation:** `filter` keeps only even numbers `[2, 4, 6, 8, 10]`. `map` doubles each â†’ `[4, 8, 12, 16, 20]`. `reduce` sums all values starting from `0` â†’ `4 + 8 + 12 + 16 + 20 = 60`.
+**Explanation:** `filter` keeps only even numbers `[2, 4, 6, 8, 10]`. `map` doubles each → `[4, 8, 12, 16, 20]`. `reduce` sums all values starting from `0` → `4 + 8 + 12 + 16 + 20 = 60`.
 
 </details>
 
@@ -11871,7 +11871,7 @@ console.log(rect2.isOverlapping(rect3)); // ?
 
 **Answer: C) `true`, `false`**
 
-**Explanation:** `rect1` spans x:[250,400], y:[250,350]. `rect2` spans x:[100,400], y:[100,300]. They share y overlap (250 < 300) and x overlap, so `true`. `rect3` spans x:[450,600], y:[450,550]. `rect2`\'s right edge is `x=400`, which is less than `rect3.x=450` — the condition `rect2.x + rect2.width > rect3.x` â†’ `400 > 450` is `false`, so no overlap.
+**Explanation:** `rect1` spans x:[250,400], y:[250,350]. `rect2` spans x:[100,400], y:[100,300]. They share y overlap (250 < 300) and x overlap, so `true`. `rect3` spans x:[450,600], y:[450,550]. `rect2`\'s right edge is `x=400`, which is less than `rect3.x=450` — the condition `rect2.x + rect2.width > rect3.x` → `400 > 450` is `false`, so no overlap.
 
 </details>
 
@@ -11909,7 +11909,7 @@ console.log(secondLargest([1, 10, 2, 9]));
 
 **Answer: C) `9`**
 
-**Explanation:** Iterating: `el=1` â†’ largest=1, second=-1. `el=10` â†’ largest=10, second=1. `el=2` â†’ 2 > second(1), so second=2. `el=9` â†’ 9 > second(2), so second=9. Final: `9`. Note: this implementation has a limitation — it initialises both sentinels to `-1`, so it fails for all-negative arrays.
+**Explanation:** Iterating: `el=1` → largest=1, second=-1. `el=10` → largest=10, second=1. `el=2` → 2 > second(1), so second=2. `el=9` → 9 > second(2), so second=9. Final: `9`. Note: this implementation has a limitation — it initialises both sentinels to `-1`, so it fails for all-negative arrays.
 
 </details>
 
@@ -12227,7 +12227,7 @@ console.log(cloned.date instanceof Date, cloned.map instanceof Map);
 
 **Answer: B) `"JSON failed: TypeError"`, `true`, `true`**
 
-**Explanation:** `JSON.stringify` throws `TypeError` on circular references. `structuredClone` (ES2022) handles: circular references, `Date` (preserves type), `Map`, `Set`, `ArrayBuffer`, `RegExp`. It does NOT clone: functions, DOM nodes, or class instances (they're plain objects). `cloned.date instanceof Date` â†’ `true` (unlike JSON which converts to string).
+**Explanation:** `JSON.stringify` throws `TypeError` on circular references. `structuredClone` (ES2022) handles: circular references, `Date` (preserves type), `Map`, `Set`, `ArrayBuffer`, `RegExp`. It does NOT clone: functions, DOM nodes, or class instances (they're plain objects). `cloned.date instanceof Date` → `true` (unlike JSON which converts to string).
 
 </details>
 
@@ -12451,7 +12451,7 @@ console.log(true + true + "1");
 
 **Answer: A) `"123"`, `"33"`, `2`, `10`, `"21"`**
 
-**Explanation:** `+` is left-to-right: `1 + "2"` â†’ `"12"` (string concat), then `"12" + 3` â†’ `"123"`. `1 + 2` â†’ `3` (numeric), then `3 + "3"` â†’ `"33"`. `-` coerces to number: `"5" - 3 = 2`. `*` coerces both: `5 * 2 = 10`. `true + true` â†’ `1 + 1 = 2`, then `2 + "1"` â†’ `"21"`. Rule: `+` with any string = concatenation; `-`, `*`, `/` always coerce to numbers.
+**Explanation:** `+` is left-to-right: `1 + "2"` → `"12"` (string concat), then `"12" + 3` → `"123"`. `1 + 2` → `3` (numeric), then `3 + "3"` → `"33"`. `-` coerces to number: `"5" - 3 = 2`. `*` coerces both: `5 * 2 = 10`. `true + true` → `1 + 1 = 2`, then `2 + "1"` → `"21"`. Rule: `+` with any string = concatenation; `-`, `*`, `/` always coerce to numbers.
 
 </details>
 
@@ -12479,7 +12479,7 @@ console.log(+{});
 
 **Answer: A) `""`, `"[object Object]"`, `0`, `0`, `NaN`**
 
-**Explanation:** `[] + []`: both arrays coerce to `""` (empty string via `.toString()`) â†’ `""`. `[] + {}`: `[]` â†’ `""`, `{}` â†’ `"[object Object]"` â†’ `"[object Object]"`. `{} + []` in expression context (not as a statement): `{}` is an empty object â†’ `"[object Object]"`, `[]` â†’ `""` â†’ `"[object Object]"`. `+[]`: unary `+` converts `[]` â†’ `""` â†’ `0`. `+{}`: `{}` â†’ `NaN`. These are notorious JavaScript gotchas.
+**Explanation:** `[] + []`: both arrays coerce to `""` (empty string via `.toString()`) → `""`. `[] + {}`: `[]` → `""`, `{}` → `"[object Object]"` → `"[object Object]"`. `{} + []` in expression context (not as a statement): `{}` is an empty object → `"[object Object]"`, `[]` → `""` → `"[object Object]"`. `+[]`: unary `+` converts `[]` → `""` → `0`. `+{}`: `{}` → `NaN`. These are notorious JavaScript gotchas.
 
 </details>
 
@@ -12508,7 +12508,7 @@ console.log(NaN === NaN);
 
 **Answer: A) `true`, `false`, `false`, `false`, `false`, `false`**
 
-**Explanation:** `null == undefined` â†’ `true` (special spec rule: they are only equal to each other). `null == 0` â†’ `false` (null only equals `undefined` with `==`). `null == false` â†’ `false` (same rule). `NaN == NaN` â†’ `false` (NaN is never equal to anything, even itself). Use `Number.isNaN(x)` to detect NaN, and `=== undefined` only for `undefined` checks.
+**Explanation:** `null == undefined` → `true` (special spec rule: they are only equal to each other). `null == 0` → `false` (null only equals `undefined` with `==`). `null == false` → `false` (same rule). `NaN == NaN` → `false` (NaN is never equal to anything, even itself). Use `Number.isNaN(x)` to detect NaN, and `=== undefined` only for `undefined` checks.
 
 </details>
 
@@ -12651,7 +12651,7 @@ console.log(+undefined);
 
 **Answer: B) `"string"`, `"object"`, `false false false false false true true`, `0`, `0`, `NaN`**
 
-**Explanation:** `typeof 42` â†’ `"number"` (a string), then `typeof "number"` â†’ `"string"`. `typeof null` â†’ `"object"` (historical bug). Falsy values: `null`, `undefined`, `0`, `NaN`, `""` all double-negate to `false`. Truthy: `[]` and `{}` are **objects** (truthy regardless of emptiness). `+''` â†’ `0`. `+null` â†’ `0`. `+undefined` â†’ `NaN`.
+**Explanation:** `typeof 42` → `"number"` (a string), then `typeof "number"` → `"string"`. `typeof null` → `"object"` (historical bug). Falsy values: `null`, `undefined`, `0`, `NaN`, `""` all double-negate to `false`. Truthy: `[]` and `{}` are **objects** (truthy regardless of emptiness). `+''` → `0`. `+null` → `0`. `+undefined` → `NaN`.
 
 </details>
 
@@ -12717,7 +12717,7 @@ console.log('5');
 
 **Answer: C) `1, 2, 5, 4, 3`**
 
-**Explanation:** Synchronous: `"1"` â†’ `asyncFunc()` runs synchronously until the first `await`: logs `"2"` â†’ suspends at `await Promise.resolve()` â†’ `Promise.resolve().then(...)` queues `"4"` as a microtask â†’ logs `"5"`. Microtask queue: `await Promise.resolve()` inside `asyncFunc` resolves first (it was queued before the standalone `.then()`), but `"4"` was actually queued at the same tick as `asyncFunc`\'s continuation. Microtasks run in order: `await` continuation (logs `"3"`) runs after `"4"` — actually `"4"` resolves first because `asyncFunc`\'s inner `await` schedules a microtask, but the `.then(() => '4')` was enqueued after the `await`. Result: `"5"` â†’ microtask `"4"` â†’ microtask `"3"`.
+**Explanation:** Synchronous: `"1"` → `asyncFunc()` runs synchronously until the first `await`: logs `"2"` → suspends at `await Promise.resolve()` → `Promise.resolve().then(...)` queues `"4"` as a microtask → logs `"5"`. Microtask queue: `await Promise.resolve()` inside `asyncFunc` resolves first (it was queued before the standalone `.then()`), but `"4"` was actually queued at the same tick as `asyncFunc`\'s continuation. Microtasks run in order: `await` continuation (logs `"3"`) runs after `"4"` — actually `"4"` resolves first because `asyncFunc`\'s inner `await` schedules a microtask, but the `.then(() => '4')` was enqueued after the `await`. Result: `"5"` → microtask `"4"` → microtask `"3"`.
 
 </details>
 
@@ -12856,7 +12856,7 @@ if (result) processData(result);
 
 **Answer: B) The error is swallowed — callers receive `null` without knowing why it failed**
 
-**Explanation:** Swallowing errors (catch â†’ log â†’ return null) hides failures from callers. Callers can\'t distinguish "ID has no data" from "network failed". Better: rethrow a domain error (`throw new DataFetchError(id, e)`), or return a Result type `{ data, error }`. At minimum, don\'t catch errors you can\'t handle — let them propagate for the caller to decide.
+**Explanation:** Swallowing errors (catch → log → return null) hides failures from callers. Callers can\'t distinguish "ID has no data" from "network failed". Better: rethrow a domain error (`throw new DataFetchError(id, e)`), or return a Result type `{ data, error }`. At minimum, don\'t catch errors you can\'t handle — let them propagate for the caller to decide.
 
 </details>
 
@@ -12886,7 +12886,7 @@ const r = users.map(proc);
 
 **Answer: B) Cryptic abbreviations harm readability and maintainability**
 
-**Explanation:** Code is read far more than it\'s written. Cryptic abbreviations: `d` â†’ `currentDate`, `ts` â†’ `timestamp`, `u` â†’ `user`, `n` â†’ `firstName`, `ln` â†’ `lastName`, `proc` â†’ `formatFullName`, `r` â†’ `formattedUsers`. Minifiers handle abbreviation automatically. A Tech Lead should enforce naming standards via ESLint rules (e.g., `id-length`) and style guide.
+**Explanation:** Code is read far more than it\'s written. Cryptic abbreviations: `d` → `currentDate`, `ts` → `timestamp`, `u` → `user`, `n` → `firstName`, `ln` → `lastName`, `proc` → `formatFullName`, `r` → `formattedUsers`. Minifiers handle abbreviation automatically. A Tech Lead should enforce naming standards via ESLint rules (e.g., `id-length`) and style guide.
 
 </details>
 
@@ -12941,7 +12941,7 @@ test('divides 10 by 2', () => expect(divide(10, 2)).toBe(5));
 
 **Answer: B) Missing edge cases: `b = 0`, negative numbers, non-numbers, `NaN` inputs**
 
-**Explanation:** A Tech Lead should require: `divide(0, 0)` â†’ `NaN`; `divide(10, 0)` â†’ `Infinity`; `divide(-10, 2)` â†’ `-5`; `divide('a', 2)` â†’ `NaN`; `divide(null, 2)` â†’ `0`. Code coverage (line/branch coverage) doesn\'t capture these — a function can be 100% line-covered with one test while missing critical edge cases. Semantic coverage matters more than line coverage.
+**Explanation:** A Tech Lead should require: `divide(0, 0)` → `NaN`; `divide(10, 0)` → `Infinity`; `divide(-10, 2)` → `-5`; `divide('a', 2)` → `NaN`; `divide(null, 2)` → `0`. Code coverage (line/branch coverage) doesn\'t capture these — a function can be 100% line-covered with one test while missing critical edge cases. Semantic coverage matters more than line coverage.
 
 </details>
 
@@ -13164,7 +13164,7 @@ class WebSocketManager {
 
 **Answer: B) Exponential backoff reconnection — increasing delays up to 30s**
 
-**Explanation:** WebSockets don\'t auto-reconnect. Exponential backoff: 1s â†’ 2s â†’ 4s â†’ 8s â†’ ... â†’ 30s (capped). This prevents overwhelming a recovering server with reconnection storms. The `setTimeout` callback holds a reference to the class instance via closure — no stack overflow since it\'s not recursive via the call stack, it\'s via the event loop. In production, also reset delay on successful reconnection.
+**Explanation:** WebSockets don\'t auto-reconnect. Exponential backoff: 1s → 2s → 4s → 8s → ... → 30s (capped). This prevents overwhelming a recovering server with reconnection storms. The `setTimeout` callback holds a reference to the class instance via closure — no stack overflow since it\'s not recursive via the call stack, it\'s via the event loop. In production, also reset delay on successful reconnection.
 
 </details>
 
@@ -13314,7 +13314,7 @@ class CircuitBreaker {
 
 **Answer: B) After 5 failures, the circuit opens — blocking calls and allowing the service to recover**
 
-**Explanation:** Circuit Breaker states: **Closed** (normal) â†’ **Open** (blocking calls after N failures) â†’ **Half-open** (allow test requests after timeout). It prevents cascade failures: if a downstream service is down, fail fast instead of piling up timeouts. After the reset timeout, the circuit closes again for retry. This is critical for resilient microservice architectures.
+**Explanation:** Circuit Breaker states: **Closed** (normal) → **Open** (blocking calls after N failures) → **Half-open** (allow test requests after timeout). It prevents cascade failures: if a downstream service is down, fail fast instead of piling up timeouts. After the reset timeout, the circuit closes again for retry. This is critical for resilient microservice architectures.
 
 </details>
 
@@ -13354,7 +13354,7 @@ class CircuitBreaker {
 
 **Answer: B) A saga coordinates async steps with compensating rollbacks for partial failures**
 
-**Explanation:** A saga manages long-running distributed transactions. Example: Book flight â†’ Book hotel â†’ Charge card. If charging fails, **compensating transactions** undo prior steps (cancel flight, cancel hotel). In Redux-Saga, generators control async side effects with `take`, `put`, `call`. The pattern prevents partial state by providing explicit rollback logic — critical for e-commerce, booking systems, and financial applications.
+**Explanation:** A saga manages long-running distributed transactions. Example: Book flight → Book hotel → Charge card. If charging fails, **compensating transactions** undo prior steps (cancel flight, cancel hotel). In Redux-Saga, generators control async side effects with `take`, `put`, `call`. The pattern prevents partial state by providing explicit rollback logic — critical for e-commerce, booking systems, and financial applications.
 
 </details>
 
@@ -13677,7 +13677,7 @@ const service = new OrderService(mockDb, mockEmailer);
 <details>
 <summary><strong>Answer & Explanation</strong></summary>
 
-**Answer: B) Add new API â†’ mark old deprecated â†’ keep both for transition period â†’ remove in major version**
+**Answer: B) Add new API → mark old deprecated → keep both for transition period → remove in major version**
 
 **Explanation:** Breaking change management: 1) **Add** new API, **keep** old API. 2) **`@deprecated`** JSDoc with link to replacement. 3) **Minor version** bump. 4) **Communication**: changelog, team announcement, migration guide. 5) After transition period (1-2 major versions), **remove** in major bump. This approach allows teams to migrate at their own pace and avoids "big bang" coordinations. Use `eslint-plugin-deprecation` to surface deprecated usages in CI.
 
@@ -13829,7 +13829,7 @@ class AppErrorBoundary extends React.Component {
 
 **Answer: B) Granular error boundaries isolate failures — crashed widgets don\'t take down the whole app**
 
-**Explanation:** A single global boundary means any component crash shows the same full-page error. Granular boundaries at the dashboard widget or section level enable graceful degradation: the news feed crashes â†’ shows a "Feed unavailable" message; header and sidebar still work. Tech Leads should define a standard error boundary component and establish guidelines for where to place boundaries (route level, widget level, critical sections).
+**Explanation:** A single global boundary means any component crash shows the same full-page error. Granular boundaries at the dashboard widget or section level enable graceful degradation: the news feed crashes → shows a "Feed unavailable" message; header and sidebar still work. Tech Leads should define a standard error boundary component and establish guidelines for where to place boundaries (route level, widget level, critical sections).
 
 </details>
 
@@ -13856,7 +13856,7 @@ process.on('unhandledRejection', (reason, promise) => {
 
 **Answer: B) Log always; crash for programming errors; Node 15+ crashes by default**
 
-**Explanation:** Node.js 15+ changed the default: unhandled rejections crash the process. Best practice: 1) Catch all rejections at the call site. 2) `unhandledRejection` handler as a last resort: log the error with full context. 3) If `error.isOperational` (expected error somehow missed) â†’ log and continue. 4) If unknown error type â†’ it\'s a bug, crash the process, let the process manager (PM2, systemd, Kubernetes) restart it cleanly.
+**Explanation:** Node.js 15+ changed the default: unhandled rejections crash the process. Best practice: 1) Catch all rejections at the call site. 2) `unhandledRejection` handler as a last resort: log the error with full context. 3) If `error.isOperational` (expected error somehow missed) → log and continue. 4) If unknown error type → it\'s a bug, crash the process, let the process manager (PM2, systemd, Kubernetes) restart it cleanly.
 
 </details>
 
@@ -13899,7 +13899,7 @@ const isValid = Object.keys(errors).length === 0;
 ```
 
 - A) Form validation errors should throw exceptions
-- B) Form validation returns an error map (field â†’ message) instead of throwing — enabling inline field-level error display, partial validation, and progressive enhancement
+- B) Form validation returns an error map (field → message) instead of throwing — enabling inline field-level error display, partial validation, and progressive enhancement
 - C) Form validation should only happen server-side
 - D) Using `Object.keys(errors).length === 0` to check validity is unreliable
 
@@ -13943,7 +13943,7 @@ const userSlice = createSlice({
 
 **Answer: B) Store errors in state — track loading/data/error as separate slices; UI derives display from state**
 
-**Explanation:** State machine approach: `{ loading: true, data: null, error: null }` â†’ `{ loading: false, data: {...}, error: null }` â†’ `{ loading: false, data: null, error: "Network error" }`. These states are mutually exclusive. Components derive behavior from state: show spinner while loading, show error message on error, show data on success. This is the standard Redux Toolkit pattern and scales to any async state management.
+**Explanation:** State machine approach: `{ loading: true, data: null, error: null }` → `{ loading: false, data: {...}, error: null }` → `{ loading: false, data: null, error: "Network error" }`. These states are mutually exclusive. Components derive behavior from state: show spinner while loading, show error message on error, show data on success. This is the standard Redux Toolkit pattern and scales to any async state management.
 
 </details>
 
@@ -14140,9 +14140,9 @@ Bundle Analysis:
   app.js: 450KB
   
   Largest dependencies:
-  moment: 232KB â†’ replace with date-fns (tree-shakeable, 30KB)
-  lodash: 70KB â†’ use lodash-es or individual imports
-  chart.js: 200KB â†’ lazy load only on chart pages
+  moment: 232KB → replace with date-fns (tree-shakeable, 30KB)
+  lodash: 70KB → use lodash-es or individual imports
+  chart.js: 200KB → lazy load only on chart pages
 ```
 
 - A) Bundle size is irrelevant — fast internet makes size unimportant
@@ -14155,7 +14155,7 @@ Bundle Analysis:
 
 **Answer: B) Replace heavy libraries with lightweight alternatives, lazy load, and set CI bundle size budgets**
 
-**Explanation:** Systematic approach: 1) **moment â†’ date-fns/dayjs** (2-9KB vs 232KB). 2) **lodash â†’ lodash-es** with tree shaking. 3) **Chart.js** — dynamic `import('./chart.js')` only on chart pages. 4) Set `performance.maxAssetSize` in webpack config — fail CI if bundle exceeds budget. 5) Track bundle size in PRs (`bundlesize` CLI or size-limit). Preventing regression is more important than one-time optimization.
+**Explanation:** Systematic approach: 1) **moment → date-fns/dayjs** (2-9KB vs 232KB). 2) **lodash → lodash-es** with tree shaking. 3) **Chart.js** — dynamic `import('./chart.js')` only on chart pages. 4) Set `performance.maxAssetSize` in webpack config — fail CI if bundle exceeds budget. 5) Track bundle size in PRs (`bundlesize` CLI or size-limit). Preventing regression is more important than one-time optimization.
 
 </details>
 
@@ -14346,7 +14346,7 @@ new ModuleFederationPlugin({
 
 **Answer: B) Shell owns top-level routing; MFEs register routes and own sub-routes within their allocated path prefix**
 
-**Explanation:** Architecture: Shell application owns `/products â†’ ProductsMFE`, `/checkout â†’ CheckoutMFE`. Each MFE registers its routes at mount time and handles its own sub-routing (`/products/list`, `/products/:id`). Cross-MFE navigation uses the shell\'s router (emit a navigation event â†’ shell handles the route change). This prevents URL ownership conflicts, allows deep linking, and supports independent deployment. Tools: single-spa `registerApplication`, qiankun `registerMicroApps`.
+**Explanation:** Architecture: Shell application owns `/products → ProductsMFE`, `/checkout → CheckoutMFE`. Each MFE registers its routes at mount time and handles its own sub-routing (`/products/list`, `/products/:id`). Cross-MFE navigation uses the shell\'s router (emit a navigation event → shell handles the route change). This prevents URL ownership conflicts, allows deep linking, and supports independent deployment. Tools: single-spa `registerApplication`, qiankun `registerMicroApps`.
 
 </details>
 
@@ -15128,7 +15128,7 @@ const checkoutMachine = createMachine({
 
 **Answer: B) Persist selected slices; restore on init; skip sensitive/derived state; migrate stale versions**
 
-**Explanation:** `redux-persist` / Zustand persist middleware: selectively persist (whitelist/blacklist specific slices). What to persist: user preferences (theme, locale), partially filled form drafts, session-agnostic UI config. What NOT to persist: auth tokens in `localStorage` (XSS risk; use HttpOnly cookies), loading/error states (always false on fresh load), cached server data (refetch on init — may be stale). Version migrations: if the persisted state shape changes between releases, a `migrations` map transforms old format â†’ new format on restore.
+**Explanation:** `redux-persist` / Zustand persist middleware: selectively persist (whitelist/blacklist specific slices). What to persist: user preferences (theme, locale), partially filled form drafts, session-agnostic UI config. What NOT to persist: auth tokens in `localStorage` (XSS risk; use HttpOnly cookies), loading/error states (always false on fresh load), cached server data (refetch on init — may be stale). Version migrations: if the persisted state shape changes between releases, a `migrations` map transforms old format → new format on restore.
 
 </details>
 
@@ -15204,14 +15204,14 @@ const updateUserMutation = useMutation({
 ```
 
 - A) Optimistic updates should never be used — rollback is too complex
-- B) Cancel in-flight queries â†’ optimistically update cache â†’ snapshot for rollback â†’ rollback on error â†’ invalidate on settle; this pattern provides instant UI feedback with reliable error recovery
+- B) Cancel in-flight queries → optimistically update cache → snapshot for rollback → rollback on error → invalidate on settle; this pattern provides instant UI feedback with reliable error recovery
 - C) Only invalidate the query after the mutation — optimistic update is unnecessary
 - D) Rollback should reload the entire page to ensure consistency
 
 <details>
 <summary><strong>Answer & Explanation</strong></summary>
 
-**Answer: B) Cancel in-flight â†’ optimistic update â†’ snapshot â†’ rollback on error â†’ invalidate on settle**
+**Answer: B) Cancel in-flight → optimistic update → snapshot → rollback on error → invalidate on settle**
 
 **Explanation:** TanStack Query optimistic update lifecycle: 1) **Cancel in-flight queries** — prevent race conditions with stale refetch overwriting the optimistic update. 2) **Snapshot previous state** — returned from `onMutate` as context. 3) **Apply optimistic update** — UI immediately shows the change. 4) **`onError`** — if mutation fails, restore the snapshot (rollback). 5) **`onSettled`** — always runs; invalidates to get the definitive server state. This pattern is the industry standard for optimistic UI.
 
@@ -15252,8 +15252,8 @@ const updateUserMutation = useMutation({
 import { fetchUser } from "@company/sdk"; // v1
 
 // Proposed new signature (breaking change)
-// v1: fetchUser(id: string) â†’ Promise<User>
-// v2: fetchUser(id: string, options?: FetchOptions) â†’ Promise<User>
+// v1: fetchUser(id: string) → Promise<User>
+// v2: fetchUser(id: string, options?: FetchOptions) → Promise<User>
 ```
 
 - A) Release a new npm package name for every breaking change — forces clients to opt in explicitly
@@ -15306,7 +15306,7 @@ import { fetchUser } from "@company/sdk"; // v1
 
 **Answer: B) Migrate incrementally — leaf components first, then containers; HOC/render props bridge the gap during transition**
 
-**Explanation:** Hooks cannot be used inside class components — they are function component only. Safe migration: 1) **Leaf components** — no children, no complex lifecycle — convert first (lowest risk). 2) **Custom hooks** — extract reusable logic into hooks; class components can consume them via HOC wrapper. 3) **Container components** — convert after leaf dependencies are done. 4) `React.forwardRef` when the function component needs ref forwarding. 5) `componentDidCatch` â†’ Error Boundary class components are the exception: React has no hook for error boundaries yet.
+**Explanation:** Hooks cannot be used inside class components — they are function component only. Safe migration: 1) **Leaf components** — no children, no complex lifecycle — convert first (lowest risk). 2) **Custom hooks** — extract reusable logic into hooks; class components can consume them via HOC wrapper. 3) **Container components** — convert after leaf dependencies are done. 4) `React.forwardRef` when the function component needs ref forwarding. 5) `componentDidCatch` → Error Boundary class components are the exception: React has no hook for error boundaries yet.
 
 </details>
 
@@ -15314,7 +15314,7 @@ import { fetchUser } from "@company/sdk"; // v1
     <b><a href="#table-of-contents">↥ back to top</a></b>
 </div>
 
-## Q. How should a Technical Architect manage a framework migration (Angular â†’ React) for a large production application?
+## Q. How should a Technical Architect manage a framework migration (Angular → React) for a large production application?
 
 - A) Rewrite everything in React in a development branch and deploy all at once
 - B) Use the Strangler Fig pattern: new features are built in React, existing Angular code is maintained; a shared header/shell embeds both frameworks; migrate modules incrementally over 12-24 months
@@ -15366,7 +15366,7 @@ import { fetchUser } from "@company/sdk"; // v1
 
 **Answer: B) `jscodeshift` AST codemods for syntactic changes; test subset first; CI verification; automates 80-90% of migration**
 
-**Explanation:** `jscodeshift` transforms code via AST (Abstract Syntax Tree) manipulation — much safer than regex (understands code structure, not just text). Use cases: renaming APIs across thousands of files (`fetchUser` â†’ `getUser`), migrating from one import style to another, updating prop names in React components. React\'s own migration tools (`react-codemod`) are `jscodeshift` codemods. Workflow: 1) Write and test codemod on small sample. 2) Run on full codebase. 3) Manually review edge cases. 4) PR with automated changes.
+**Explanation:** `jscodeshift` transforms code via AST (Abstract Syntax Tree) manipulation — much safer than regex (understands code structure, not just text). Use cases: renaming APIs across thousands of files (`fetchUser` → `getUser`), migrating from one import style to another, updating prop names in React components. React\'s own migration tools (`react-codemod`) are `jscodeshift` codemods. Workflow: 1) Write and test codemod on small sample. 2) Run on full codebase. 3) Manually review edge cases. 4) PR with automated changes.
 
 </details>
 
@@ -15377,14 +15377,14 @@ import { fetchUser } from "@company/sdk"; // v1
 ## Q. How should a Technical Architect ensure database schema migrations are safe in a zero-downtime deployment?
 
 - A) Stop the server, run all migrations, then restart — the simplest approach
-- B) Use backwards-compatible migrations: add new columns as nullable â†’ deploy new code that writes to both old and new columns â†’ backfill data â†’ make column required â†’ remove old column in a later release
+- B) Use backwards-compatible migrations: add new columns as nullable → deploy new code that writes to both old and new columns → backfill data → make column required → remove old column in a later release
 - C) Schema migrations and application deployments should always be deployed together
 - D) Database rollbacks automatically handle failed migrations
 
 <details>
 <summary><strong>Answer & Explanation</strong></summary>
 
-**Answer: B) Expand-contract pattern: add nullable â†’ dual writes â†’ backfill â†’ tighten â†’ remove old column in future release**
+**Answer: B) Expand-contract pattern: add nullable → dual writes → backfill → tighten → remove old column in future release**
 
 **Explanation:** Zero-downtime migration (expand-contract): **Phase 1 (Expand)**: Add `new_column` as `NULL` — old code writes to `old_column`; new code reads both. **Phase 2 (Migrate)**: Deploy code that writes to both columns; backfill existing rows. **Phase 3 (Contract)**: Once all rows have `new_column` populated, make it `NOT NULL`; remove reads from `old_column`. **Phase 4 (Cleanup)**: Remove `old_column` after the old code is fully removed. This ensures the database is compatible with both old and new application code simultaneously during rolling deployments.
 
